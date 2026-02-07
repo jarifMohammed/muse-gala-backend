@@ -6,6 +6,13 @@ import lenderCredentialsTemplate from '../../lib/lenderCredentialsTemplate.js';
 import { sendEmail } from '../../lib/resendEmial.js';
 import RoleType from '../../lib/types.js';
 import User from '../auth/auth.model.js';
+import {
+  newApplicationAdminTemplate,
+  applicationReceivedTemplate,
+  applicationApprovedTemplate,
+  applicationApprovedAdminTemplate,
+  applicationRejectedTemplate
+} from '../../lib/emailTemplates/application.templates.js';
 
 export const createApplication = async (data) => {
   const normalizedEmail = data.email?.trim().toLowerCase();
@@ -51,23 +58,18 @@ export const createApplication = async (data) => {
   }
 
   // Email admin with applicant info and password
-  const adminEmailContent = `
-    <p>New lender application submitted:</p>
-    <ul>
-      <li>Name: ${user.fullName || user.firstName || 'N/A'}</li>
-      <li>Email: ${user.email}</li>
-      <li>Phone: ${user.phoneNumber || 'N/A'}</li>
-      <li>Temporary Password: <strong>${tempPassword}</strong></li>
-    </ul>
-    <p>Please review and approve/reject the application in the admin panel.</p>
-  `;
+  const adminEmailContent = newApplicationAdminTemplate({
+    fullName: user.fullName || user.firstName || 'N/A',
+    email: user.email,
+    phoneNumber: user.phoneNumber || 'N/A',
+    tempPassword: tempPassword,
+    businessName: user.businessName || 'N/A'
+  });
 
   // Email applicant confirmation (no password)
-  const applicantEmailContent = `
-    <p>Dear ${user.fullName || user.firstName || 'Applicant'},</p>
-    <p>Thank you for your lender application. Your application has been received and is pending review.</p>
-    <p>We will contact you once your application is reviewed.</p>
-  `;
+  const applicantEmailContent = applicationReceivedTemplate({
+    fullName: user.fullName || user.firstName || 'Applicant'
+  });
 
   // Send both emails in parallel to reduce wait time
   await Promise.all([
@@ -180,19 +182,15 @@ export const updateApplication = async (id, data) => {
 
     await user.save();
 
-    const adminEmailContent = `
-      <p>Application has been approved</p>
-      <ul>
-        <li>Name: ${user.fullName || user.firstName || 'N/A'}</li>
-        <li>Email: ${user.email}</li>
-        <li>Phone: ${user.phoneNumber || 'N/A'}</li>
-      </ul>
-    `;
+    const adminEmailContent = applicationApprovedAdminTemplate({
+      fullName: user.fullName || user.firstName || 'N/A',
+      email: user.email,
+      phoneNumber: user.phoneNumber || 'N/A'
+    });
 
-    const userEmailContent = `
-      <p>Dear ${user.fullName || 'Applicant'},</p>
-      <p>Your lender application has been approved.</p>
-    `;
+    const userEmailContent = applicationApprovedTemplate({
+      fullName: user.fullName || 'Applicant'
+    });
 
     await Promise.all([
       sendEmail({
@@ -217,15 +215,10 @@ export const updateApplication = async (id, data) => {
 
     await user.save();
 
-    const userEmailContent = `
-      <p>Dear ${user.fullName || 'Applicant'},</p>
-      <p>We're sorry to inform you that your lender application has been rejected.</p>
-      ${
-        data.rejectionNote
-          ? `<p><strong>Reason:</strong> ${data.rejectionNote}</p>`
-          : ''
-      }
-    `;
+    const userEmailContent = applicationRejectedTemplate({
+      fullName: user.fullName || 'Applicant',
+      rejectionNote: data.rejectionNote || null
+    });
 
     await sendEmail({
       to: user.email,

@@ -11,6 +11,15 @@ export {
   adminNotificationTemplate,
 } from './baseTemplate.js';
 
+// Application templates
+export {
+  newApplicationAdminTemplate,
+  applicationReceivedTemplate,
+  applicationApprovedTemplate,
+  applicationApprovedAdminTemplate,
+  applicationRejectedTemplate,
+} from './application.templates.js';
+
 // Booking templates
 export {
   bookingCreatedTemplate,
