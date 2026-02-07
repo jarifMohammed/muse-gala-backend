@@ -32,10 +32,34 @@ app.post('/api/v1/webhook/connected', express.raw({ type: '*/*' }), connectedAcc
 
 // Security middleware
 app.use(helmet());
+
+// CORS configuration - restrict to allowed origins
+const allowedOrigins = [
+  'https://musegala.com.au',
+  'https://www.musegala.com.au',
+  'https://muse-gala-admin-dashboard.vercel.app',
+  'https://muse-gala-website.vercel.app',
+  'https://muse-gala-lender-dashboard.vercel.app',
+
+  'http://localhost:3000',  
+  'http://localhost:5173',  
+];
+
 app.use(cors({
-  origin:true,
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, Postman, curl)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', "PATCH",'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  exposedHeaders: ['set-cookie'],
 }));
 app.use(xssClean());
 app.use(mongoSanitize());
@@ -105,8 +129,13 @@ const server = createServer(app);
 
 export const io = new Server(server, {
   cors: {
-    origin:true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', "PATCH",'OPTIONS'],
+    origin: [
+      'https://musegala.com.au',
+      'https://www.musegala.com.au',
+      'http://localhost:3000',
+      'http://localhost:5173',
+    ],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     credentials: true,
   },
 });
