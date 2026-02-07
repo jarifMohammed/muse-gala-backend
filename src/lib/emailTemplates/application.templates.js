@@ -30,7 +30,7 @@ export const newApplicationAdminTemplate = ({ fullName, email, phoneNumber, temp
     subtitle: 'A new application is awaiting your review',
     content,
     buttonText: 'Review Application',
-    buttonUrl: 'https://admin.musegala.com.au/applications'
+    buttonUrl: 'https://admin.musegala.com.au/lenders'
   });
 };
 
