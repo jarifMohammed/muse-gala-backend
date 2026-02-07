@@ -90,7 +90,7 @@ export const applicationApprovedTemplate = ({ fullName }) => {
     subtitle: 'Your lender application has been approved',
     content,
     buttonText: 'Go to Dashboard',
-    buttonUrl: 'https://musegala.com.au/lender/dashboard'
+    buttonUrl: 'https://lender.musegala.com.au'
   });
 };
 
