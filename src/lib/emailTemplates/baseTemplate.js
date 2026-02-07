@@ -12,10 +12,13 @@
  * Option 2: If you already use Cloudinary in this project,
  *           upload your logo there and use the generated URL.
  * 
- * Recommended: PNG or JPG format, ~200px width for best email compatibility
+ * IMPORTANT: Use PNG or JPG format for email logos - SVG is NOT supported
+ *            by most email clients (Gmail, Outlook, Yahoo, etc.)
  * ---------------------------------------------------------
  */
-const LOGO_URL = 'https://res.cloudinary.com/dmhbf8kc7/image/upload/v1770466905/Artboard_1_1_k1cftb.svg' || 'https://your-domain.com/images/muse-gala-logo.png';
+// Using Cloudinary's format conversion (f_png) to convert SVG to PNG for email compatibility
+const LOGO_URL = 'https://res.cloudinary.com/dmhbf8kc7/image/upload/f_png/v1770466905/Artboard_1_1_k1cftb';
+// Fallback: 'https://your-domain.com/images/muse-gala-logo.png'
 const LOGO_WIDTH = 70;
 const LOGO_HEIGHT = 60;
 
