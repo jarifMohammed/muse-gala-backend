@@ -121,10 +121,20 @@ export const getAllApplicationsService = async ({
   if (totalListings) query.totalListings = parseInt(totalListings);
   if (totalReveneue) query.totalReveneue = parseInt(totalReveneue);
   if (startDate || endDate) {
-    query.applicationSubmittedAt = {};
-    if (startDate) query.applicationSubmittedAt.$gte = new Date(startDate);
-    if (endDate) query.applicationSubmittedAt.$lte = new Date(endDate);
+  query.applicationSubmittedAt = {};
+  
+  if (startDate) {
+    const start = new Date(startDate);
+    start.setUTCHours(0, 0, 0, 0); // Start of day
+    query.applicationSubmittedAt.$gte = start;
   }
+  
+  if (endDate) {
+    const end = new Date(endDate);
+    end.setUTCHours(23, 59, 59, 999); // End of day
+    query.applicationSubmittedAt.$lte = end;
+  }
+}
 
   const [data, total] = await Promise.all([
     User.find(query).sort({ createdAt: -1 }).skip(skip).limit(parseInt(limit)),
