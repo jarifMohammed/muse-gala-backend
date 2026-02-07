@@ -11,6 +11,7 @@ import { sendEmail } from '../../lib/resendEmial.js';
 import verificationCodeTemplate from '../../lib/emailTemplates.js';
 import Team from '../admin/team/team.model.js';
 import bcrypt from 'bcrypt';
+import NewsletterSubscription from '../newsletterSubscription/newsletterSubscription.model.js';
 
 export const registerUserService = async ({
   firstName,
@@ -29,6 +30,17 @@ export const registerUserService = async ({
   });
 
   const user = await newUser.save();
+
+  // Add email to newsletter subscription (silently - don't fail if already subscribed)
+  try {
+    const existingSubscription = await NewsletterSubscription.findOne({ email });
+    if (!existingSubscription) {
+      await NewsletterSubscription.create({ email });
+    }
+  } catch (error) {
+    // Silently ignore newsletter subscription errors to not block registration
+    console.log('Newsletter subscription error:', error.message);
+  }
 
   const { _id, role, profileImage } = user;
   return { _id, firstName, lastName, email, role, profileImage };
