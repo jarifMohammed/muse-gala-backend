@@ -91,10 +91,7 @@ export const userContactConfirmationTemplate = (data) => {
       
       <p>Thank you for reaching out to <strong>Muse Gala</strong>. We have received your ${isLender ? 'support request' : 'message'} and our dedicated team is reviewing it with the utmost care.</p>
       
-      <div style="background-color: #000; color: #fff; padding: 25px; border-radius: 8px; margin: 30px 0; text-align: center;">
-        <p style="font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; opacity: 0.8;">Your Reference</p>
-        <p style="font-size: 18px; font-weight: 600; margin: 0;">We'll respond within 24-48 hours</p>
-      </div>
+      <p style="text-align: center; font-size: 16px; color: #333; margin: 30px 0;">We'll respond within <strong>24-48 hours</strong></p>
       
       <p style="font-weight: 500; margin-top: 25px;">What happens next?</p>
       <ul style="color: #555; line-height: 2; padding-left: 20px;">
