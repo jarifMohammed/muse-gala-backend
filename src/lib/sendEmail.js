@@ -1,33 +1,23 @@
-import nodemailer from "nodemailer";
-import {
-  emailHost,
-  emailPort,
-  emailAddress,
-  emailPass,
-  emailFrom,
-} from "../core/config/config.js"; 
+import { Resend } from "resend";
+import { resendApiKey, emailFrom } from "../core/config/config.js";
+
+const resend = new Resend(resendApiKey);
 
 const sendEmail = async ({ to, subject, html }) => {
   try {
-    const transporter = nodemailer.createTransport({
-      host: emailHost,
-      port: emailPort,
-      secure: false,
-      auth: {
-        user: emailAddress,
-        pass: emailPass,
-      },
-    });
-
-    const mailOptions = {
+    const { data, error } = await resend.emails.send({
       from: emailFrom,
       to,
       subject,
       html,
-    };
+    });
 
-    await transporter.sendMail(mailOptions);
-    return { success: true };
+    if (error) {
+      console.error("Email send error:", error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true, data };
   } catch (error) {
     console.error("Email send error:", error);
     return { success: false, error: error.message };
