@@ -1,7 +1,12 @@
 
-
 import { cloudinaryUpload } from "../../lib/cloudinaryUpload.js";
 import { Contact } from "./support.model.js";
+import sendEmail from "../../lib/sendEmail.js";
+import { adminEmail } from "../../core/config/config.js";
+import {
+  adminContactNotificationTemplate,
+  userContactConfirmationTemplate,
+} from "../../lib/emailTemplates/contact.templates.js";
 
 
 // 🔹 Lender Contact (with file support)
@@ -24,7 +29,25 @@ const createLenderContact = async (payload, file) => {
     file: fileUrl,
   };
 
-  return await Contact.create(data);
+  const contact = await Contact.create(data);
+
+  // Send email to admin
+  const adminEmailData = {
+    type: 'lender',
+    lenderId: payload.lenderId,
+    subject: payload.subject,
+    issueType: payload.issueType,
+    message: payload.message,
+    file: fileUrl,
+  };
+
+  await sendEmail({
+    to: adminEmail,
+    subject: `New Lender Support Request - ${payload.issueType || 'General'}`,
+    html: adminContactNotificationTemplate(adminEmailData),
+  });
+
+  return contact;
 };
 
 // 🔹 General Contact (no file)
@@ -36,7 +59,32 @@ const createGeneralContact = async (payload) => {
     message: payload.message,
   };
 
-  return await Contact.create(data);
+  const contact = await Contact.create(data);
+
+  const emailData = {
+    type: 'general',
+    name: payload.name,
+    email: payload.email,
+    message: payload.message,
+  };
+
+  // Send email to admin
+  await sendEmail({
+    to: adminEmail,
+    subject: `New Contact Inquiry from ${payload.name || 'Website Visitor'}`,
+    html: adminContactNotificationTemplate(emailData),
+  });
+
+  // Send confirmation email to user (if email provided)
+  if (payload.email) {
+    await sendEmail({
+      to: payload.email,
+      subject: 'Thank You for Contacting Muse Gala',
+      html: userContactConfirmationTemplate(emailData),
+    });
+  }
+
+  return contact;
 };
 
 export const contactService = {
