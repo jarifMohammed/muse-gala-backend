@@ -47,7 +47,10 @@ const createLenderContact = async (payload, file) => {
     html: adminContactNotificationTemplate(adminEmailData),
   });
 
-  return contact;
+  // Return the full, populated document
+  return await Contact.findById(contact._id)
+    .populate("user", "name email")
+    .populate("lender", "name email");
 };
 
 // 🔹 General Contact (no file)
@@ -160,8 +163,13 @@ export const updateContact = async (id, payload, user) => {
     if (payload.message) contact.message = payload.message;
   }
 
-  return await contact.save();
+  await contact.save();
+  // Return the updated and populated document
+  return await Contact.findById(id)
+    .populate("user", "name firstName  email")
+    .populate("lender", "name firstName email");
 };
+
 
 
 
