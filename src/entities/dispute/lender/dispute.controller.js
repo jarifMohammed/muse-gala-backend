@@ -113,10 +113,9 @@ export const escalateDisputeByLender = async (req, res, next) => {
       }
     }
 
-    if (!disputeId || !reason || !description || !priority || confirmed !== true) {
-      return generateResponse(res, 400, false, "All required escalation fields must be provided and confirmed.");
-    }
-
+    if (!disputeId || !reason || !description || !priority || confirmed !== true && confirmed !== "true") {
+  return generateResponse(res, 400, false, "All required escalation fields must be provided and confirmed.");
+}
     const result = await disputeService.escalateDisputeByLenderService(
       lenderId,
       disputeId,
