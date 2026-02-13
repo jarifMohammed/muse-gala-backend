@@ -121,8 +121,8 @@ export const getAllContacts = async ({ page = 1, limit = 10, search, issueType, 
     .sort({ createdAt: -1 })
     .skip(skip)
     .limit(Number(limit))
-    .populate("user", "email")
-    .populate("lender", "email");
+    .populate("user", "email firstName name")
+    .populate("lender", "email firstName name");
 
   return {
     total,
