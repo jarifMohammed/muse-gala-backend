@@ -9,7 +9,7 @@ const router = express.Router();
 router.post(
   "/lender",
   verifyToken,lenderMiddleware, // must be logged in
-  multerUpload([{ name: "file", maxCount: 1 }]),
+  multerUpload([{ name: "file", maxCount: 5 }]),
   createLenderContact
 );
 
