@@ -11,7 +11,11 @@ import {
 
 
 export const createDisputeByLenderService = async (lenderId, bookingId, disputeData) => {
-  const booking = await Booking.findOne({ _id: bookingId, lender: lenderId });
+  // Find booking where allocatedLender.lenderId matches
+  const booking = await Booking.findOne({
+    _id: bookingId,
+    'allocatedLender.lenderId': lenderId
+  });
 
   if (!booking) {
     const err = new Error("Booking not found or not owned by lender");
