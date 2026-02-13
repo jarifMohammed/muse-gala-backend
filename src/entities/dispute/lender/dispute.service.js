@@ -246,9 +246,14 @@ export const escalateDisputeByLenderService = async (
     throw err;
   }
 
-  // Ensure lender is linked to the booking
-  if (dispute.booking.lender.toString() !== lenderId.toString()) {
-    const err = new Error("Access denied: You are not the lender of this booking");
+  // Ensure lender is linked to the booking (using allocatedLender.lenderId)
+  if (!dispute.booking || !dispute.booking.allocatedLender || !dispute.booking.allocatedLender.lenderId) {
+    const err = new Error("Booking does not have an allocated lender");
+    err.statusCode = 400;
+    throw err;
+  }
+  if (dispute.booking.allocatedLender.lenderId.toString() !== lenderId.toString()) {
+    const err = new Error("Access denied: You are not the allocated lender of this booking");
     err.statusCode = 403;
     throw err;
   }
