@@ -144,8 +144,8 @@ export const updateContact = async (id, payload, user) => {
   const contact = await Contact.findById(id);
   if (!contact) return null;
 
-  // Admin can update: status, priority, responses
-  if (user.role === "ADMIN") {
+  // Admin and Super Admin can update: status, priority, responses
+  if (user.role === "ADMIN" || user.role === "SUPER_ADMIN") {
     if (payload.status) contact.status = payload.status;
     if (payload.priority) contact.priority = payload.priority;
 
