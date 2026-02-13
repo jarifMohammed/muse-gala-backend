@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import User from '../../../auth/auth.model.js';
 import { Booking } from '../../../booking/booking.model.js';
-import listings from '../../../lender/Listings/listings.model.js';
+// ...existing code...
 import Listing from '../../../lender/Listings/listings.model.js';
 import MasterDress from './masterDressModel.js';
 
@@ -219,6 +219,7 @@ export const adminUpdateDress = async (listingId, adminData = {}) => {
         // Create new MasterDress
         masterDress = new MasterDress({
           dressName: listing.dressName,
+          brand: listing.brand || '',
           listingIds: [listing._id.toString()],
           lenderIds: [listing.lenderId],
           sizes: Array.isArray(listing.size) ? listing.size : [listing.size],
@@ -256,6 +257,9 @@ export const adminUpdateDress = async (listingId, adminData = {}) => {
             ...(Array.isArray(listing.size) ? listing.size : [listing.size])
           ])
         );
+
+        // Always update brand to the latest lender's selected brand
+        if (listing.brand) masterDress.brand = listing.brand;
 
         if (listing.colour && !masterDress.colors.includes(listing.colour))
           masterDress.colors.push(listing.colour);
