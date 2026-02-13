@@ -18,7 +18,7 @@ router.get('/my-disputes', verifyToken, lenderMiddleware, getLenderDisputes);
 
 router.get('/:disputeId', verifyToken, lenderMiddleware, getLenderDisputeById);
 
-router.post('/:disputeId/escalate', verifyToken, lenderMiddleware, escalateDisputeByLender);
+router.post('/:disputeId/escalate', multerUpload([{ name: "filename", maxCount: 1 }]), verifyToken, lenderMiddleware, escalateDisputeByLender);
 
 router.post('/:disputeId/reply', verifyToken, lenderMiddleware, replyToSupportByLender);
 

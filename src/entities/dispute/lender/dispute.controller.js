@@ -92,8 +92,26 @@ export const escalateDisputeByLender = async (req, res, next) => {
       priority,
       confirmed,
       scheduleCall,
-      evidence 
+      evidence: evidenceFromBody
     } = req.body;
+
+    let evidence = Array.isArray(evidenceFromBody) ? evidenceFromBody : [];
+
+    // Handle optional image upload
+    if (req.files && req.files.filename) {
+      const file = req.files.filename[0];
+      const uploadResult = await cloudinaryUpload(
+        file.path,
+        `dispute_escalate_${Date.now()}`,
+        "disputes/evidence"
+      );
+      if (uploadResult?.secure_url) {
+        evidence.push({
+          filename: file.originalname,
+          url: uploadResult.secure_url,
+        });
+      }
+    }
 
     if (!disputeId || !reason || !description || !priority || confirmed !== true) {
       return generateResponse(res, 400, false, "All required escalation fields must be provided and confirmed.");
