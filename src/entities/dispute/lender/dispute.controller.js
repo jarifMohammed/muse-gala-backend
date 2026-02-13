@@ -84,7 +84,7 @@ export const getLenderDisputeById = async (req, res, next) => {
 
 export const escalateDisputeByLender = async (req, res, next) => {
   try {
-    const lenderId = req.user?._id;
+    const lenderId = req.user?._id || req.user?.id;
     const { disputeId } = req.params;
     const {
       reason,
