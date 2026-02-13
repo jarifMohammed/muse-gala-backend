@@ -135,8 +135,8 @@ export const getAllContacts = async ({ page = 1, limit = 10, search, issueType, 
 // ---------------------- GET CONTACT BY ID ----------------------
 export const getContactById = async (id) => {
   return await Contact.findById(id)
-    .populate("user", "name email")
-    .populate("lender", "name email");
+    .populate("user", "name firstName email")
+    .populate("lender", "name firstName email");
 };
 
 // ---------------------- UPDATE CONTACT ----------------------
