@@ -14,7 +14,7 @@ const contactSchema = new mongoose.Schema(
     subject: { type: String, trim: true },
     issueType: {
       type: String,
-      enum: ["technical", "payment", "delivery", "other","booking"],
+      enum: ["technical", "payment", "delivery", "other","booking","Payout","Other","Listing",'Technical'],
     },
     file: { type: String },
 
