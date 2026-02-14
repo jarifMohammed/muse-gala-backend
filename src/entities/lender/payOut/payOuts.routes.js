@@ -17,7 +17,7 @@ router.post("/request", verifyToken, lenderMiddleware, createPayoutController);
 
 // 2. Lender views all their payouts
 // GET /api/payouts/my
-router.get("/my", verifyToken, getPayoutsByLenderController);
+router.get("/my", verifyToken,lenderMiddleware, getPayoutsByLenderController);
 
 // 3. Lender views a specific payout
 // GET /api/payouts/my/:id
