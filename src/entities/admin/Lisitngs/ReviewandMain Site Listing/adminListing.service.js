@@ -303,15 +303,15 @@ export const adminUpdateDress = async (listingId, adminData = {}) => {
 
 export const getApprovalStats = async () => {
   // Total listings
-  const totalListings = await listings.countDocuments();
+  const totalListings = await Listing.countDocuments();
 
   // Total approved
-  const totalApproved = await listings.countDocuments({
+  const totalApproved = await Listing.countDocuments({
     approvalStatus: 'approved'
   });
 
   // Total pending
-  const totalPending = await listings.countDocuments({
+  const totalPending = await Listing.countDocuments({
     approvalStatus: 'pending'
   });
 
@@ -320,7 +320,7 @@ export const getApprovalStats = async () => {
 
 export const getDressById = async (listing) => {
   // 1. Find dress
-  const dress = await listings
+  const dress = await listing
     .findById(listing)
     .populate({
       path: 'lenderId',
