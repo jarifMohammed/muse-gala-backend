@@ -91,8 +91,10 @@ export const payForSubscription = async (req, res) => {
 
       return res.status(200).json({
         status: true,
+        data: { plan, payment, checkoutUrl: null },
+        type: "FREE",
         message: 'Free subscription activated',
-        data: { plan, payment }
+       
       });
     }
 
