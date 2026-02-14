@@ -20,6 +20,7 @@ export const getAllocatedBookingsForLenderService = async (lenderId, query) => {
     'allocatedLender.lenderId': lenderId
   };
 
+
   // Optional filters
   if (query.deliveryStatus) {
     filter.deliveryStatus = query.deliveryStatus;
@@ -27,6 +28,18 @@ export const getAllocatedBookingsForLenderService = async (lenderId, query) => {
 
   if (query.paymentStatus) {
     filter.paymentStatus = query.paymentStatus;
+  }
+
+  // Filter by booking createdAt date range
+  if (query.startDate && query.endDate) {
+    filter.createdAt = {
+      $gte: new Date(query.startDate),
+      $lte: new Date(query.endDate)
+    };
+  } else if (query.startDate) {
+    filter.createdAt = { $gte: new Date(query.startDate) };
+  } else if (query.endDate) {
+    filter.createdAt = { $lte: new Date(query.endDate) };
   }
 
   const [bookings, totalItems] = await Promise.all([
