@@ -43,17 +43,24 @@ export const createPayoutRequestService = async ({ lenderId, bookingId }) => {
   const requestedAmount = booking.lenderPrice - (booking.lenderPrice * commission) / 100;
   const adminsProfit=(booking.lenderPrice * commission) / 100
 
-  // 5️⃣ Save payout request
-  const payout = await payOutModel.create({
-    lenderId,
-    lenderPrice:booking.lenderPrice,
-    bookingId: booking._id,
-    adminsProfit,
-    bookingAmount,
-    requestedAmount,
-    commission,
-    status: "pending",
-  });
+  // 5️⃣ Save payout request and update booking status in parallel
+  const [payout] = await Promise.all([
+    payOutModel.create({
+      lenderId,
+      lenderPrice: booking.lenderPrice,
+      bookingId: booking._id,
+      adminsProfit,
+      bookingAmount,
+      requestedAmount,
+      commission,
+      status: "pending",
+    }),
+    Booking.findByIdAndUpdate(
+      booking._id,
+      { payoutStatus: "requested" },
+      { new: true }
+    )
+  ]);
 
   // 6️⃣ Send confirmation email to lender
   try {

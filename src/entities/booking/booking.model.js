@@ -140,7 +140,7 @@ const BookingSchema = new Schema(
     },
     payoutStatus: {
       type: String,
-      enum: ['pending', 'transferred', 'failed'],
+      enum: ['pending', 'transferred', 'failed','requested'],
       default: 'pending'
     },
     refundDetails: [

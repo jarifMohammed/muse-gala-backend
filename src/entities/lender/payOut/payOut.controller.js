@@ -230,13 +230,21 @@ export const transferPayout = async (req, res, next) => {
     });
 
     /* =========================
-       5. UPDATE PAYOUT STATUS
+       5. UPDATE PAYOUT STATUS (Payout & Booking)
     ========================= */
-    await payOutModel.findByIdAndUpdate(payoutId, {
-      status: 'paid',
-      updatedAt: new Date(),
-      stripeTransferId: transfer.id
-    });
+    await Promise.all([
+      payOutModel.findByIdAndUpdate(payoutId, {
+        status: 'paid',
+        updatedAt: new Date(),
+        stripeTransferId: transfer.id
+      }),
+      // Also update booking payoutStatus to 'transferred'
+      Booking.findByIdAndUpdate(
+        payout.bookingId,
+        { payoutStatus: 'transferred' },
+        { new: true }
+      )
+    ]);
 
     /* =========================
        6. SEND SUCCESS EMAIL TO LENDER
