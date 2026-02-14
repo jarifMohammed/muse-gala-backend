@@ -52,12 +52,20 @@ export const getAllSellers = async ({ page = 1, limit = 10, search, date }) => {
 
 // Get user by ID
 export const getUserById = async (userId) => {
-  const user = await User.findById(userId).select("-password -createdAt -updatedAt -__v -verificationCode -verificationCodeExpires");
+  const user = await User.findById(userId)
+    .select("-password -createdAt -updatedAt -__v -verificationCode -verificationCodeExpires")
+    .populate({
+      path: "subscription.planId",
+      model: "SubscriptionPlan" 
+    });
+
   if (!user) {
-    throw new Error('User not found');
+    throw new Error("User not found");
   }
+
   return user;
 };
+
 
 
 // Update user
