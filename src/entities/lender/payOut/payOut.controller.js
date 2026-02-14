@@ -50,7 +50,7 @@ export const createPayoutController = async (req, res) => {
  */
 export const getPayoutsByLenderController = async (req, res) => {
   try {
-    const lenderId = req.user.id;
+    const lenderId = req.user._id;
     const { page, limit } = req.query;
 
     const result = await getPayoutsByLenderService(lenderId, {
