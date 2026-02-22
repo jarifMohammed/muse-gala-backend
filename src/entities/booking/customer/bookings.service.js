@@ -462,57 +462,14 @@ export const deleteBookingService = async (bookingId) => {
   const booking = await Booking.findById(bookingId);
   if (!booking) throw new Error('Booking not found');
 
-  const masterDress = await MasterDress.findById(booking.masterdressId);
-
-  // Calculate refund amount
-  let refundAmount = booking.totalAmount;
-  if (booking.paymentStatus === 'Paid') {
-    // Full refund if not yet delivered
-    if (
-      !['Completed', 'ReceivedByLender', 'Dress Returned'].includes(
-        booking.deliveryStatus
-      )
-    ) {
-      refundAmount = booking.totalAmount;
-    }
+  // Only allow cancellation if booking is not yet accepted by lender
+  if (booking.deliveryStatus !== 'Pending') {
+    throw new Error('Booking cannot be cancelled after lender has accepted');
   }
 
-  // Delete booking
-  const deletedBooking = await Booking.findByIdAndDelete(bookingId);
-
-  // Send cancellation email
-  try {
-    const customer = await User.findById(booking.customer);
-    const lender = await User.findById(booking.allocatedLender?.lenderId);
-
-    if (customer?.email) {
-      await sendEmail({
-        to: customer.email,
-        subject: 'Booking Cancelled',
-        html: bookingCancelledTemplate(
-          customer.firstName || customer.name || 'Customer',
-          masterDress?.dressName || 'Your Dress',
-          'Cancelled by customer',
-          refundAmount.toFixed(2)
-        )
-      });
-    }
-
-    if (lender?.email) {
-      await sendEmail({
-        to: lender.email,
-        subject: 'Booking Cancelled by Customer',
-        html: bookingCancelledTemplate(
-          lender.firstName || lender.name || 'Lender',
-          masterDress?.dressName || 'Your Dress',
-          'Cancelled by customer',
-          '0.00'
-        )
-      });
-    }
-  } catch (emailError) {
-    console.error('Error sending cancellation emails:', emailError);
-  }
+  // Mark booking as cancelled by user
+  booking.deliveryStatus = 'CancelledByCustomer';
+  await booking.save();
 
   // Optional: mark listing as available again
   const listing = await Listing.findById(booking.listing);
@@ -550,7 +507,7 @@ export const getPayoutByBookingIdService = async (bookingId) => {
 export const getLenderBookingStatsService = async () => {
   // Example: Fetch all bookings and payouts regardless of lender
   const allBookings = await paymentModel.find({ type: 'booking' });
-  // console.log("ll",allBookings);
+ 
   const totalBookingsCount = allBookings.length;
   const totalBookingsAmount = allBookings.reduce(
     (sum, b) => sum + (b.amount || 0),
@@ -584,7 +541,7 @@ export const getLenderBookingStatsService = async () => {
 export const getMasterDressByNameService = async (dressName) => {
   // Case-insensitive search
   const dresses = await MasterDress.find({
-    dressName: { $regex: `^${dressName}$`, $options: 'i' } // exact match ignoring case
+    dressName: { $regex: `^${dressName}$`, $options: 'i' } 
   }).lean();
 
   return dresses;

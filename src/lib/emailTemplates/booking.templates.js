@@ -3,167 +3,132 @@ import { baseEmailTemplate, createInfoBox, createStatusBadge } from './baseTempl
 
 export const bookingCreatedTemplate = (
   userName,
+  brandName,
   dressName,
-  rentalDays,
+  colour,
+  dressSize,
   deliveryMethod,
+  rentalDays,
   totalAmount
 ) =>
   baseEmailTemplate({
-    title: 'BOOKING CONFIRMATION',
-    subtitle: 'Your booking has been created successfully!',
+    title: 'Your booking is being reviewed',
+    subtitle: '',
     content: `
-      <p>Hello ${userName},</p>
-      <p>Thank you for creating your booking! We're excited to help you get the perfect dress.</p>
+      <p>Hi ${userName},</p>
+      <p>Your booking has been received.<br>The lender is reviewing availability and will confirm shortly.</p>
+      <h3>Booking details</h3>
       ${createInfoBox({
+        'Brand': brandName,
         'Dress': dressName,
-        'Rental Duration': `${rentalDays} days`,
-        'Delivery Method': deliveryMethod,
-        'Total Amount': `$${totalAmount}`,
-        'Status': 'Pending Lender Approval',
+        'Colour': colour,
+        'Size': dressSize,
+        'Delivery method': deliveryMethod,
+        'Rental duration': `${rentalDays} days`,
+        'Total': `$${totalAmount}`,
       })}
-      <p>Your booking is awaiting confirmation from the lender. We'll notify you as soon as they respond.</p>
+      <p>We’ll be in touch as soon as there’s an update.</p>
+      <p>— Muse Gala</p>
     `,
   });
 
 export const bookingConfirmedTemplate = (
   userName,
+  brandName,
   dressName,
-  rentalDays,
+  colour,
+  dressSize,
+  deliveryMethod,
   startDate,
   endDate,
   totalAmount
 ) =>
   baseEmailTemplate({
-    title: 'BOOKING ACCEPTED',
-    subtitle: 'Great news! Your booking has been confirmed.',
+    title: 'Your booking is confirmed',
+    subtitle: '',
     content: `
-      <p>Hello ${userName},</p>
-      <p>Your booking has been accepted and confirmed. Payment has been processed successfully.</p>
-      <div style="margin: 20px 0;">
-        ${createStatusBadge('Confirmed ✓', 'success')}
-      </div>
-      ${createInfoBox({
-        'Dress': dressName,
-        'Rental Period': `${startDate} to ${endDate}`,
-        'Duration': `${rentalDays} days`,
-        'Total Paid': `$${totalAmount}`,
+      <p>Hi ${userName},</p>
+        'Colour': colour,
+        'Size': dressSize,
+        'Delivery method': deliveryMethod,
+        'Estimated ship date': estimatedShipDate,
       })}
-      <p>The lender is now preparing your dress for shipment. We'll send you tracking information once it's on the way!</p>
+      <p>We’ll send tracking details once it’s on the way.</p>
+      <p>— Muse Gala</p>
     `,
   });
 
-export const bookingRejectedTemplate = (userName, dressName, reason) =>
-  baseEmailTemplate({
-    title: 'BOOKING REJECTED',
-    subtitle: 'Unfortunately, your booking request has been declined.',
-    content: `
-      <p>Hello ${userName},</p>
-      <p>Unfortunately, your booking request has been rejected by the lender.</p>
-      ${createInfoBox({
-        'Dress': dressName,
-        'Reason': reason || 'The dress is no longer available for the requested dates',
-      })}
-      <p>No charges have been made to your account. Please try booking another dress or contact our support team for assistance.</p>
-    `,
-    buttonText: 'BROWSE DRESSES',
-    buttonUrl: process.env.FRONTEND_URL || 'https://musegala.com.au',
-  });
-
-export const paymentFailedTemplate = (
+export const labelReadyTemplate = (
   userName,
+  brandName,
   dressName,
-  totalAmount,
-  reason
+  colour,
+  dressSize
 ) =>
   baseEmailTemplate({
-    title: 'PAYMENT FAILED',
-    subtitle: 'We were unable to process your payment.',
+    title: 'Your dress will be dispatched shortly',
+    subtitle: '',
     content: `
-      <p>Hello ${userName},</p>
-      <p>We were unable to process the payment for your booking.</p>
+      <p>Hi ${userName},</p>
+      <p>Your shipping label has been created.</p>
+      <h3>Dress details</h3>
       ${createInfoBox({
+        'Brand': brandName,
         'Dress': dressName,
-        'Amount': `$${totalAmount}`,
-        'Reason': reason || 'Card declined or insufficient funds',
+        'Colour': colour,
+        'Size': dressSize,
       })}
-      <p>Please log in to your account and update your payment method, then try again. Contact support if you need assistance.</p>
-    `,
-    buttonText: 'UPDATE PAYMENT',
-    buttonUrl: process.env.FRONTEND_URL || 'https://musegala.com.au',
-  });
-
-export const shipmentPreparingTemplate = (
-  userName,
-  dressName,
-  estimatedShipDate
-) =>
-  baseEmailTemplate({
-    title: 'PREPARING YOUR SHIPMENT',
-    subtitle: 'Your dress is being prepared for shipping!',
-    content: `
-      <p>Hello ${userName},</p>
-      <p>Good news! The lender is preparing your dress for shipment.</p>
-      ${createInfoBox({
-        'Dress': dressName,
-        'Estimated Ship Date': estimatedShipDate,
-        'Status': 'Preparing Shipment',
-      })}
-      <p>We'll send you tracking information as soon as the package is on its way. Thank you for your patience!</p>
-    `,
-  });
-
-export const labelReadyTemplate = (userName, dressName, trackingNumber) =>
-  baseEmailTemplate({
-    title: 'SHIPPING LABEL READY',
-    subtitle: 'Your shipping label has been generated.',
-    content: `
-      <p>Hello ${userName},</p>
-      <p>Your shipping label has been generated. Your dress will be shipped very soon!</p>
-      ${createInfoBox({
-        'Dress': dressName,
-        'Tracking Number': trackingNumber || 'Coming soon',
-        'Status': 'Label Ready',
-      })}
-      <p>Watch for your shipment! You'll receive tracking updates once the package is picked up by the carrier.</p>
+      <p>Your dress will be dispatched shortly. Tracking will follow.</p>
+      <p>— Muse Gala</p>
     `,
   });
 
 export const shippedToCustomerTemplate = (
   userName,
+  brandName,
   dressName,
-  trackingNumber,
-  trackingUrl
+  colour,
+  dressSize
 ) =>
   baseEmailTemplate({
-    title: 'YOUR DRESS IS ON THE WAY',
-    subtitle: 'Exciting news! Your dress has been shipped.',
+    title: 'Your dress is on its way',
+    subtitle: '',
     content: `
-      <p>Hello ${userName},</p>
-      <p>Exciting news! Your dress has been shipped and is on its way to you.</p>
+      <p>Hi ${userName},</p>
+      <p>Your dress has been dispatched.</p>
+      <h3>Dress details</h3>
       ${createInfoBox({
+        'Brand': brandName,
         'Dress': dressName,
-        'Tracking Number': trackingNumber,
-        'Status': 'Shipped to Customer',
+        'Colour': colour,
+        'Size': dressSize,
       })}
-      <p>Expected delivery time varies depending on your location. Thank you for your patience!</p>
+      <p>— Muse Gala</p>
     `,
-    buttonText: 'TRACK YOUR SHIPMENT',
-    buttonUrl: trackingUrl,
   });
 
-export const dressDeliveredTemplate = (userName, dressName, returnDeadline) =>
+export const dressDeliveredTemplate = (
+  userName,
+  brandName,
+  dressName,
+  colour,
+  dressSize
+) =>
   baseEmailTemplate({
-    title: 'YOUR DRESS HAS ARRIVED',
-    subtitle: 'Your dress has been delivered successfully!',
+    title: 'Your dress has arrived',
+    subtitle: '',
     content: `
-      <p>Hello ${userName},</p>
-      <p>Your dress has been delivered successfully! Enjoy wearing it to your special event.</p>
+      <p>Hi ${userName},</p>
+      <p>Your dress has arrived.</p>
+      <p>We hope it’s everything you were looking for. If anything isn’t quite right, please let us know as soon as possible.</p>
+      <h3>Dress details</h3>
       ${createInfoBox({
+        'Brand': brandName,
         'Dress': dressName,
-        'Status': 'Delivered',
-        'Return Deadline': returnDeadline,
+        'Colour': colour,
+        'Size': dressSize,
       })}
-      <p><strong>Important:</strong> Please ensure the dress is returned by the deadline to avoid late fees. Inspect the dress upon delivery and report any issues immediately.</p>
+      <p>— Muse Gala</p>
     `,
   });
 
@@ -240,21 +205,24 @@ export const bookingCompletedTemplate = (
 
 export const bookingCancelledTemplate = (
   userName,
+  brandName,
   dressName,
-  reason,
-  refundAmount
+  colour,
+  dressSize
 ) =>
   baseEmailTemplate({
     title: 'BOOKING CANCELLED',
     subtitle: 'Your booking has been cancelled.',
     content: `
-      <p>Hello ${userName},</p>
+      <p>Hi ${userName},</p>
       <p>Your booking has been cancelled.</p>
+      <h3>Booking details</h3>
       ${createInfoBox({
+        'Brand': brandName,
         'Dress': dressName,
-        'Reason': reason || 'Booking cancelled',
-        'Refund Amount': `$${refundAmount}`,
+        'Colour': colour,
+        'Size': dressSize,
       })}
-      <p>Your refund will be processed within 3-5 business days. If you have any questions, please contact our support team.</p>
+      <p>— Muse Gala</p>
     `,
   });

@@ -1,6 +1,9 @@
 import { generateResponse } from '../../../lib/responseFormate.js';
 import promoCodeModel from '../../admin/promoCode/promoCode.model.js';
 import { createBookingService, deleteBookingService, getAllBookingsService, getBookingByIdService, getLenderBookingStatsService, getMasterDressByNameService, getPayoutByBookingIdService, getUserBookingsService, updateBookingService} from '../customer/bookings.service.js';
+import { bookingCancelledTemplate } from '../../../lib/emailTemplates/booking.templates.js';
+import { sendEmail } from '../../../lib/resendEmial.js';
+import User from '../../auth/auth.model.js';
 
 
 export const createBookingController = async (req, res) => {
@@ -82,7 +85,7 @@ export const getUserBookingsController = async (req, res) => {
 export const updateBookingController = async (req, res) => {
   try {
     const userId = req.user.id;
-    // const role = req.user.role; 
+    
     const bookingId = req.params.id;
 
     const booking = await updateBookingService({ bookingId, userId, updateData: req.body });
@@ -110,11 +113,41 @@ export const getPayoutByBookingIdController = async (req, res) => {
 
 
 
-// DELETE BOOKING
-export const deleteBookingController = async (req, res) => {
+// CANCEL BOOKING CONTROLLER
+export const cancelBookingController = async (req, res) => {
   try {
-    const booking = await deleteBookingService(req.params.id);
-    generateResponse(res, 200, true, "Booking deleted successfully", booking);
+    // Fetch booking to check status
+    const bookingId = req.params.id;
+    const booking = await getBookingByIdService({ bookingId, userId: req.user.id, role: req.user.role });
+    if (!booking) {
+      return generateResponse(res, 404, false, "Booking not found");
+    }
+    if (booking.deliveryStatus !== 'Pending') {
+      return generateResponse(res, 400, false, "Booking cannot be cancelled after lender has accepted");
+    }
+    const cancelledBooking = await deleteBookingService(bookingId);
+
+    // Send cancellation email using template
+    try {
+      const customer = await User.findById(cancelledBooking.customer);
+      if (customer?.email) {
+        await sendEmail({
+          to: customer.email,
+          subject: 'Your booking has been cancelled',
+          html: bookingCancelledTemplate(
+            customer.firstName || customer.name || 'Customer',
+            cancelledBooking.brandName,
+            cancelledBooking.dressName,
+            cancelledBooking.colour,
+            cancelledBooking.size
+          )
+        });
+      }
+    } catch (emailError) {
+      console.error('Error sending cancellation email:', emailError);
+    }
+
+    generateResponse(res, 200, true, "Booking cancelled successfully", cancelledBooking);
   } catch (err) {
     generateResponse(res, 400, false, err.message);
   }

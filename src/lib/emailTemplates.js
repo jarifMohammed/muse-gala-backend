@@ -3,16 +3,17 @@ import { baseEmailTemplate, createInfoBox } from './emailTemplates/baseTemplate.
 
 const verificationCodeTemplate = (code) => 
   baseEmailTemplate({
-    title: 'VERIFICATION CODE',
-    subtitle: 'Please use the code below to verify your account.',
+    title: 'Your Muse Gala verification code',
+    subtitle: '',
     content: `
       <p>Hello,</p>
-      <p>Thank you for using our services. Your verification code is:</p>
+      <p>Your verification code is below.</p>
       <div style="background-color: #f8f8f8; padding: 20px; border-radius: 8px; margin: 20px 0;">
         <p style="font-size: 32px; font-weight: bold; color: #000; letter-spacing: 4px; margin: 0;">${code}</p>
       </div>
-      <p>Please enter this code within 5 minutes to verify your account.</p>
-      <p class="text-muted text-small">If you did not request this code, please ignore this email.</p>
+      <p>This code expires in the next 5 minutes.</p>
+      <p>If you didn’t request this, no action is required.</p>
+      <p>Muse Gala</p>
     `,
   });
 
