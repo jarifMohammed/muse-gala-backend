@@ -70,17 +70,19 @@ export const getAdminDashboardStatsService = async (startDate, endDate) => {
 
   const totalRevenue = revenueAgg[0]?.total || 0;
 
-  const activeLenders = await User.countDocuments({
-    role: "LENDER",
-    isActive: true,
-    ...dateFilter
-  });
+  const [activeLenders, totalApprovedLenders, totalPendingApplications] = await Promise.all([
+    User.countDocuments({ role: "LENDER", isActive: true, ...dateFilter }),
+    User.countDocuments({ role: "LENDER", status: "approved" }),
+    User.countDocuments({ role: "APPLICANT", status: "pending" })
+  ]);
 
   return {
     dateRange: { startDate, endDate },
 
     totalRevenue,
     activeLenders,
+    totalApprovedLenders,
+    totalPendingApplications,
 
     activeBookings,      
     pendingDisputes,     
