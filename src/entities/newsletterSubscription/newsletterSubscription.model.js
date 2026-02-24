@@ -8,6 +8,21 @@ const NewsletterSubscriptionSchema = new mongoose.Schema({
         lowercase: true,
         trim: true,
     },
+    fullName: {
+        type: String,
+        required: false,
+        trim: true,
+    },
+    lastName: {
+        type: String,
+        required: false,
+        trim: true,
+    },
+    phone: {
+        type: String,
+        required: false,
+        trim: true,
+    },
     subscribedAt: {
         type: Date,
         default: Date.now,
