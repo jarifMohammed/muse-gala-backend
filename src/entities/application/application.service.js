@@ -138,9 +138,11 @@ export const getAllApplicationsService = async ({
     }
   }
 
-  const [data, total] = await Promise.all([
+  const [data, total, approvedLenders, pendingApplications] = await Promise.all([
     User.find(query).sort({ createdAt: -1 }).skip(skip).limit(parseInt(limit)),
-    User.countDocuments(query)
+    User.countDocuments(query),
+    User.countDocuments({ role: 'LENDER', status: 'approved' }),
+    User.countDocuments({ role: 'APPLICANT', status: 'pending' })
   ]);
 
   return {
@@ -149,6 +151,10 @@ export const getAllApplicationsService = async ({
       total,
       page: parseInt(page),
       totalPages: Math.ceil(total / limit)
+    },
+    stats: {
+      totalApprovedLenders: approvedLenders,
+      totalPendingApplications: pendingApplications
     }
   };
 };
