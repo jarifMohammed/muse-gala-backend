@@ -6,8 +6,8 @@ import { Booking } from '../../booking/booking.model.js';
 
 export const getAllDisputes = async (req, res, next) => {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    const page = Number.parseInt(req.query.page) || 1;
+    const limit = Number.parseInt(req.query.limit) || 10;
     const { status, monthFilter } = req.query;
 
     const result = await disputeService.getAllDisputesService(
@@ -143,13 +143,60 @@ export const initiateRefundController = async (req, res) => {
     // 4️⃣ Mark booking as "Refund Pending"
     booking.paymentStatus = 'RefundPending';
     booking.refundDetails.push({
-      reason:reason || 'Not mentioned',
+      reason: reason || 'Not mentioned',
       stripeRefundId: refund.id,
-      amount: amount ? amount : booking.totalAmount,
+      amount: amount ?? booking.totalAmount,
       status: 'Pending',
       processedAt: new Date()
     });
     await booking.save();
+
+    // 5️⃣ Update dispute timeline and status
+    dispute.timeline.push({
+      actor: req.user?._id || null,
+      role: 'ADMIN',
+      message: `Refund of $${amount ?? booking.totalAmount} initiated. Reason: ${reason || 'Not mentioned'}. Stripe Refund ID: ${refund.id}`,
+      type: 'update',
+      timestamp: new Date(),
+    });
+    dispute.status = 'Resolved';
+    dispute.refundAmount = amount ?? booking.totalAmount;
+    dispute.refundProcessed = true;
+    dispute.refundDate = new Date();
+    dispute.lastActionBy = req.user?._id || null;
+    dispute.lastActionAt = new Date();
+    dispute.updatedBy = req.user?._id || null;
+    await dispute.save();
+
+    // 6️⃣ Send refund notification email to customer
+    try {
+      const customer = booking.customer;
+      // If populated, customer is an object; otherwise, fetch
+      let customerObj = customer?.email ? customer : null;
+      if (!customerObj) {
+        const User = (await import('../../auth/auth.model.js')).default;
+        customerObj = await User.findById(booking.customer);
+      }
+      if (customerObj?.email) {
+        const { refundProcessedTemplate } = await import('../../../lib/emailTemplates/dispute.templates.js');
+        const { sendEmail } = await import('../../../lib/resendEmial.js');
+        await sendEmail({
+          to: customerObj.email,
+          subject: 'Your refund has been processed',
+          html: refundProcessedTemplate(
+            customerObj.firstName || customerObj.name || 'User',
+            booking._id.toString(),
+            amount ?? booking.totalAmount,
+            booking.brand,
+            booking.dressName,
+            booking.colour,
+            booking.size
+          ),
+        });
+      }
+    } catch (error_) {
+      console.error('Error sending refund processed email:', error_);
+    }
 
     res.json({
       message: 'Refund initiated successfully',
