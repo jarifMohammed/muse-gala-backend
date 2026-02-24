@@ -316,6 +316,17 @@ export const getAllBookingsService = async ({
   if (query.dressId) filterQuery.dressId = query.dressId;
   if (query.customer) filterQuery.customer = query.customer;
   if (query.lender) filterQuery.lender = query.lender;
+  // Date range filter
+  if (query.startDate && query.endDate) {
+    filterQuery.createdAt = {
+      $gte: new Date(query.startDate),
+      $lte: new Date(query.endDate)
+    };
+  } else if (query.startDate) {
+    filterQuery.createdAt = { $gte: new Date(query.startDate) };
+  } else if (query.endDate) {
+    filterQuery.createdAt = { $lte: new Date(query.endDate) };
+  }
 
   // Role filtering
   if (role === 'USER') filterQuery.customer = userId;

@@ -27,7 +27,7 @@ export const createBookingController = async (req, res) => {
 
 // GET ALL
 export const getAllBookingsController = async (req, res) => {
-  const { page = 1, limit = 10, search, date, lender, dressId, customer } = req.query;
+  const { page = 1, limit = 10, search, date, lender, dressId, customer, startDate, endDate } = req.query;
   const role = req.user.role;
   const userId = req.user._id;
 
@@ -40,6 +40,8 @@ export const getAllBookingsController = async (req, res) => {
   if (dressId) queryObj.dressId = dressId;
   if (lender) queryObj.lender = lender;
   if (customer) queryObj.customer = customer;
+  if (startDate) queryObj.startDate = startDate;
+  if (endDate) queryObj.endDate = endDate;
 
   const { bookings, paginationInfo } = await getAllBookingsService({
     page: Number(page),
