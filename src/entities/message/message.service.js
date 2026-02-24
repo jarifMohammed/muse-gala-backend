@@ -237,6 +237,10 @@ export const sendMessageService = async (roomId, { sender, message, files }) => 
 export const getMessagesByRoomService = async (roomId, page, limit) => {
   const skip = (page - 1) * limit;
 
+  // Get the chat room to fetch bookingId
+  const chatRoom = await ChatRoom.findById(roomId);
+  const bookingId = chatRoom ? chatRoom.bookingId : null;
+
   const [messages, total] = await Promise.all([
     Message.find({ chatRoom: roomId })
       .sort({ createdAt: -1 })
@@ -246,8 +250,14 @@ export const getMessagesByRoomService = async (roomId, page, limit) => {
     Message.countDocuments({ chatRoom: roomId }),
   ]);
 
+  // Attach bookingId to each message
+  const messagesWithBookingId = messages.map(msg => ({
+    ...msg.toObject(),
+    bookingId: bookingId ? bookingId.toString() : null,
+  }));
+
   return {
-    messages,
+    messages: messagesWithBookingId,
     pagination: {
       total,
       page: parseInt(page),
