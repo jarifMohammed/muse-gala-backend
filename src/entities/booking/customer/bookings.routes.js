@@ -1,8 +1,9 @@
 import express from "express";
 import {
 
+  cancelBookingController,
   createBookingController,
-  deleteBookingController,
+
   getAllBookingsController,
   getBookingByIdController,
   getLenderBookingStatsController,
@@ -13,7 +14,7 @@ import {
   validatePromoCodeController,
 
 } from "./bookings.controller.js";
-import { verifyToken, userMiddleware, lenderMiddleware, userAdminLenderSuperAdminMiddleware, adminLenderSuperadminMiddleware } from "../../../core/middlewares/authMiddleware.js"; 
+import { verifyToken, userMiddleware, lenderMiddleware, userAdminLenderSuperAdminMiddleware, adminLenderSuperadminMiddleware } from "../../../core/middlewares/authMiddleware.js";
 import { acceptOrRejectBookingController, createManualBookingController, getAllocatedBookingsForLenderController, getUpcomingBookingsForLenderController } from "../lender/bookings.controller.js";
 
 
@@ -22,10 +23,10 @@ const router = express.Router();
 
 router.post("/create", verifyToken, userMiddleware, createBookingController);
 router.post('/manual', verifyToken, adminLenderSuperadminMiddleware, createManualBookingController);
-router.post('/accept-reject',verifyToken, lenderMiddleware, acceptOrRejectBookingController);
+router.post('/accept-reject', verifyToken, lenderMiddleware, acceptOrRejectBookingController);
 router.get("/all", verifyToken, userAdminLenderSuperAdminMiddleware, getAllBookingsController);
 router.post("/promo-validate", validatePromoCodeController);
-router.get('/stats',getLenderBookingStatsController)
+router.get('/stats', getLenderBookingStatsController)
 router.get('/search', getMasterDressByNameController);
 router.get('/allocated', verifyToken, lenderMiddleware, getAllocatedBookingsForLenderController);
 
@@ -47,7 +48,7 @@ router.put("/:id", verifyToken, userAdminLenderSuperAdminMiddleware, updateBooki
 router.get('/payment/:bookingId', getPayoutByBookingIdController);
 
 // Delete booking by ID
-router.delete("/:id", verifyToken, userAdminLenderSuperAdminMiddleware, deleteBookingController);
+router.delete("/:id", verifyToken, userAdminLenderSuperAdminMiddleware, cancelBookingController);
 
 
 

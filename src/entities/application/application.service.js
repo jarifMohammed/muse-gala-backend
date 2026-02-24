@@ -123,20 +123,20 @@ export const getAllApplicationsService = async ({
   if (totalListings) query.totalListings = parseInt(totalListings);
   if (totalReveneue) query.totalReveneue = parseInt(totalReveneue);
   if (startDate || endDate) {
-  query.applicationSubmittedAt = {};
-  
-  if (startDate) {
-    const start = new Date(startDate);
-    start.setUTCHours(0, 0, 0, 0); // Start of day
-    query.applicationSubmittedAt.$gte = start;
+    query.applicationSubmittedAt = {};
+
+    if (startDate) {
+      const start = new Date(startDate);
+      start.setUTCHours(0, 0, 0, 0); // Start of day
+      query.applicationSubmittedAt.$gte = start;
+    }
+
+    if (endDate) {
+      const end = new Date(endDate);
+      end.setUTCHours(23, 59, 59, 999); // End of day
+      query.applicationSubmittedAt.$lte = end;
+    }
   }
-  
-  if (endDate) {
-    const end = new Date(endDate);
-    end.setUTCHours(23, 59, 59, 999); // End of day
-    query.applicationSubmittedAt.$lte = end;
-  }
-}
 
   const [data, total] = await Promise.all([
     User.find(query).sort({ createdAt: -1 }).skip(skip).limit(parseInt(limit)),
@@ -176,9 +176,11 @@ export const updateApplication = async (id, data) => {
     ['pending', 'rejected'].includes(user.status) && data.status === 'approved';
 
   if (isNowApproved) {
+    const tempPassword = generateRandomPassword();
     user.role = 'LENDER';
     user.applicationReviewedAt = new Date();
     user.status = 'approved';
+    user.password = tempPassword; // Will be hashed by pre-save hook if it hashes on save too, or need to hash manually?
 
     await user.save();
 
@@ -189,13 +191,15 @@ export const updateApplication = async (id, data) => {
     });
 
     const userEmailContent = applicationApprovedTemplate({
-      fullName: user.fullName || 'Applicant'
+      fullName: user.fullName || user.firstName || 'Applicant',
+      email: user.email,
+      tempPassword
     });
 
     await Promise.all([
       sendEmail({
         to: user.email,
-        subject: 'Your Lender Application Approved',
+        subject: 'Welcome to Muse Gala',
         html: userEmailContent
       }),
       sendEmail({

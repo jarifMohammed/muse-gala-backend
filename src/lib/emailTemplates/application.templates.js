@@ -14,12 +14,12 @@ export const newApplicationAdminTemplate = ({ fullName, email, phoneNumber, temp
       <p>A new lender application has been submitted and requires your review.</p>
       
       ${createInfoBox({
-        'Applicant Name': fullName || 'N/A',
-        'Email': email,
-        'Phone': phoneNumber || 'N/A',
-        'Business Name': businessName || 'N/A',
-        'Temporary Password': tempPassword
-      })}
+    'Applicant Name': fullName || 'N/A',
+    'Email': email,
+    'Phone': phoneNumber || 'N/A',
+    'Business Name': businessName || 'N/A',
+    'Temporary Password': tempPassword
+  })}
 
       <p class="text-muted text-small mt-20">Please review and approve/reject the application in the admin panel.</p>
     </div>
@@ -66,31 +66,25 @@ export const applicationReceivedTemplate = ({ fullName }) => {
 /**
  * Email sent to applicant when their application is approved
  */
-export const applicationApprovedTemplate = ({ fullName }) => {
+export const applicationApprovedTemplate = ({ fullName, email, tempPassword }) => {
   const content = `
     <div class="content-left">
-      <p>Dear ${fullName || 'Applicant'},</p>
+      <p>Hello ${fullName || 'Applicant'},</p>
       
-      <p>Congratulations! 🎉 Your lender application has been <strong>approved</strong>.</p>
+      <p>Your lender account has been approved.</p>
       
-      ${createStatusBadge('APPROVED', 'success')}
+      <p><strong>Login email:</strong> ${email}</p>
+      <p><strong>Temporary password:</strong> ${tempPassword}</p>
       
-      <div class="info-box mt-20">
-        <p><strong>Getting Started</strong></p>
-        <p>You can now log in to your lender dashboard and start listing your dresses.</p>
-        <p>Complete your profile, set up your payment details, and begin your journey with Muse Gala!</p>
-      </div>
-
-      <p>We're thrilled to have you as part of our community of fashion-forward lenders.</p>
+      <p>Please update your details after logging in.</p>
+      <p>— Muse Gala</p>
     </div>
   `;
 
   return baseEmailTemplate({
-    title: 'Welcome to Muse Gala!',
-    subtitle: 'Your lender application has been approved',
-    content,
-    buttonText: 'Go to Dashboard',
-    buttonUrl: 'https://lender.musegala.com.au'
+    title: 'WELCOME TO MUSE GALA',
+    subtitle: 'Welcome to Muse Gala',
+    content
   });
 };
 
@@ -103,11 +97,11 @@ export const applicationApprovedAdminTemplate = ({ fullName, email, phoneNumber 
       <p>A lender application has been approved.</p>
       
       ${createInfoBox({
-        'Lender Name': fullName || 'N/A',
-        'Email': email,
-        'Phone': phoneNumber || 'N/A',
-        'Status': 'Approved'
-      })}
+    'Lender Name': fullName || 'N/A',
+    'Email': email,
+    'Phone': phoneNumber || 'N/A',
+    'Status': 'Approved'
+  })}
 
       ${createStatusBadge('APPROVED', 'success')}
     </div>

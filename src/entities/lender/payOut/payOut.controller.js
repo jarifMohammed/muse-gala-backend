@@ -171,14 +171,10 @@ export const transferPayout = async (req, res, next) => {
       try {
         await sendEmail({
           to: lender.email,
-          subject: 'Payout Transfer Failed',
+          subject: 'Payout issue',
           html: payoutFailedTemplate(
             `${lender.firstName || ''} ${lender.lastName || ''}`.trim() ||
-              'Lender',
-            payout.requestedAmount,
-            payout.bookingId,
-            errors,
-            false
+            'Lender'
           )
         });
       } catch (emailError) {
@@ -193,14 +189,8 @@ export const transferPayout = async (req, res, next) => {
         const adminEmail = process.env.ADMIN_EMAIL || 'admin@topocreates.com';
         await sendEmail({
           to: adminEmail,
-          subject: 'Payout Transfer Failed - Action Required',
-          html: payoutFailedTemplate(
-            'Admin',
-            payout.requestedAmount,
-            payout.bookingId,
-            errors,
-            true
-          )
+          subject: 'Payout issue',
+          html: payoutFailedTemplate('Admin')
         });
       } catch (emailError) {
         console.error(
@@ -252,13 +242,11 @@ export const transferPayout = async (req, res, next) => {
     try {
       await sendEmail({
         to: lender.email,
-        subject: 'Payout Transferred Successfully',
+        subject: 'Payout completed',
         html: payoutTransferredTemplate(
           `${lender.firstName || ''} ${lender.lastName || ''}`.trim() ||
-            'Lender',
-          payout.requestedAmount,
-          transfer.id,
-          payout.bookingId
+          'Lender',
+          payout.requestedAmount.toFixed(2)
         )
       });
     } catch (emailError) {

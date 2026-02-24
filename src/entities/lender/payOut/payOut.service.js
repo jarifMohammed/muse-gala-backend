@@ -41,7 +41,7 @@ export const createPayoutRequestService = async ({ lenderId, bookingId }) => {
   const commission = plan.commission || 0;
   const bookingAmount = booking.totalAmount;
   const requestedAmount = booking.lenderPrice - (booking.lenderPrice * commission) / 100;
-  const adminsProfit=(booking.lenderPrice * commission) / 100
+  const adminsProfit = (booking.lenderPrice * commission) / 100
 
   // 5️⃣ Save payout request and update booking status in parallel
   const [payout] = await Promise.all([
@@ -66,12 +66,10 @@ export const createPayoutRequestService = async ({ lenderId, bookingId }) => {
   try {
     await sendEmail({
       to: lender.email,
-      subject: 'Payout Request Submitted Successfully',
+      subject: 'Payout request received',
       html: payoutRequestCreatedTemplate(
         lender.firstName || 'Lender',
-        requestedAmount,
-        booking._id,
-        commission
+        requestedAmount.toFixed(2)
       )
     });
   } catch (error) {
@@ -83,14 +81,11 @@ export const createPayoutRequestService = async ({ lenderId, bookingId }) => {
     const adminEmail = process.env.ADMIN_EMAIL || 'admin@topocreates.com';
     await sendEmail({
       to: adminEmail,
-      subject: 'New Payout Request Received',
+      subject: 'New payout request',
       html: payoutRequestReceivedTemplate(
         `${lender.firstName || ''} ${lender.lastName || ''}`.trim() || 'Unknown Lender',
-        lenderId,
-        requestedAmount,
         booking._id,
-        booking.lenderPrice,
-        adminsProfit
+        requestedAmount.toFixed(2)
       )
     });
   } catch (error) {

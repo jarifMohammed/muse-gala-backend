@@ -39,7 +39,7 @@ export const handleVerificationSessionEvent = async (event) => {
       try {
         await sendEmail({
           to: user.email,
-          subject: 'KYC Verification Successful',
+          subject: 'Verification complete',
           html: kycVerifiedTemplate(user.firstName || user.lastName || user.username || 'User')
         });
       } catch (emailError) {
@@ -58,10 +58,9 @@ export const handleVerificationSessionEvent = async (event) => {
       try {
         await sendEmail({
           to: user.email,
-          subject: 'Additional Information Needed for KYC',
+          subject: 'Verification still required',
           html: kycRequiresInputTemplate(
-            user.firstName || user.lastName || user.username || 'User',
-            'Please provide additional documents'
+            user.firstName || user.lastName || user.username || 'User'
           )
         });
       } catch (emailError) {
@@ -80,8 +79,8 @@ export const handleVerificationSessionEvent = async (event) => {
       try {
         await sendEmail({
           to: user.email,
-          subject: 'KYC Verification in Progress',
-          html: kycProcessingTemplate(user.firstName ||  user.lastName || user.username || 'User')
+          subject: 'Verification in progress',
+          html: kycProcessingTemplate(user.firstName || user.lastName || user.username || 'User')
         });
       } catch (emailError) {
         console.error('Error sending KYC processing email:', emailError);
@@ -102,14 +101,10 @@ export const handleVerificationSessionEvent = async (event) => {
 
       // Send failed/expired email
       try {
-        const reason =
-          event.type === 'identity.verification_session.expired'
-            ? 'Your verification session has expired'
-            : 'Your verification session was canceled';
         await sendEmail({
           to: user.email,
-          subject: 'KYC Verification Session Ended',
-          html: kycFailedTemplate(user.firstName ||  user.lastName || user.username || 'User', reason)
+          subject: 'Verification incomplete',
+          html: kycFailedTemplate(user.firstName || user.lastName || user.username || 'User')
         });
       } catch (emailError) {
         console.error('Error sending KYC failed email:', emailError);

@@ -56,14 +56,11 @@ export const handleSubscriptionPaymentEvents = async (event) => {
         try {
           await sendEmail({
             to: user.email,
-            subject: `Payment Confirmed - ${plan?.name || 'Subscription'}`,
+            subject: 'Payment confirmed',
             html: subscriptionPaymentConfirmationTemplate(
               user.firstName || 'Lender',
               plan?.name || 'Subscription',
-              plan?.price || payment.amount,
-              plan?.currency || payment.currency,
-              payment._id,
-              new Date()
+              (plan?.price || payment.amount).toFixed(2)
             )
           });
         } catch (emailError) {
@@ -77,15 +74,10 @@ export const handleSubscriptionPaymentEvents = async (event) => {
         try {
           await sendEmail({
             to: user.email,
-            subject: `Welcome to ${plan?.name || 'Subscription'}!`,
+            subject: 'Subscription activated',
             html: subscriptionActivatedTemplate(
               user.firstName || 'Lender',
-              plan?.name || 'Subscription',
-              plan?.price || payment.amount,
-              plan?.currency || payment.currency,
-              plan?.billingCycle || 'monthly',
-              user.subscriptionExpireDate,
-              plan?.features || []
+              plan?.name || 'Subscription'
             )
           });
         } catch (emailError) {
@@ -158,7 +150,7 @@ export const handleSubscriptionPaymentEvents = async (event) => {
                 payment.amount,
                 payment.currency,
                 paymentIntent.last_payment_error?.message ||
-                  'Payment could not be processed. Please try again.'
+                'Payment could not be processed. Please try again.'
               )
             });
           } catch (emailError) {
@@ -193,12 +185,9 @@ export const handleSubscriptionPaymentEvents = async (event) => {
             ).default.findById(payment.subscription?.planId);
             await sendEmail({
               to: user.email,
-              subject: 'Your Subscription Checkout Has Expired',
+              subject: 'Checkout session expired',
               html: subscriptionCheckoutExpiredTemplate(
-                user.firstName || 'Lender',
-                plan?.name || 'Subscription',
-                payment.amount,
-                payment.currency
+                user.firstName || 'Lender'
               )
             });
           } catch (emailError) {
@@ -245,13 +234,11 @@ export const handleSubscriptionPaymentEvents = async (event) => {
               ).default.findById(payment.subscription?.planId);
               await sendEmail({
                 to: user.email,
-                subject: 'Subscription Refunded',
+                subject: 'Subscription refund processed',
                 html: subscriptionRefundedTemplate(
                   user.firstName || 'Lender',
                   plan?.name || 'Subscription',
-                  refundAmount,
-                  payment.currency,
-                  refundId
+                  refundAmount.toFixed(2)
                 )
               });
             } catch (emailError) {

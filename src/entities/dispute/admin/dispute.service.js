@@ -180,15 +180,20 @@ export const getDisputeByIdService = async (disputeId) => {
 
 
 export const respondToDispute = async (adminId, disputeId, message, status) => {
-  const dispute = await Dispute.findById(disputeId).populate('booking', 'customer lender');
+  const dispute = await Dispute.findById(disputeId).populate({
+    path: 'booking',
+    populate: { path: 'masterdressId' }
+  });
   if (!dispute) throw new Error("Dispute not found");
+
+  const oldStatus = dispute.status;
 
   // Create timeline entry
   const entry = {
     actor: adminId,
     role: "ADMIN",
     message,
-    type : "response",
+    type: "response",
   };
 
   dispute.timeline.push(entry);
@@ -209,32 +214,46 @@ export const respondToDispute = async (adminId, disputeId, message, status) => {
     const admin = await User.findById(adminId);
     const customer = await User.findById(dispute.booking.customer);
     const lender = await User.findById(dispute.booking.lender);
+    const dress = dispute.booking.masterdressId;
 
     const adminName = admin ? (admin.firstName || admin.name || 'Support Team') : 'Support Team';
-    
+
     // Notify customer
     if (customer?.email) {
-      await sendEmail({
-        to: customer.email,
-        subject: 'New Response on Your Dispute',
-        html: disputeResponseTemplate(
-          customer.firstName || customer.name || 'User',
-          adminName,
-          message,
-          dispute.booking._id.toString()
-        ),
-      });
+      if (status === 'In Review' && oldStatus !== 'In Review') {
+        // Send "Under Review" email if status specifically changed to 'In Review'
+        await sendEmail({
+          to: customer.email,
+          subject: 'Your dispute is under review',
+          html: disputeUnderReviewTemplate(
+            customer.firstName || customer.name || 'User',
+            dispute.booking._id.toString(),
+            dress?.brand,
+            dress?.dressName,
+            dress?.colors?.[0],
+            dispute.booking.size
+          ),
+        });
+      } else {
+        // Otherwise send general response email
+        await sendEmail({
+          to: customer.email,
+          subject: 'New Response on Your Dispute',
+          html: disputeResponseTemplate(
+            customer.firstName || customer.name || 'User',
+            dispute.booking._id.toString()
+          ),
+        });
+      }
     }
-    
-    // Notify lender
+
+    // Notify lender (lender always gets the general response update for now)
     if (lender?.email) {
       await sendEmail({
         to: lender.email,
         subject: 'New Response on Dispute',
         html: disputeResponseTemplate(
           lender.firstName || lender.name || 'User',
-          adminName,
-          message,
           dispute.booking._id.toString()
         ),
       });
@@ -248,7 +267,10 @@ export const respondToDispute = async (adminId, disputeId, message, status) => {
 
 
 export const resolveDispute = async (adminId, disputeId, message) => {
-  const dispute = await Dispute.findById(disputeId).populate('booking', 'customer lender');
+  const dispute = await Dispute.findById(disputeId).populate({
+    path: 'booking',
+    populate: { path: 'masterdressId' }
+  });
   if (!dispute) throw new Error("Dispute not found");
 
   // Add resolution timeline entry
@@ -273,6 +295,7 @@ export const resolveDispute = async (adminId, disputeId, message) => {
   try {
     const customer = await User.findById(dispute.booking.customer);
     const lender = await User.findById(dispute.booking.lender);
+    const dress = dispute.booking.masterdressId;
 
     const resolution = message || "Dispute has been resolved by our team";
     const refundAmount = dispute.refundAmount ? dispute.refundAmount.toFixed(2) : null;
@@ -284,9 +307,13 @@ export const resolveDispute = async (adminId, disputeId, message) => {
         subject: 'Your Dispute Has Been Resolved',
         html: disputeResolvedTemplate(
           customer.firstName || customer.name || 'User',
+          dispute.booking._id.toString(),
           resolution,
           refundAmount,
-          dispute.booking._id.toString()
+          dress?.brand,
+          dress?.dressName,
+          dress?.colors?.[0],
+          dispute.booking.size
         ),
       });
     }
@@ -298,9 +325,13 @@ export const resolveDispute = async (adminId, disputeId, message) => {
         subject: 'Dispute Resolution Completed',
         html: disputeResolvedTemplate(
           lender.firstName || lender.name || 'User',
+          dispute.booking._id.toString(),
           resolution,
           refundAmount,
-          dispute.booking._id.toString()
+          dress?.brand,
+          dress?.dressName,
+          dress?.colors?.[0],
+          dispute.booking.size
         ),
       });
     }

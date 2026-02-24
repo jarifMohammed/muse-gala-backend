@@ -5,8 +5,8 @@ import { disputeCreatedTemplate } from "../../../lib/emailTemplates/dispute.temp
 import User from "../../auth/auth.model.js";
 
 export const createDispute = async (customerId, bookingId, disputeData) => {
-  const booking = await Booking.findOne({ _id: bookingId, customer: customerId });
-  
+  const booking = await Booking.findOne({ _id: bookingId, customer: customerId }).populate('masterdressId');
+
   if (!booking) {
     const err = new Error("Booking not found or not owned by customer");
     err.statusCode = 404;
@@ -24,7 +24,7 @@ export const createDispute = async (customerId, bookingId, disputeData) => {
         role: "USER",
         message: `Issue reported: '${disputeData.issueType}'`,
         attachments: disputeData.evidence || [],
-        type: "submission", 
+        type: "submission",
       },
     ],
   });
@@ -38,19 +38,23 @@ export const createDispute = async (customerId, bookingId, disputeData) => {
   try {
     const customer = await User.findById(customerId);
     const lender = await User.findById(booking.lender);
-    
+    const dress = booking.masterdressId;
+
     if (customer?.email) {
       await sendEmail({
         to: customer.email,
         subject: 'Dispute Created - We\'re Here to Help',
         html: disputeCreatedTemplate(
           customer.firstName || customer.name || 'User',
-          disputeData.issueType,
-          bookingId.toString()
+          bookingId.toString(),
+          dress?.brand,
+          dress?.dressName,
+          dress?.colors?.[0],
+          booking.size
         ),
       });
     }
-    
+
     // Also notify lender
     if (lender?.email) {
       await sendEmail({
@@ -58,8 +62,11 @@ export const createDispute = async (customerId, bookingId, disputeData) => {
         subject: 'Dispute Filed Against Your Booking',
         html: disputeCreatedTemplate(
           lender.firstName || lender.name || 'User',
-          disputeData.issueType,
-          bookingId.toString()
+          bookingId.toString(),
+          dress?.brand,
+          dress?.dressName,
+          dress?.colors?.[0],
+          booking.size
         ),
       });
     }
@@ -79,7 +86,7 @@ export const getCustomerDisputesService = async (customerId, page = 1, limit = 1
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
-      .populate("booking", "listing deliveryMethod status") 
+      .populate("booking", "listing deliveryMethod status")
       .lean(),
 
     Dispute.countDocuments({ createdBy: customerId })
@@ -100,7 +107,7 @@ export const getCustomerDisputeByIdService = async (customerId, disputeId) => {
     createdBy: customerId,
   })
     .populate("booking", "listing deliveryMethod status")
-    .populate("createdBy", "name email") 
+    .populate("createdBy", "name email")
     .lean();
 
   return dispute;
@@ -154,7 +161,7 @@ export const updateDispute = async (customerId, disputeId, updateData) => {
         ? `Customer updated dispute: ${changes.join(", ")}`
         : "Customer made an update",
     attachments: updateData.evidence || [],
-    type: "update", 
+    type: "update",
   });
 
   const updatedDispute = await dispute.save();
@@ -164,7 +171,7 @@ export const updateDispute = async (customerId, disputeId, updateData) => {
 
 export const getTimelineByCustomer = async (userId, disputeId) => {
   const dispute = await Dispute.findById(disputeId)
-    .populate('timeline.actor', 'name role profileImage') 
+    .populate('timeline.actor', 'name role profileImage')
     .lean();
 
   if (!dispute) throw new Error("Dispute not found");

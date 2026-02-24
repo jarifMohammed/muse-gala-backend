@@ -4,6 +4,7 @@ import User from '../../auth/auth.model.js';
 import { Booking } from '../../booking/booking.model.js';
 import { ChatRoom } from '../../message/chatRoom.model.js';
 import Payment from './payment.model.js';
+import { refundProcessedTemplate } from '../../../lib/emailTemplates/dispute.templates.js';
 
 /**
  * Handle Stripe webhook events for booking payments
@@ -260,7 +261,7 @@ export const handleBookingRefundEvents = async (
     if (refundType === 'Partial') {
       booking.lenderPrice = Math.max(
         (booking.lenderPrice || booking.allocatedLender?.price || 0) -
-          refundedAmount,
+        refundedAmount,
         0
       );
     } else {
@@ -272,6 +273,36 @@ export const handleBookingRefundEvents = async (
     console.log(
       `✅ Booking ${booking._id} refund processed: ${refundedAmount} AUD, paymentStatus: ${booking.paymentStatus}, lenderPrice: ${booking.lenderPrice}`
     );
+
+    // 7️⃣ Send email to customer
+    try {
+      // Re-populate to ensure we have all data after save (or we could have populated earlier)
+      const populatedBooking = await Booking.findById(booking._id)
+        .populate('customer')
+        .populate('masterdressId');
+
+      if (populatedBooking?.customer?.email) {
+        const customer = populatedBooking.customer;
+        const dress = populatedBooking.masterdressId;
+
+        await sendEmail({
+          to: customer.email,
+          subject: 'Refund processed',
+          html: refundProcessedTemplate(
+            customer.firstName || customer.name || 'User',
+            populatedBooking._id.toString(),
+            refundedAmount.toFixed(2),
+            dress?.brand,
+            dress?.dressName,
+            dress?.colors?.[0],
+            populatedBooking.size
+          )
+        });
+        console.log(`📧 Refund email sent to ${customer.email}`);
+      }
+    } catch (emailError) {
+      console.error('Error sending refund processed email:', emailError);
+    }
   } catch (err) {
     console.error('❌ Error handling booking refund event:', err.message);
   }

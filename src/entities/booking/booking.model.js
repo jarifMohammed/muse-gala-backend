@@ -140,7 +140,7 @@ const BookingSchema = new Schema(
     },
     payoutStatus: {
       type: String,
-      enum: ['pending', 'transferred', 'failed','requested'],
+      enum: ['pending', 'transferred', 'failed', 'requested'],
       default: 'pending'
     },
     refundDetails: [
@@ -253,7 +253,10 @@ BookingSchema.post('save', async function (doc, next) {
         template: () =>
           labelReadyTemplate(
             customer?.firstName || customer?.name || 'Customer',
+            dress?.brand || 'N/A',
             dressName,
+            dress?.colors?.[0] || 'N/A',
+            doc.size || 'N/A',
             'Tracking info coming soon'
           ),
         subject: 'Shipping Label Ready'
@@ -263,10 +266,13 @@ BookingSchema.post('save', async function (doc, next) {
         template: () =>
           shippedToCustomerTemplate(
             customer?.firstName || customer?.name || 'Customer',
+            dress?.brand || 'N/A',
             dressName,
+            dress?.colors?.[0] || 'N/A',
+            doc.size || 'N/A',
             doc.stripePaymentIntentId || 'TRACKING123',
             'https://track.example.com/' +
-              (doc.stripePaymentIntentId || 'TRACKING123')
+            (doc.stripePaymentIntentId || 'TRACKING123')
           ),
         subject: 'Your Dress is On the Way!'
       },
@@ -275,7 +281,10 @@ BookingSchema.post('save', async function (doc, next) {
         template: () =>
           dressDeliveredTemplate(
             customer?.firstName || customer?.name || 'Customer',
+            dress?.brand || 'N/A',
             dressName,
+            dress?.colors?.[0] || 'N/A',
+            doc.size || 'N/A',
             new Date(doc.rentalEndDate).toLocaleDateString('en-US', {
               year: 'numeric',
               month: 'short',

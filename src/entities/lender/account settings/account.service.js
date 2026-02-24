@@ -65,7 +65,7 @@ export const sendDeactivationCodeService = async (userId) => {
     const html = deactivationOtpEmail(lender.fullName || 'Lender', otp);
     await sendEmail({
       to: lender.email,
-      subject: 'Your Account Deactivation Code',
+      subject: 'Account deactivation verification',
       html
     });
   }

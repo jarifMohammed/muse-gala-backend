@@ -112,15 +112,15 @@ export const createBookingService = async ({ userId, role, body }) => {
       let lowestPriceListing =
         rentalDurationDays <= 4
           ? listings.reduce((prev, curr) =>
-              curr.rentalPrice.fourDays < prev.rentalPrice.fourDays
-                ? curr
-                : prev
-            )
+            curr.rentalPrice.fourDays < prev.rentalPrice.fourDays
+              ? curr
+              : prev
+          )
           : listings.reduce((prev, curr) =>
-              curr.rentalPrice.eightDays < prev.rentalPrice.eightDays
-                ? curr
-                : prev
-            );
+            curr.rentalPrice.eightDays < prev.rentalPrice.eightDays
+              ? curr
+              : prev
+          );
 
       allocatedLender = {
         lenderId: lowestPriceListing.lenderId,
@@ -261,9 +261,12 @@ export const createBookingService = async ({ userId, role, body }) => {
           subject: 'Booking Confirmation - Pending Lender Approval',
           html: bookingCreatedTemplate(
             customer.firstName || customer.name || 'Customer',
+            masterDress.brand || 'N/A',
             masterDress.dressName,
-            rentalDurationDays.toString(),
+            masterDress.colors?.[0] || 'N/A',
+            size || 'N/A',
             deliveryMethod,
+            rentalDurationDays.toString(),
             totalAmount.toFixed(2)
           )
         });
@@ -276,9 +279,12 @@ export const createBookingService = async ({ userId, role, body }) => {
           subject: 'New Booking Request for Your Dress',
           html: bookingCreatedTemplate(
             lender.firstName || lender.name || 'Lender',
+            masterDress.brand || 'N/A',
             masterDress.dressName,
-            rentalDurationDays.toString(),
+            masterDress.colors?.[0] || 'N/A',
+            size || 'N/A',
             deliveryMethod,
+            rentalDurationDays.toString(),
             totalAmount.toFixed(2)
           )
         });
@@ -399,7 +405,8 @@ export const getBookingByIdService = async ({ bookingId, userId, role }) => {
   const booking = await Booking.findById(bookingId).populate([
     { path: 'customer', select: '-password -refreshToken' },
     { path: 'lender', select: '-password -refreshToken' },
-    { path: 'listing' }
+    { path: 'listing' },
+    { path: 'masterdressId' }
   ]);
 
   if (!booking) throw new Error('Booking not found');
@@ -507,7 +514,7 @@ export const getPayoutByBookingIdService = async (bookingId) => {
 export const getLenderBookingStatsService = async () => {
   // Example: Fetch all bookings and payouts regardless of lender
   const allBookings = await paymentModel.find({ type: 'booking' });
- 
+
   const totalBookingsCount = allBookings.length;
   const totalBookingsAmount = allBookings.reduce(
     (sum, b) => sum + (b.amount || 0),
@@ -541,7 +548,7 @@ export const getLenderBookingStatsService = async () => {
 export const getMasterDressByNameService = async (dressName) => {
   // Case-insensitive search
   const dresses = await MasterDress.find({
-    dressName: { $regex: `^${dressName}$`, $options: 'i' } 
+    dressName: { $regex: `^${dressName}$`, $options: 'i' }
   }).lean();
 
   return dresses;

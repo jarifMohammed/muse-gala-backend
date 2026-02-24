@@ -15,7 +15,7 @@ export const createDisputeByLenderService = async (lenderId, bookingId, disputeD
   const booking = await Booking.findOne({
     _id: bookingId,
     'allocatedLender.lenderId': lenderId
-  });
+  }).populate('masterdressId');
 
   if (!booking) {
     const err = new Error("Booking not found or not owned by lender");
@@ -48,19 +48,23 @@ export const createDisputeByLenderService = async (lenderId, bookingId, disputeD
   try {
     const lender = await User.findById(lenderId);
     const customer = await User.findById(booking.customer);
-    
+    const dress = booking.masterdressId;
+
     if (lender?.email) {
       await sendEmail({
         to: lender.email,
         subject: 'Dispute Created - Action Required',
         html: disputeCreatedTemplate(
           lender.firstName || lender.name || 'User',
-          disputeData.issueType,
-          bookingId.toString()
+          bookingId.toString(),
+          dress?.brand,
+          dress?.dressName,
+          dress?.colors?.[0],
+          booking.size
         ),
       });
     }
-    
+
     // Also notify customer
     if (customer?.email) {
       await sendEmail({
@@ -68,8 +72,11 @@ export const createDisputeByLenderService = async (lenderId, bookingId, disputeD
         subject: 'Dispute Filed on Your Booking',
         html: disputeCreatedTemplate(
           customer.firstName || customer.name || 'User',
-          disputeData.issueType,
-          bookingId.toString()
+          bookingId.toString(),
+          dress?.brand,
+          dress?.dressName,
+          dress?.colors?.[0],
+          booking.size
         ),
       });
     }
@@ -237,8 +244,11 @@ export const escalateDisputeByLenderService = async (
     throw err;
   }
 
-  // Fetch dispute + its linked booking
-  const dispute = await Dispute.findById(disputeId).populate("booking");
+  // Fetch dispute + its linked booking (populating masterdressId)
+  const dispute = await Dispute.findById(disputeId).populate({
+    path: "booking",
+    populate: { path: "masterdressId" }
+  });
 
   if (!dispute) {
     const err = new Error("Dispute not found");
@@ -301,13 +311,17 @@ export const escalateDisputeByLenderService = async (
 
     // Notify customer
     if (customer?.email) {
+      const dress = dispute.booking.masterdressId;
       await sendEmail({
         to: customer.email,
         subject: 'Your Dispute Has Been Escalated',
         html: disputeEscalatedTemplate(
           customer.firstName || customer.name || 'User',
-          reason,
-          dispute.booking._id.toString()
+          dispute.booking._id.toString(),
+          dress?.brand,
+          dress?.dressName,
+          dress?.colors?.[0],
+          dispute.booking.size
         ),
       });
     }

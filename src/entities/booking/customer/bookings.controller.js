@@ -1,6 +1,6 @@
 import { generateResponse } from '../../../lib/responseFormate.js';
 import promoCodeModel from '../../admin/promoCode/promoCode.model.js';
-import { createBookingService, deleteBookingService, getAllBookingsService, getBookingByIdService, getLenderBookingStatsService, getMasterDressByNameService, getPayoutByBookingIdService, getUserBookingsService, updateBookingService} from '../customer/bookings.service.js';
+import { createBookingService, deleteBookingService, getAllBookingsService, getBookingByIdService, getLenderBookingStatsService, getMasterDressByNameService, getPayoutByBookingIdService, getUserBookingsService, updateBookingService } from '../customer/bookings.service.js';
 import { bookingCancelledTemplate } from '../../../lib/emailTemplates/booking.templates.js';
 import { sendEmail } from '../../../lib/resendEmial.js';
 import User from '../../auth/auth.model.js';
@@ -9,7 +9,7 @@ import User from '../../auth/auth.model.js';
 export const createBookingController = async (req, res) => {
   try {
     const userId = req.user._id;
-    const role = req.user.role; 
+    const role = req.user.role;
 
     const booking = await createBookingService({
       userId,
@@ -17,7 +17,7 @@ export const createBookingController = async (req, res) => {
       body: req.body,
     });
 
-  
+
     generateResponse(res, 201, true, "Booking created successfully for the user", booking);
   } catch (err) {
     console.error(err);
@@ -85,7 +85,7 @@ export const getUserBookingsController = async (req, res) => {
 export const updateBookingController = async (req, res) => {
   try {
     const userId = req.user.id;
-    
+
     const bookingId = req.params.id;
 
     const booking = await updateBookingService({ bookingId, userId, updateData: req.body });
@@ -131,15 +131,16 @@ export const cancelBookingController = async (req, res) => {
     try {
       const customer = await User.findById(cancelledBooking.customer);
       if (customer?.email) {
+        const masterDress = cancelledBooking.masterdressId;
         await sendEmail({
           to: customer.email,
           subject: 'Your booking has been cancelled',
           html: bookingCancelledTemplate(
             customer.firstName || customer.name || 'Customer',
-            cancelledBooking.brandName,
-            cancelledBooking.dressName,
-            cancelledBooking.colour,
-            cancelledBooking.size
+            masterDress?.brand || 'N/A',
+            masterDress?.dressName || cancelledBooking.dressName || 'Your Dress',
+            masterDress?.colors?.[0] || 'N/A',
+            cancelledBooking.size || 'N/A'
           )
         });
       }
@@ -157,7 +158,7 @@ export const cancelBookingController = async (req, res) => {
 // get lender dashboard stats 
 export const getLenderBookingStatsController = async (req, res) => {
   try {
-    const stats = await getLenderBookingStatsService(); 
+    const stats = await getLenderBookingStatsService();
 
     generateResponse(res, 200, true, "Lender booking stats fetched successfully", stats);
   } catch (err) {

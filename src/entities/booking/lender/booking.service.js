@@ -163,11 +163,14 @@ export const acceptOrRejectBookingService = async ({
         if (customer?.email) {
           await sendEmail({
             to: customer.email,
-            subject: 'Booking Rejected',
+            subject: 'Update on your booking',
             html: bookingRejectedTemplate(
               customer.firstName || customer.name || 'Customer',
+              dress?.brandName || 'N/A',
               dress?.dressName || 'Your Dress',
-              'The dress is no longer available for the requested dates'
+              dress?.colour || 'N/A',
+              booking.size || 'N/A',
+              booking.deliveryMethod || 'Shipping'
             )
           });
         }
@@ -336,8 +339,11 @@ export const acceptOrRejectBookingService = async ({
           subject: 'Booking Confirmed!',
           html: bookingConfirmedTemplate(
             customer.firstName || customer.name || 'Customer',
+            dress?.brandName || 'N/A',
             dress?.dressName || 'Your Dress',
-            booking.rentalDurationDays.toString(),
+            dress?.colour || 'N/A',
+            booking.size || 'N/A',
+            booking.deliveryMethod || 'Shipping',
             startDate,
             endDate,
             finalAmount.toFixed(2)
@@ -351,8 +357,11 @@ export const acceptOrRejectBookingService = async ({
           subject: 'Booking Accepted - Prepare for Shipment',
           html: bookingConfirmedTemplate(
             lender.firstName || lender.name || 'Lender',
-            dress?.dressName || 'Dress',
-            booking.rentalDurationDays.toString(),
+            dress?.brandName || 'N/A',
+            dress?.dressName || 'Your Dress',
+            dress?.colour || 'N/A',
+            booking.size || 'N/A',
+            booking.deliveryMethod || 'Shipping',
             startDate,
             endDate,
             finalAmount.toFixed(2)

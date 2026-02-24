@@ -1,128 +1,133 @@
 // ✅ Dispute Email Templates
 import { baseEmailTemplate, createInfoBox, createStatusBadge } from './baseTemplate.js';
 
-export const disputeCreatedTemplate = (userName, issueType, bookingId) =>
+export const disputeCreatedTemplate = (userName, bookingId, brandName, dressName, colour, dressSize) =>
   baseEmailTemplate({
     title: 'DISPUTE CREATED',
-    subtitle: 'Your dispute has been submitted for review.',
+    subtitle: 'We’re reviewing your request',
     content: `
-      <p>Hello ${userName},</p>
-      <p>A dispute has been created for your booking. Our team will review this matter and provide updates shortly.</p>
+      <p>Hi ${userName},</p>
+      <p>A dispute has been opened for your booking.</p>
       ${createInfoBox({
-        'Issue Type': issueType,
-        'Booking ID': bookingId,
-        'Status': 'Pending Review',
-      })}
-      <p>You will receive updates as we progress through the resolution process.</p>
+      'Booking ID': bookingId,
+      'Brand': brandName || 'N/A',
+      'Dress': dressName || 'N/A',
+      'Colour': colour || 'N/A',
+      'Size': dressSize || 'N/A',
+      'Status': 'Under review',
+    })}
+      <p>We’ll keep you updated as we review the details.</p>
     `,
   });
 
-export const disputeUnderReviewTemplate = (userName, issueType, bookingId) =>
+export const disputeUnderReviewTemplate = (userName, bookingId, brandName, dressName, colour, dressSize) =>
   baseEmailTemplate({
     title: 'DISPUTE UNDER REVIEW',
-    subtitle: 'Your dispute is now being actively reviewed.',
+    subtitle: 'Your dispute is under review',
     content: `
-      <p>Hello ${userName},</p>
-      <p>Your dispute has been assigned to our support team and is now under active review. We are analyzing all the evidence you provided.</p>
-      <div style="margin: 20px 0;">
-        ${createStatusBadge('In Review', 'info')}
-      </div>
+      <p>Hi ${userName},</p>
+      <p>Your dispute is currently being reviewed by our team.</p>
       ${createInfoBox({
-        'Issue Type': issueType,
-        'Booking ID': bookingId,
-      })}
-      <p>We typically provide a response within 3-5 business days. Thank you for your patience.</p>
+      'Booking ID': bookingId,
+      'Brand': brandName || 'N/A',
+      'Dress': dressName || 'N/A',
+      'Colour': colour || 'N/A',
+      'Size': dressSize || 'N/A',
+    })}
+      <p>We’ll be in touch once a decision has been reached.</p>
     `,
   });
 
-export const disputeMoreInfoNeededTemplate = (userName, reason, bookingId) =>
+export const disputeMoreInfoNeededTemplate = (userName, bookingId, brandName, dressName, colour, dressSize) =>
   baseEmailTemplate({
-    title: 'ADDITIONAL INFORMATION NEEDED',
-    subtitle: 'We need more information to proceed with your dispute.',
+    title: 'ADDITIONAL INFORMATION REQUIRED',
+    subtitle: 'Additional information required',
     content: `
-      <p>Hello ${userName},</p>
-      <p>To proceed with your dispute review, we need some additional information or evidence from you.</p>
+      <p>Hi ${userName},</p>
+      <p>We need a little more information to continue reviewing your dispute.</p>
       ${createInfoBox({
-        'What we need': reason,
-        'Booking ID': bookingId,
-      })}
-      <p>Please log into your account and provide the requested information within 5 business days. Failure to respond may result in case closure.</p>
+      'Booking ID': bookingId,
+      'Brand': brandName || 'N/A',
+      'Dress': dressName || 'N/A',
+      'Colour': colour || 'N/A',
+      'Size': dressSize || 'N/A',
+    })}
+      <p>Please log in to your account to provide the requested details.</p>
     `,
-    buttonText: 'PROVIDE INFORMATION',
+    buttonText: 'PROVIDE DETAILS',
     buttonUrl: process.env.FRONTEND_URL || 'https://musegala.com.au',
   });
 
-export const disputeEscalatedTemplate = (userName, reason, bookingId) =>
+export const disputeEscalatedTemplate = (userName, bookingId, brandName, dressName, colour, dressSize) =>
   baseEmailTemplate({
     title: 'DISPUTE ESCALATED',
-    subtitle: 'Your dispute has been escalated for further review.',
+    subtitle: 'Your dispute has been escalated',
     content: `
-      <p>Hello ${userName},</p>
-      <p>Your dispute has been escalated to our senior resolution team for further investigation.</p>
+      <p>Hi ${userName},</p>
+      <p>Your dispute has been escalated for further review.</p>
       ${createInfoBox({
-        'Escalation Reason': reason,
-        'Booking ID': bookingId,
-        'Status': 'Escalated',
-      })}
-      <p>A senior team member will contact you shortly to discuss the next steps. We appreciate your cooperation.</p>
+      'Booking ID': bookingId,
+      'Brand': brandName || 'N/A',
+      'Dress': dressName || 'N/A',
+      'Colour': colour || 'N/A',
+      'Size': dressSize || 'N/A',
+    })}
+      <p>A senior team member will be in touch.</p>
     `,
   });
 
-export const disputeResolvedTemplate = (userName, resolution, refundAmount, bookingId) =>
+export const disputeResolvedTemplate = (userName, bookingId, resolution, refundAmount, brandName, dressName, colour, dressSize) =>
   baseEmailTemplate({
     title: 'DISPUTE RESOLVED',
-    subtitle: 'Your dispute has been reviewed and resolved.',
+    subtitle: 'Your dispute has been resolved',
     content: `
-      <p>Hello ${userName},</p>
-      <p>Your dispute has been reviewed and resolved. Below are the details of the decision.</p>
-      <div style="margin: 20px 0;">
-        ${createStatusBadge('Resolved ✓', 'success')}
-      </div>
+      <p>Hi ${userName},</p>
+      <p>Your dispute has been reviewed and resolved.</p>
       ${createInfoBox({
-        'Booking ID': bookingId,
-        'Resolution': resolution,
-        ...(refundAmount ? { 'Refund Amount': `$${refundAmount}` } : {}),
-      })}
-      <p>If you have any questions about this decision, please feel free to contact our support team.</p>
+      'Booking ID': bookingId,
+      'Outcome': resolution,
+      'Refund amount': refundAmount ? `$${refundAmount}` : '$0.00',
+      'Brand': brandName || 'N/A',
+      'Dress': dressName || 'N/A',
+      'Colour': colour || 'N/A',
+      'Size': dressSize || 'N/A',
+    })}
+      <p>If you have any questions, we’re here to help.</p>
     `,
   });
 
-export const refundProcessedTemplate = (userName, refundAmount, bookingId, refundDate) =>
+export const refundProcessedTemplate = (userName, bookingId, refundAmount, brandName, dressName, colour, dressSize) =>
   baseEmailTemplate({
     title: 'REFUND PROCESSED',
-    subtitle: 'Your refund has been processed successfully.',
+    subtitle: 'Refund processed',
     content: `
-      <p>Hello ${userName},</p>
-      <p>The refund from your dispute resolution has been processed successfully.</p>
-      <div style="margin: 20px 0;">
-        ${createStatusBadge('Refunded ✓', 'success')}
-      </div>
+      <p>Hi ${userName},</p>
+      <p>Your refund has been processed successfully.</p>
       ${createInfoBox({
-        'Refund Amount': `$${refundAmount}`,
-        'Booking ID': bookingId,
-        'Processing Date': refundDate,
-      })}
-      <p>The funds should appear in your account within 3-5 business days depending on your bank. Please check your transaction history if you don't see it.</p>
+      'Booking ID': bookingId,
+      'Amount': `$${refundAmount}`,
+      'Brand': brandName || 'N/A',
+      'Dress': dressName || 'N/A',
+      'Colour': colour || 'N/A',
+      'Size': dressSize || 'N/A',
+    })}
+      <p>Funds typically appear within 3–5 business days.</p>
     `,
   });
 
-export const disputeResponseTemplate = (userName, responderName, responseMessage, bookingId) =>
+export const disputeResponseTemplate = (userName, bookingId) =>
   baseEmailTemplate({
-    title: 'NEW RESPONSE ON YOUR DISPUTE',
-    subtitle: 'Someone has responded to your dispute case.',
+    title: 'DISPUTE UPDATE',
+    subtitle: 'New update on your dispute',
     content: `
-      <p>Hello ${userName},</p>
-      <p>${responderName} has added a response to your dispute case.</p>
+      <p>Hi ${userName},</p>
+      <p>There’s a new update on your dispute.</p>
       ${createInfoBox({
-        'From': responderName,
-        'Booking ID': bookingId,
-      })}
-      <div class="info-box">
-        <p style="font-style: italic;">"${responseMessage}"</p>
-      </div>
-      <p>Please log into your account to view the full conversation and respond if needed.</p>
+      'Booking ID': bookingId,
+    })}
+      <p>Please log in to your account to view the message.</p>
     `,
-    buttonText: 'VIEW DISPUTE',
+    buttonText: 'VIEW MESSAGE',
     buttonUrl: process.env.FRONTEND_URL || 'https://musegala.com.au',
   });
 
@@ -134,10 +139,10 @@ export const disputeClosedTemplate = (userName, reason, bookingId) =>
       <p>Hello ${userName},</p>
       <p>Your dispute case has been officially closed.</p>
       ${createInfoBox({
-        'Booking ID': bookingId,
-        'Reason': reason,
-        'Status': 'Closed',
-      })}
+      'Booking ID': bookingId,
+      'Reason': reason,
+      'Status': 'Closed',
+    })}
       <p>If you believe this case needs to be reopened, please contact our support team within 30 days. Archive of this case will be available in your account history.</p>
     `,
   });

@@ -69,17 +69,10 @@ export const payForSubscription = async (req, res) => {
       try {
         await sendEmail({
           to: user.email,
-          subject: `Welcome to ${plan.name}!`,
+          subject: 'Subscription activated',
           html: subscriptionActivatedTemplate(
             user.firstName || 'Lender',
-            plan.name,
-            0,
-            plan.currency,
-            plan.billingCycle,
-            new Date(
-              Date.now() + (plan.durationDays || 30) * 24 * 60 * 60 * 1000
-            ),
-            plan.features || []
+            plan.name
           )
         });
       } catch (emailError) {
@@ -94,7 +87,7 @@ export const payForSubscription = async (req, res) => {
         data: { plan, payment, checkoutUrl: null },
         type: "FREE",
         message: 'Free subscription activated',
-       
+
       });
     }
 

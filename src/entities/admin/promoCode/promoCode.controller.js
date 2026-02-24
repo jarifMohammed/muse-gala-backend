@@ -16,7 +16,7 @@ export const createPromoCode = async (req, res, next) => {
       discountType,
       discount,
       expiresAt,
-     
+
       maxUsage,
     } = req.body;
 
@@ -98,7 +98,7 @@ export const getAllPromoCodes = async (req, res, next) => {
       discountApplied: u.discountApplied,
       usedAt: u.usedAt,
       expireAt: u.promoCodeId?.expiresAt || null,   // <- corrected
-  createAt: u.promoCodeId?.createdAt || null
+      createAt: u.promoCodeId?.createdAt || null
 
     }));
 
@@ -211,18 +211,18 @@ export const sendPromoCodeEmail = async (req, res, next) => {
     }
 
     // Determine users to send
- let users = [];
+    let users = [];
 
-if (selectedUserIds && selectedUserIds.length > 0) {
-  // Selected users only, with role = "USER"
-  users = await User.find(
-    { _id: { $in: selectedUserIds }, role: "USER" },
-    "email name"
-  );
-} else {
-  // All users with role = "USER"
-  users = await User.find({ role: "USER" }, "email name");
-}
+    if (selectedUserIds && selectedUserIds.length > 0) {
+      // Selected users only, with role = "USER"
+      users = await User.find(
+        { _id: { $in: selectedUserIds }, role: "USER" },
+        "email name"
+      );
+    } else {
+      // All users with role = "USER"
+      users = await User.find({ role: "USER" }, "email name");
+    }
 
 
     if (users.length === 0) {
@@ -236,16 +236,13 @@ if (selectedUserIds && selectedUserIds.length > 0) {
     const results = [];
     for (const user of users) {
       const emailHtml = promoCodeTemplate({
-        name: user.name,
         code: promo.code,
-        discountType: promo.discountType,
-        discount: promo.discount,
         expiresAt: promo.expiresAt,
       });
 
       const r = await sendEmail({
         to: user.email,
-        subject: `Your Promo Code: ${promo.code}`,
+        subject: 'A gift from Muse Gala',
         html: emailHtml,
       });
 
