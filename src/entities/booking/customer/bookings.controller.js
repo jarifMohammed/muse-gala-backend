@@ -123,7 +123,7 @@ export const cancelBookingController = async (req, res) => {
       return generateResponse(res, 404, false, "Booking not found");
     }
     if (booking.deliveryStatus !== 'Pending') {
-      return generateResponse(res, 400, false, "Booking cannot be cancelled after lender has accepted");
+      return generateResponse(res, 400, false, "Booking cannot be cancelled after accepted by lender");
     }
     const cancelledBooking = await deleteBookingService(bookingId);
 
