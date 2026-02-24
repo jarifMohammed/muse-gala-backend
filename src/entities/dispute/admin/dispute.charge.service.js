@@ -6,7 +6,7 @@ import { chargeUserOffSession } from '../../Payment/Booking/offSessionCharge.js'
 import { baseEmailTemplate } from '../../../lib/emailTemplates/baseTemplate.js';
 
 
-export const chargeUserForDisputeService = async ({ disputeId, reason, amount }) => {
+export const chargeUserForDisputeService = async ({ disputeId, reason, amount, adminId }) => {
   const dispute = await Dispute.findById(disputeId).populate('booking');
   if (!dispute) throw new Error('Dispute not found');
   const userId = dispute.booking.customer;
@@ -18,10 +18,11 @@ export const chargeUserForDisputeService = async ({ disputeId, reason, amount })
 
   // Save charge info in dispute timeline
   dispute.timeline.push({
-    actor: null, // system/admin
+    actor: adminId,
     role: 'ADMIN',
     message: `Charged user $${amount} for: ${reason}`,
     type: 'update',
+    timestamp: new Date(),
   });
   await dispute.save();
 
