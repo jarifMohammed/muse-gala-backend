@@ -242,7 +242,7 @@ export const getMessagesByRoomService = async (roomId, page, limit) => {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(parseInt(limit))
-      .populate("sender", "firstName lastName profileImage role"),
+      .populate("sender", "firstName lastName profileImage email role"),
     Message.countDocuments({ chatRoom: roomId }),
   ]);
 
