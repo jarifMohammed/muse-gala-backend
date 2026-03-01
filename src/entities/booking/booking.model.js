@@ -229,7 +229,10 @@ const BookingSchema = new Schema(
 BookingSchema.pre('save', async function (next) {
   try {
     // Detect status changes for the post-save hook
-    if (!this.isNew && this.isModified('deliveryStatus')) {
+    if (this.isModified('deliveryStatus')) {
+      console.log(
+        `[BookingModel] PRE-SAVE: Status changing to "${this.deliveryStatus}" (isNew: ${this.isNew})`
+      );
       this._statusWasModified = true;
     }
 
@@ -269,6 +272,10 @@ BookingSchema.post('save', async function (doc, next) {
     // Get the original document to compare status
     // BUG FIX: In post-save, findById returns the ALREADY UPDATED document.
     // We now use the transient flag _statusWasModified set in pre-save.
+    console.log(
+      `[BookingModel] POST-SAVE: ID=${doc._id}, Status="${doc.deliveryStatus}", Modified=${!!doc._statusWasModified}, New=${doc.isNew}`
+    );
+
     if (!doc._statusWasModified && !doc.isNew) {
       return next();
     }

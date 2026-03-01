@@ -11,8 +11,9 @@ const bookingId = '698e8e6495f5910a20cb3a64';
 
 async function verify() {
     try {
+        console.log('Using Mongo URI:', mongoURI);
         console.log('Connecting to MongoDB...');
-        await mongoose.connect(mongoURI);
+        await mongoose.connect(mongoURI, { serverSelectionTimeoutMS: 5000 });
         console.log('Connected.');
 
         const booking = await Booking.findById(bookingId);
@@ -21,41 +22,38 @@ async function verify() {
             process.exit(1);
         }
 
-        console.log('Current status:', booking.deliveryStatus);
-        console.log('Current reminderCount:', booking.reminderCount);
-        console.log('Current returnToken:', booking.returnToken);
+        console.log('--- Initial Data ---');
+        console.log('Status:', booking.deliveryStatus);
+        console.log('Token:', booking.returnToken);
+        console.log('Reminder Count:', booking.reminderCount);
 
-        // Reset status to trigger isModified in pre-save
-        console.log('Resetting status to "Delivered"...');
+        console.log('\nStep 1: Resetting to "Delivered"...');
         booking.deliveryStatus = 'Delivered';
+        booking.returnToken = undefined;
+        booking.reminderCount = 0;
         await booking.save();
-        console.log('Status reset.');
+        console.log('Reset saved.');
 
-        // Now set to "Return Due" to trigger the fix
-        console.log('Setting status to "Return Due"...');
+        console.log('\nStep 2: Setting to "Return Due"...');
         booking.deliveryStatus = 'Return Due';
         await booking.save();
-        console.log('Status updated.');
+        console.log('Update saved.');
 
-        // Wait a bit for post-save hooks (though they are awaited in save() if not parallel)
-        // Actually our post-save hook has some async logic that might not be fully awaited by mongoose if not careful,
-        // but mongoose awaits post-save middleares.
+        console.log('\nChecking for changes...');
+        const updated = await Booking.findById(bookingId);
+        console.log('Final Status:', updated.deliveryStatus);
+        console.log('Final Token:', updated.returnToken ? 'EXISTS ✓' : 'MISSING ✗');
+        console.log('Final Reminder Count:', updated.reminderCount);
 
-        const updatedBooking = await Booking.findById(bookingId);
-        console.log('--- Verification Results ---');
-        console.log('New status:', updatedBooking.deliveryStatus);
-        console.log('New reminderCount:', updatedBooking.reminderCount);
-        console.log('New returnToken:', updatedBooking.returnToken ? 'GENERATED ✓' : 'MISSING ✗');
-
-        if (updatedBooking.returnToken && updatedBooking.reminderCount > 0) {
-            console.log('SUCCESS: Return flow triggered correctly!');
+        if (updated.returnToken && updated.reminderCount > 0) {
+            console.log('\n✅ VERIFICATION PASSED');
         } else {
-            console.log('FAILURE: Return flow DID NOT trigger.');
+            console.log('\n❌ VERIFICATION FAILED');
         }
 
         await mongoose.disconnect();
     } catch (err) {
-        console.error('Error during verification:', err);
+        console.error('VERIFICATION ERROR:', err);
         process.exit(1);
     }
 }
