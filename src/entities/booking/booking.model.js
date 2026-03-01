@@ -228,6 +228,11 @@ const BookingSchema = new Schema(
 // Pre-save hook: initialize statusHistory and calculate fees
 BookingSchema.pre('save', async function (next) {
   try {
+    // Detect status changes for the post-save hook
+    if (!this.isNew && this.isModified('deliveryStatus')) {
+      this._statusWasModified = true;
+    }
+
     // Initialize statusHistory for new bookings
     if (this.isNew && this.deliveryStatus) {
       this.statusHistory = [
@@ -262,8 +267,9 @@ BookingSchema.post('save', async function (doc, next) {
     const MasterDress = mongoose.model('MasterDress');
 
     // Get the original document to compare status
-    const originalDoc = await this.constructor.findById(this._id);
-    if (!originalDoc || originalDoc.deliveryStatus === doc.deliveryStatus) {
+    // BUG FIX: In post-save, findById returns the ALREADY UPDATED document.
+    // We now use the transient flag _statusWasModified set in pre-save.
+    if (!doc._statusWasModified && !doc.isNew) {
       return next();
     }
 

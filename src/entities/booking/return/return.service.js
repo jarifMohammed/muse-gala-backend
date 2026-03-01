@@ -106,6 +106,7 @@ export const handleReturnDueStatus = async (bookingId) => {
     // Send return link email to customer
     if (booking.customer?.email) {
         try {
+            console.log(`[ReturnFlow] Sending return link email to ${booking.customer.email} for booking ${bookingId}`);
             await sendEmail({
                 to: booking.customer.email,
                 subject: 'Return Your Dress - Action Required',
@@ -121,9 +122,12 @@ export const handleReturnDueStatus = async (bookingId) => {
                     'initial'
                 )
             });
+            console.log(`[ReturnFlow] Email sent successfully for booking ${bookingId}`);
         } catch (emailErr) {
             console.error('[ReturnFlow] Error sending return link email:', emailErr);
         }
+    } else {
+        console.warn(`[ReturnFlow] Cannot send email for booking ${bookingId}: Customer email missing`);
     }
 
     // Update status to ReturnLinkSent (using direct update to avoid triggering post-save again)
