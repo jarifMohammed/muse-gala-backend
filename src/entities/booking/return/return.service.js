@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import fs from 'fs';
 import { Booking } from '../booking.model.js';
 import { generateReturnToken, verifyReturnToken, buildReturnUrl } from '../../../lib/returnToken.js';
 import { sendEmail } from '../../../lib/resendEmial.js';
@@ -87,23 +88,38 @@ export const handleReturnDueStatus = async (bookingId) => {
         await booking.populate('customer', 'firstName name email');
     }
 
-    // Reload to get updated token
-    const updatedBooking = await Booking.findById(bookingId);
-    const returnUrl = buildReturnUrl(updatedBooking.returnToken);
+    // Re-fetch to get the updated token from DB
+    const updatedBooking = await Booking.findById(bookingId)
+        .populate('customer', 'firstName name email')
+        .populate('masterdressId', 'dressName brand colors images');
 
-    const customerName = booking.customer?.firstName || booking.customer?.name || 'Customer';
-    const dressName = booking.masterdressId?.dressName || booking.dressName || 'Your Dress';
-    const brandName = booking.masterdressId?.brand || 'N/A';
-    const dressSize = booking.size || 'N/A';
-    const dressColour = booking.masterdressId?.colors?.[0] || 'N/A';
+    const customerName = updatedBooking.customer?.firstName || updatedBooking.customer?.name || 'Customer';
+    const dressName = updatedBooking.masterdressId?.dressName || updatedBooking.dressName || 'Your Dress';
+    const brandName = updatedBooking.masterdressId?.brand || 'N/A';
+    const dressSize = updatedBooking.size || 'N/A';
+    const dressColour = updatedBooking.masterdressId?.colors?.[0] || 'N/A';
 
-    const dueDate = new Date(booking.rentalEndDate).toLocaleDateString('en-AU', {
+    const dueDate = new Date(updatedBooking.rentalEndDate).toLocaleDateString('en-AU', {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
     });
 
-    // Send return link email to customer
+    const logFile = './hook_debug.log';
+    const timestamp = new Date().toISOString();
+    fs.appendFileSync(logFile, `[${timestamp}] SERVICE: handleReturnDueStatus called for ${bookingId}\n`);
+
+    console.log(`[ReturnFlow] Processing Return Due for booking ${bookingId}. Customer: ${updatedBooking.customer?.email}, Dress: ${dressName}`);
+
+    if (!updatedBooking.returnToken) {
+        fs.appendFileSync(logFile, `[${timestamp}] SERVICE: Token generation FAILED for ${bookingId}\n`);
+        console.error(`[ReturnFlow] Token generation FAILED for booking ${bookingId}`);
+        throw new Error('Failed to generate return token. Please try again or contact support.');
+    }
+
+    const returnUrl = buildReturnUrl(updatedBooking.returnToken);
+    console.log(`[ReturnFlow] Generated return URL: ${returnUrl}`);
+    fs.appendFileSync(logFile, `[${timestamp}] SERVICE: Generated URL ${returnUrl}\n`);
     if (booking.customer?.email) {
         try {
             console.log(`[ReturnFlow] Sending return link email to ${booking.customer.email} for booking ${bookingId}`);

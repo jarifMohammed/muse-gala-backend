@@ -44,8 +44,10 @@ async function verify() {
         console.log('Final Status:', updated.deliveryStatus);
         console.log('Final Token:', updated.returnToken ? 'EXISTS ✓' : 'MISSING ✗');
         console.log('Final Reminder Count:', updated.reminderCount);
+        console.log('Final Status History Length:', updated.statusHistory.length);
+        console.log('Last History Entry:', updated.statusHistory[updated.statusHistory.length - 1]);
 
-        if (updated.returnToken && updated.reminderCount > 0) {
+        if (updated.returnToken && updated.deliveryStatus === 'ReturnLinkSent') {
             console.log('\n✅ VERIFICATION PASSED');
         } else {
             console.log('\n❌ VERIFICATION FAILED');

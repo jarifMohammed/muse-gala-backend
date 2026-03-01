@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import fs from 'fs';
 
 const { Schema } = mongoose;
 // lender allocation data for both the shipping and the local pick up
@@ -228,12 +229,23 @@ const BookingSchema = new Schema(
 // Pre-save hook: initialize statusHistory and calculate fees
 BookingSchema.pre('save', async function (next) {
   try {
-    // Detect status changes for the post-save hook
+    const logFile = './hook_debug.log';
+    const timestamp = new Date().toISOString();
+
+    // Detect status changes for the post-save hook using $locals
     if (this.isModified('deliveryStatus')) {
-      console.log(
-        `[BookingModel] PRE-SAVE: Status changing to "${this.deliveryStatus}" (isNew: ${this.isNew})`
-      );
-      this._statusWasModified = true;
+      const msg = `[${timestamp}] PRE-SAVE: ID=${this._id} Status changing to "${this.deliveryStatus}" (isNew: ${this.isNew})\n`;
+      fs.appendFileSync(logFile, msg);
+      this.$locals.statusModified = true;
+
+      // Automatically track status changes in history for existing bookings
+      if (!this.isNew) {
+        this.statusHistory.push({
+          status: this.deliveryStatus,
+          timestamp: new Date(),
+          reason: 'Status updated'
+        });
+      }
     }
 
     // Initialize statusHistory for new bookings
@@ -269,14 +281,15 @@ BookingSchema.post('save', async function (doc, next) {
     const User = mongoose.model('User');
     const MasterDress = mongoose.model('MasterDress');
 
-    // Get the original document to compare status
-    // BUG FIX: In post-save, findById returns the ALREADY UPDATED document.
-    // We now use the transient flag _statusWasModified set in pre-save.
-    console.log(
-      `[BookingModel] POST-SAVE: ID=${doc._id}, Status="${doc.deliveryStatus}", Modified=${!!doc._statusWasModified}, New=${doc.isNew}`
-    );
+    // Get the status modification flag from $locals
+    const statusModified = doc.$locals?.statusModified || doc.isNew;
 
-    if (!doc._statusWasModified && !doc.isNew) {
+    const logFile = './hook_debug.log';
+    const timestamp = new Date().toISOString();
+    const msg = `[${timestamp}] POST-SAVE: ID=${doc._id} Status="${doc.deliveryStatus}" Modified=${!!statusModified} New=${doc.isNew}\n`;
+    fs.appendFileSync(logFile, msg);
+
+    if (!statusModified) {
       return next();
     }
 

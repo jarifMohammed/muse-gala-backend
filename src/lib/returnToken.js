@@ -18,10 +18,13 @@ export const generateReturnToken = async (bookingId) => {
     const expiresAt = new Date(booking.rentalEndDate);
     expiresAt.setDate(expiresAt.getDate() + 14);
 
-    // Store on the booking
-    booking.returnToken = token;
-    booking.returnTokenExpiresAt = expiresAt;
-    await booking.save();
+    // Store on the booking using direct update to avoid triggering hooks
+    await Booking.findByIdAndUpdate(bookingId, {
+        $set: {
+            returnToken: token,
+            returnTokenExpiresAt: expiresAt
+        }
+    });
 
     return { token, expiresAt };
 };
