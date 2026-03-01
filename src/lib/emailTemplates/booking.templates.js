@@ -28,6 +28,7 @@ export const bookingCreatedTemplate = (
       'Total': `$${totalAmount}`,
     })}
       <p>We’ll be in touch as soon as there’s an update.</p>
+      <p>We’ll send you a return link before your due date to confirm return.</p>
       <p>— Muse Gala</p>
     `,
   });
@@ -41,25 +42,27 @@ export const bookingConfirmedTemplate = (
   deliveryMethod,
   startDate,
   endDate,
-  totalAmount
+  totalAmount,
+  bookingId
 ) =>
   baseEmailTemplate({
-    title: 'Your booking is confirmed',
-    subtitle: 'Your booking is confirmed',
+    title: 'Booking Confirmation',
+    subtitle: 'Your booking has been confirmed by the lender and your rental is now secured.',
     content: `
       <p>Hi ${userName},</p>
-      <p>Great news! Your booking has been confirmed.</p>
-      <h3>Booking details</h3>
+      <p>Thank you — your booking has been confirmed by the lender and your rental is now secured.</p>
+      <h3>Item Details:</h3>
       ${createInfoBox({
       'Brand': brandName,
-      'Dress': dressName,
-      'Colour': colour,
+      'Style': dressName,
       'Size': dressSize,
-      'Delivery method': deliveryMethod,
-      'Rental period': `${startDate} - ${endDate}`,
-      'Total amount': `$${totalAmount}`,
+      'Colour': colour,
+      'Booking ID': bookingId || 'N/A',
+      'Rental Period': `${startDate} - ${endDate}`,
+      'Total Amount': `$${totalAmount}`,
     })}
-      <p>We’ll send tracking details once it’s on the way.</p>
+      <p>We’ll keep you updated with any important information as your rental approaches. If you need anything in the meantime, feel free to reach out.</p>
+      <p>We’ll send you a return link before your due date to confirm return.</p>
       <p>— Muse Gala</p>
     `,
   });

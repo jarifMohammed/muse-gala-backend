@@ -346,7 +346,8 @@ export const acceptOrRejectBookingService = async ({
             booking.deliveryMethod || 'Shipping',
             startDate,
             endDate,
-            finalAmount.toFixed(2)
+            finalAmount.toFixed(2),
+            booking._id
           )
         });
       }
@@ -364,7 +365,8 @@ export const acceptOrRejectBookingService = async ({
             booking.deliveryMethod || 'Shipping',
             startDate,
             endDate,
-            finalAmount.toFixed(2)
+            finalAmount.toFixed(2),
+            booking._id
           )
         });
       }

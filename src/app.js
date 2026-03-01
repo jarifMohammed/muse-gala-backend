@@ -18,6 +18,8 @@ import { globalLimiter } from './lib/limit.js';
 import appRouter from './core/app/appRouter.js';
 import { stripeWebhookHandler } from './entities/webhook.js';
 import { connectedAccountWebhookHandler } from './entities/webhookAccounts.js';
+import { startReturnReminderJob } from './lib/returnReminderJob.js';
+import { startOverdueEscalationJob } from './lib/overdueEscalationJob.js';
 //import { startReminderJob } from './lib/reminderJob.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -41,15 +43,15 @@ const allowedOrigins = [
   'https://muse-gala-website.vercel.app',
   'https://muse-gala-lender-dashboard.vercel.app',
 
-  'http://localhost:3000',  
-  'http://localhost:5173',  
+  'http://localhost:3000',
+  'http://localhost:5173',
 ];
 
 app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (mobile apps, Postman, curl)
     if (!origin) return callback(null, true);
-    
+
     if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -71,7 +73,7 @@ app.use(morgan('combined', {
 app.use(cookieParser());
 app.use(compression());
 app.use((req, res, next) => {
-  if (req.originalUrl.startsWith('/api/v1/webhook/main') ||  req.originalUrl.startsWith('/api/v1/webhook/connected')) {
+  if (req.originalUrl.startsWith('/api/v1/webhook/main') || req.originalUrl.startsWith('/api/v1/webhook/connected')) {
     // Skip JSON parsing, Stripe needs raw body
     return next();
   }
@@ -171,6 +173,9 @@ app.use(errorHandler);
 
 logger.info('Middleware stack initialized');
 
+// Start cron jobs
+startReturnReminderJob();
+startOverdueEscalationJob();
 //startReminderJob();
 
 export { server, app };

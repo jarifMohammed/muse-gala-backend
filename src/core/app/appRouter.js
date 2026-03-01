@@ -31,6 +31,7 @@ import customerRoutes from '../../entities/admin/customer/customer.routes.js'
 import overviewAdminRoutes from '../../entities/admin/overview/overview.routes.js';
 import promoCode from '../../entities/admin/promoCode/promoCode.routes.js'
 import editRoutes from '../../entities/admin/styleByYou/edit.routes.js'
+import returnRoutes from '../../entities/booking/return/return.routes.js';
 const router = express.Router();
 
 
@@ -45,21 +46,21 @@ router.use('/v1/lender/account', accountRoutes);
 
 
 router.use('/v1/message', messageRoutes)
-router.use('/v1/payout',payOutRoutes)
+router.use('/v1/payout', payOutRoutes)
 
 
 // admin routes
-router.use('/v1/admin',adminListingRoutes)
-router.use('/v1/admin/promo',promoCode)
+router.use('/v1/admin', adminListingRoutes)
+router.use('/v1/admin/promo', promoCode)
 router.use('/v1/admin/team', teamRoutes);
-router.use('/v1/support',supportRoutes)
+router.use('/v1/support', supportRoutes)
 
 
 
 // content and CMS routes
 router.use('/v1/banner', bannerRoutes)
 router.use('/v1/testimonoal', testimonialRoutes)
-router.use('/v1/termsAndConditions', termsAndConditionsRoutes); 
+router.use('/v1/termsAndConditions', termsAndConditionsRoutes);
 router.use('/v1/homepageSections', homepageSectionsRoutes);
 router.use('/v1/admin/edit', editRoutes)
 
@@ -67,16 +68,16 @@ router.use('/v1/lender/overview', overviewRoutes)
 
 
 // lender routes
-router.use('/v1/subscription',subscriptionRoutes)
+router.use('/v1/subscription', subscriptionRoutes)
 //lender onboard routes
 
-router.use('/v1/lender',onboardingRoutes)
+router.use('/v1/lender', onboardingRoutes)
 
 
 // dispute routes
 router.use('/v1/customer/disputes', customerDispute);
-router.use('/v1/lender/disputes', lenderDispute); 
-router.use('/v1/admin/disputes', adminDispute); 
+router.use('/v1/lender/disputes', lenderDispute);
+router.use('/v1/admin/disputes', adminDispute);
 
 // bookings routes
 router.use('/v1/customer/bookings', customerBookingRoutes);
@@ -86,6 +87,7 @@ router.use('/v1/customer/bookings', customerBookingRoutes);
 
 router.use('/v1/admin/customer', customerRoutes);
 router.use('/v1/admin/overview', overviewAdminRoutes);
+router.use('/v1/return', returnRoutes);
 
 
 export default router;

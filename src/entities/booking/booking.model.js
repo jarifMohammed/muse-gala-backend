@@ -104,7 +104,18 @@ const BookingSchema = new Schema(
         'Rejected',
         'RejectedByLender',
         'PaymentRetryScheduled',
-        'AcceptedByLender'
+        'AcceptedByLender',
+        'Rental Active',
+        // Return flow statuses
+        'ReturnLinkSent',
+        'InTransit',
+        'DroppedOff',
+        'AwaitingLenderConfirmation',
+        'LateReturn',
+        'Overdue',
+        'Escalated',
+        'HighRisk',
+        'NonReturned'
       ],
       default: 'Pending',
       index: true
@@ -175,7 +186,31 @@ const BookingSchema = new Schema(
     dispute: { type: Schema.Types.ObjectId, ref: 'Dispute' },
     customerNotes: { type: String },
     lenderNotes: { type: String },
-    adminNotes: { type: String }
+    adminNotes: { type: String },
+
+    // ── Return Flow Fields ──
+    returnToken: { type: String, index: true, unique: true, sparse: true },
+    returnTokenExpiresAt: { type: Date },
+    returnMethod: {
+      type: String,
+      enum: ['LocalDropOff', 'ExpressShipping']
+    },
+    returnTrackingNumber: { type: String },
+    returnReceiptPhoto: { type: String },
+    returnNotes: { type: String },
+    returnConfirmedAt: { type: Date },
+    returnDroppedOffAt: { type: Date },
+    lenderReceivedAt: { type: Date },
+    lenderIssueType: { type: String },
+    lenderIssueNotes: { type: String },
+    returnRemindersStopped: { type: Boolean, default: false },
+    lastReminderSentAt: { type: Date },
+    reminderCount: { type: Number, default: 0 },
+    overdueEscalationLevel: { type: Number, default: 0 },
+    suggestedLateFee: { type: Number, default: 0 },
+    suggestedReplacementFee: { type: Number, default: 0 },
+    lateFeeApproved: { type: Boolean, default: false },
+    lateFeeChargedAt: { type: Date }
   },
   {
     timestamps: true,
@@ -210,7 +245,7 @@ BookingSchema.pre('save', async function (next) {
   }
 });
 
-// Post-save hook: Send emails on status changes
+// Post-save hook: Send emails on status changes + trigger return flow
 BookingSchema.post('save', async function (doc, next) {
   try {
     const { sendEmail } = await import('../../../lib/resendEmial.js');
@@ -229,6 +264,27 @@ BookingSchema.post('save', async function (doc, next) {
     // Get the original document to compare status
     const originalDoc = await this.constructor.findById(this._id);
     if (!originalDoc || originalDoc.deliveryStatus === doc.deliveryStatus) {
+      return next();
+    }
+
+    // ── Return Flow Triggers (lender status-driven) ──
+    if (doc.deliveryStatus === 'Return Due') {
+      try {
+        const { handleReturnDueStatus } = await import('./return/return.service.js');
+        await handleReturnDueStatus(doc._id);
+      } catch (returnErr) {
+        console.error('[ReturnFlow] Error handling Return Due status:', returnErr);
+      }
+      return next();
+    }
+
+    if (doc.deliveryStatus === 'Dress Returned') {
+      try {
+        const { handleDressReturnedStatus } = await import('./return/return.service.js');
+        await handleDressReturnedStatus(doc._id);
+      } catch (returnErr) {
+        console.error('[ReturnFlow] Error handling Dress Returned status:', returnErr);
+      }
       return next();
     }
 
