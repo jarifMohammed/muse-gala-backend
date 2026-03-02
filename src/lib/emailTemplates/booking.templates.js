@@ -99,9 +99,7 @@ export const shippedToCustomerTemplate = (
   brandName,
   dressName,
   colour,
-  dressSize,
-  trackingNumber,
-  trackingUrl
+  dressSize
 ) =>
   baseEmailTemplate({
     title: 'Your dress is on its way',
@@ -115,9 +113,8 @@ export const shippedToCustomerTemplate = (
       'Dress': dressName,
       'Colour': colour,
       'Size': dressSize,
-      'Tracking Number': trackingNumber,
     })}
-      <p>Track your delivery <a href="${trackingUrl}">here</a>.</p>
+      <p>Track your delivery <a href="${process.env.FRONTEND_URL || 'https://musegala.com.au'}/account/chats">here</a>.</p>
       <p>— Muse Gala</p>
     `,
   });

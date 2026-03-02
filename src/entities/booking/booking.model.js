@@ -352,10 +352,7 @@ BookingSchema.post('save', async function (doc) {
             dress?.brand || 'N/A',
             dressName,
             dress?.colors?.[0] || 'N/A',
-            doc.size || 'N/A',
-            doc.stripePaymentIntentId || 'TRACKING123',
-            'https://track.example.com/' +
-            (doc.stripePaymentIntentId || 'TRACKING123')
+            doc.size || 'N/A'
           ),
         subject: 'Your Dress is On the Way!'
       },
