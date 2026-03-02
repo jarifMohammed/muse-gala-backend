@@ -266,7 +266,14 @@ BookingSchema.pre('save', async function (next) {
 });
 
 // Post-save hook: Send emails on status changes + trigger return flow
-BookingSchema.post('save', async function (doc, next) {
+BookingSchema.post('save', async function (doc) {
+  // Log immediately at start of hook (before any imports that could fail)
+  const logFile = './hook_debug.log';
+  const timestamp = new Date().toISOString();
+  const statusModified = doc.$locals?.statusModified || doc.isNew;
+  const msg = `[${timestamp}] POST-SAVE: ID=${doc._id} Status="${doc.deliveryStatus}" Modified=${!!statusModified} New=${doc.isNew}\n`;
+  fs.appendFileSync(logFile, msg);
+
   try {
     const { sendEmail } = await import('../../../lib/resendEmial.js');
     const {
@@ -281,16 +288,8 @@ BookingSchema.post('save', async function (doc, next) {
     const User = mongoose.model('User');
     const MasterDress = mongoose.model('MasterDress');
 
-    // Get the status modification flag from $locals
-    const statusModified = doc.$locals?.statusModified || doc.isNew;
-
-    const logFile = './hook_debug.log';
-    const timestamp = new Date().toISOString();
-    const msg = `[${timestamp}] POST-SAVE: ID=${doc._id} Status="${doc.deliveryStatus}" Modified=${!!statusModified} New=${doc.isNew}\n`;
-    fs.appendFileSync(logFile, msg);
-
     if (!statusModified) {
-      return next();
+      return;
     }
 
     // ── Return Flow Triggers (lender status-driven) ──
@@ -300,8 +299,9 @@ BookingSchema.post('save', async function (doc, next) {
         await handleReturnDueStatus(doc._id);
       } catch (returnErr) {
         console.error('[ReturnFlow] Error handling Return Due status:', returnErr);
+        fs.appendFileSync(logFile, `[${timestamp}] POST-SAVE ERROR: Return Due handling failed: ${returnErr.message}\n`);
       }
-      return next();
+      return;
     }
 
     if (doc.deliveryStatus === 'Dress Returned') {
@@ -310,8 +310,9 @@ BookingSchema.post('save', async function (doc, next) {
         await handleDressReturnedStatus(doc._id);
       } catch (returnErr) {
         console.error('[ReturnFlow] Error handling Dress Returned status:', returnErr);
+        fs.appendFileSync(logFile, `[${timestamp}] POST-SAVE ERROR: Dress Returned handling failed: ${returnErr.message}\n`);
       }
-      return next();
+      return;
     }
 
     const customer = await User.findById(doc.customer);
@@ -435,11 +436,9 @@ BookingSchema.post('save', async function (doc, next) {
         }
       }
     }
-
-    next();
   } catch (err) {
     console.error('Error in booking post-save hook:', err);
-    next();
+    fs.appendFileSync('./hook_debug.log', `[${new Date().toISOString()}] POST-SAVE ERROR: ${err.message}\n`);
   }
 });
 
