@@ -367,3 +367,236 @@ export const subscriptionAnalytics = async (req, res) => {
     });
   }
 };
+
+
+/**
+ * Refund Analytics API
+ * Returns analytics for bookings with RefundPending, Refunded, or PartiallyRefunded status
+ */
+export const refundAnalytics = async (req, res) => {
+  try {
+    const { fromDate, toDate, page = 1, limit = 20 } = req.query;
+    const pageNum = parseInt(page);
+    const pageSize = parseInt(limit);
+
+    // Build date filter
+    const dateFilter = {};
+    if (fromDate) dateFilter.$gte = new Date(fromDate);
+    if (toDate) dateFilter.$lte = new Date(toDate);
+
+    // Query for refund-related payment statuses
+    const query = {
+      paymentStatus: { $in: ['RefundPending', 'Refunded', 'PartiallyRefunded'] }
+    };
+    if (fromDate || toDate) query.createdAt = dateFilter;
+
+    // ==============================
+    // 1️⃣ Aggregate Summary Stats
+    // ==============================
+    const summaryAggregation = await Booking.aggregate([
+      { $match: query },
+      { $unwind: { path: '$refundDetails', preserveNullAndEmptyArrays: true } },
+      {
+        $group: {
+          _id: null,
+          totalRefundedBookings: { $addToSet: '$_id' },
+          totalRefundAmount: { $sum: { $ifNull: ['$refundDetails.amount', 0] } },
+          avgRefundAmount: { $avg: { $ifNull: ['$refundDetails.amount', 0] } },
+          refundCount: { $sum: { $cond: [{ $gt: ['$refundDetails.amount', 0] }, 1, 0] } }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          totalRefundedBookings: { $size: '$totalRefundedBookings' },
+          totalRefundAmount: 1,
+          avgRefundAmount: 1,
+          refundCount: 1
+        }
+      }
+    ]);
+
+    // ==============================
+    // 2️⃣ Refunds by Status
+    // ==============================
+    const byStatus = await Booking.aggregate([
+      { $match: query },
+      { $unwind: { path: '$refundDetails', preserveNullAndEmptyArrays: true } },
+      {
+        $group: {
+          _id: '$paymentStatus',
+          count: { $addToSet: '$_id' },
+          totalAmount: { $sum: { $ifNull: ['$refundDetails.amount', 0] } }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          status: '$_id',
+          count: { $size: '$count' },
+          totalAmount: 1
+        }
+      },
+      { $sort: { totalAmount: -1 } }
+    ]);
+
+    // ==============================
+    // 3️⃣ Refunds by Reason
+    // ==============================
+    const byReason = await Booking.aggregate([
+      { $match: query },
+      { $unwind: '$refundDetails' },
+      {
+        $group: {
+          _id: { $ifNull: ['$refundDetails.reason', 'No Reason Specified'] },
+          count: { $sum: 1 },
+          totalAmount: { $sum: '$refundDetails.amount' }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          reason: '$_id',
+          count: 1,
+          totalAmount: 1
+        }
+      },
+      { $sort: { totalAmount: -1 } }
+    ]);
+
+    // ==============================
+    // 4️⃣ Refunds by Type
+    // ==============================
+    const byType = await Booking.aggregate([
+      { $match: query },
+      { $unwind: '$refundDetails' },
+      {
+        $group: {
+          _id: { $ifNull: ['$refundDetails.refundType', 'Unspecified'] },
+          count: { $sum: 1 },
+          totalAmount: { $sum: '$refundDetails.amount' }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          refundType: '$_id',
+          count: 1,
+          totalAmount: 1
+        }
+      },
+      { $sort: { totalAmount: -1 } }
+    ]);
+
+    // ==============================
+    // 5️⃣ Monthly Trend
+    // ==============================
+    const monthlyTrend = await Booking.aggregate([
+      { $match: query },
+      { $unwind: '$refundDetails' },
+      {
+        $group: {
+          _id: {
+            $dateToString: { format: '%Y-%m', date: '$refundDetails.processedAt' }
+          },
+          count: { $sum: 1 },
+          totalAmount: { $sum: '$refundDetails.amount' }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          month: '$_id',
+          count: 1,
+          totalAmount: 1
+        }
+      },
+      { $sort: { month: 1 } }
+    ]);
+
+    // ==============================
+    // 6️⃣ Detailed Refund List (Paginated)
+    // ==============================
+    const skip = (pageNum - 1) * pageSize;
+
+    const [refundedBookings, totalCount] = await Promise.all([
+      Booking.find(query)
+        .populate('customer', 'firstName lastName email')
+        .populate('masterdressId', 'dressName brand')
+        .populate('refundDetails.processedBy', 'firstName lastName')
+        .select('customer masterdressId dressName paymentStatus totalAmount refundDetails createdAt')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(pageSize)
+        .lean(),
+      Booking.countDocuments(query)
+    ]);
+
+    // Format the detailed list
+    const detailedList = refundedBookings.map(booking => {
+      const totalRefunded = booking.refundDetails?.reduce((sum, r) => sum + (r.amount || 0), 0) || 0;
+      
+      return {
+        bookingId: booking._id,
+        customerName: `${booking.customer?.firstName || ''} ${booking.customer?.lastName || ''}`.trim() || 'N/A',
+        customerEmail: booking.customer?.email || 'N/A',
+        dressName: booking.masterdressId?.dressName || booking.dressName || 'N/A',
+        brand: booking.masterdressId?.brand || 'N/A',
+        originalAmount: booking.totalAmount || 0,
+        paymentStatus: booking.paymentStatus,
+        totalRefunded,
+        refundDetails: booking.refundDetails?.map(r => ({
+          refundType: r.refundType || 'Unspecified',
+          amount: r.amount || 0,
+          reason: r.reason || 'No reason',
+          status: r.status || 'N/A',
+          processedAt: r.processedAt,
+          processedBy: r.processedBy ? `${r.processedBy.firstName || ''} ${r.processedBy.lastName || ''}`.trim() : 'System',
+          stripeRefundId: r.stripeRefundId || null
+        })) || [],
+        bookingDate: booking.createdAt
+      };
+    });
+
+    // ==============================
+    // 7️⃣ Return Response
+    // ==============================
+    const summary = summaryAggregation[0] || {
+      totalRefundedBookings: 0,
+      totalRefundAmount: 0,
+      avgRefundAmount: 0,
+      refundCount: 0
+    };
+
+    return res.status(200).json({
+      success: true,
+      message: 'Refund analytics fetched successfully',
+      summary: {
+        totalRefundedBookings: summary.totalRefundedBookings,
+        totalRefundAmount: summary.totalRefundAmount,
+        avgRefundAmount: Math.round(summary.avgRefundAmount * 100) / 100,
+        totalRefundTransactions: summary.refundCount
+      },
+      byStatus,
+      byReason,
+      byType,
+      monthlyTrend,
+      refunds: {
+        data: detailedList,
+        pagination: {
+          currentPage: pageNum,
+          itemsPerPage: pageSize,
+          totalItems: totalCount,
+          totalPages: Math.ceil(totalCount / pageSize)
+        }
+      }
+    });
+  } catch (err) {
+    console.error('❌ Error fetching refund analytics:', err);
+    return res.status(500).json({
+      success: false,
+      message: 'Server Error',
+      error: err.message
+    });
+  }
+};
