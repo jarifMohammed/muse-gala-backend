@@ -1,4 +1,5 @@
 import { generateResponse } from '../../../lib/responseFormate.js';
+import { cloudinaryUpload } from '../../../lib/cloudinaryUpload.js';
 import {
     getReturnPageData,
     submitReturn,
@@ -36,13 +37,27 @@ export const getReturnPageController = async (req, res) => {
 export const submitReturnController = async (req, res) => {
     try {
         const { token } = req.params;
-        const { returnMethod, trackingNumber, returnNotes, receiptPhoto } = req.body;
+        const { returnMethod, trackingNumber, returnNotes } = req.body;
+
+        // Handle receipt photo upload if file is provided
+        let receiptPhotoUrl = null;
+        const receiptFile = req.files?.receiptPhoto?.[0];
+        if (receiptFile) {
+            const uploadResult = await cloudinaryUpload(
+                receiptFile.path,
+                `return-receipt-${Date.now()}`,
+                'return-receipts'
+            );
+            if (uploadResult && uploadResult.secure_url) {
+                receiptPhotoUrl = uploadResult.secure_url;
+            }
+        }
 
         const result = await submitReturn(token, {
             returnMethod,
             trackingNumber,
             returnNotes,
-            receiptPhoto
+            receiptPhoto: receiptPhotoUrl
         });
 
         generateResponse(res, 200, true, result.message, result);

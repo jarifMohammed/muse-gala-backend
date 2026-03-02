@@ -13,6 +13,7 @@ import {
     superAdminOrAdminMiddleware,
     lenderMiddleware
 } from '../../../core/middlewares/authMiddleware.js';
+import { multerUpload } from '../../../core/middlewares/multer.js';
 
 const router = express.Router();
 
@@ -31,7 +32,7 @@ router.post('/lender/report-issue/:bookingId', verifyToken, lenderMiddleware, re
 // ── Public Routes (No Auth — Secure Token) ──
 // These MUST be LAST because /:token is a wildcard
 router.get('/:token', getReturnPageController);
-router.post('/:token/submit', submitReturnController);
+router.post('/:token/submit', multerUpload([{ name: 'receiptPhoto', maxCount: 1 }]), submitReturnController);
 
 
 export default router;
