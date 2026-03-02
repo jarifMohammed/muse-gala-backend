@@ -14,9 +14,9 @@ export const generateReturnToken = async (bookingId) => {
     // Generate a 32-char URL-safe token
     const token = nanoid(32);
 
-    // Expiry: 14 days after rental end date
+    // Expiry: 1 month (30 days) after rental end date
     const expiresAt = new Date(booking.rentalEndDate);
-    expiresAt.setDate(expiresAt.getDate() + 14);
+    expiresAt.setDate(expiresAt.getDate() + 30);
 
     // Store on the booking using direct update to avoid triggering hooks
     await Booking.findByIdAndUpdate(bookingId, {
