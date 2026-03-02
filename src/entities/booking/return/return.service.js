@@ -81,12 +81,8 @@ export const handleReturnDueStatus = async (bookingId) => {
 
     if (!booking) throw new Error('Booking not found');
 
-    // Generate return token if not already generated
-    if (!booking.returnToken) {
-        await generateReturnToken(bookingId);
-        // Re-fetch to get the token
-        await booking.populate('customer', 'firstName name email');
-    }
+    // Always generate/regenerate return token to update expiry date
+    await generateReturnToken(bookingId);
 
     // Re-fetch to get the updated token from DB
     const updatedBooking = await Booking.findById(bookingId)
