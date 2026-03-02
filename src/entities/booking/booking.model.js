@@ -275,7 +275,7 @@ BookingSchema.post('save', async function (doc) {
   fs.appendFileSync(logFile, msg);
 
   try {
-    const { sendEmail } = await import('../../../lib/resendEmial.js');
+    const { sendEmail } = await import('../../lib/resendEmial.js');
     const {
       shipmentPreparingTemplate,
       labelReadyTemplate,
@@ -284,7 +284,7 @@ BookingSchema.post('save', async function (doc) {
       returnInitiatedTemplate,
       shippedToLenderTemplate,
       bookingCompletedTemplate
-    } = await import('../../../lib/emailTemplates/booking.templates.js');
+    } = await import('../../lib/emailTemplates/booking.templates.js');
     const User = mongoose.model('User');
     const MasterDress = mongoose.model('MasterDress');
 
