@@ -66,6 +66,10 @@ const BookingSchema = new Schema(
       type: String,
       required: true
     },
+    color: {
+      type: String,
+      default: ''
+    },
     deliveryMethod: {
       type: String,
       enum: ['Shipping', 'Pickup', 'Manual booking'],
