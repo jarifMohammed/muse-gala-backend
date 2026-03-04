@@ -104,7 +104,7 @@ export const getApprovedDresses = async (filters, page, limit, skip) => {
   }
 
   const [data, totalItems] = await Promise.all([
-    listings
+    Listing
       .find(query)
       .skip(skip)
       .limit(limit)
@@ -113,7 +113,7 @@ export const getApprovedDresses = async (filters, page, limit, skip) => {
         select: 'fullName firstName lastName email longitude latitude'
       })
       .lean(),
-    listings.countDocuments(query)
+    Listing.countDocuments(query)
   ]);
   // ----------------------
   if (totalItems === 0) {
