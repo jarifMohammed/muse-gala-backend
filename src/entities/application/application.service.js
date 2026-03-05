@@ -27,9 +27,6 @@ export const createApplication = async (data) => {
     throw new Error('User with this email is already a lender.');
   }
 
-  // Generate random password for the applicant (saved in DB but not emailed to them)
-  const tempPassword = generateRandomPassword(10);
-
   let user;
   if (existingUser) {
     // Update existing user record (not lender, maybe role=USER)
@@ -37,7 +34,6 @@ export const createApplication = async (data) => {
       { email: normalizedEmail },
       {
         ...data,
-        password: tempPassword,
         status: 'pending',
         applicationSubmittedAt: new Date(),
         role: 'APPLICANT' // or keep USER, just mark status
@@ -49,7 +45,6 @@ export const createApplication = async (data) => {
     user = new User({
       ...data,
       email: normalizedEmail,
-      password: tempPassword,
       status: 'pending',
       applicationSubmittedAt: new Date(),
       role: 'APPLICANT' // temp role
@@ -57,12 +52,11 @@ export const createApplication = async (data) => {
     await user.save();
   }
 
-  // Email admin with applicant info and password
+  // Email admin with applicant info
   const adminEmailContent = newApplicationAdminTemplate({
     fullName: user.fullName || user.firstName || 'N/A',
     email: user.email,
     phoneNumber: user.phoneNumber || 'N/A',
-    tempPassword: tempPassword,
     businessName: user.businessName || 'N/A'
   });
 
@@ -193,7 +187,8 @@ export const updateApplication = async (id, data) => {
     const adminEmailContent = applicationApprovedAdminTemplate({
       fullName: user.fullName || user.firstName || 'N/A',
       email: user.email,
-      phoneNumber: user.phoneNumber || 'N/A'
+      phoneNumber: user.phoneNumber || 'N/A',
+      tempPassword
     });
 
     const userEmailContent = applicationApprovedTemplate({

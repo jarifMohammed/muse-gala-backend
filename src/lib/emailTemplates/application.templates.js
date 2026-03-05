@@ -8,7 +8,7 @@ import { baseEmailTemplate, createInfoBox, createStatusBadge } from './baseTempl
 /**
  * Email sent to admin when a new lender application is submitted
  */
-export const newApplicationAdminTemplate = ({ fullName, email, phoneNumber, tempPassword, businessName }) => {
+export const newApplicationAdminTemplate = ({ fullName, email, phoneNumber, businessName }) => {
   const content = `
     <div class="content-left">
       <p>A new lender application has been submitted and requires your review.</p>
@@ -17,8 +17,7 @@ export const newApplicationAdminTemplate = ({ fullName, email, phoneNumber, temp
     'Applicant Name': fullName || 'N/A',
     'Email': email,
     'Phone': phoneNumber || 'N/A',
-    'Business Name': businessName || 'N/A',
-    'Temporary Password': tempPassword
+    'Business Name': businessName || 'N/A'
   })}
 
       <p class="text-muted text-small mt-20">Please review and approve/reject the application in the admin panel.</p>
@@ -91,7 +90,7 @@ export const applicationApprovedTemplate = ({ fullName, email, tempPassword }) =
 /**
  * Email sent to admin when an application is approved
  */
-export const applicationApprovedAdminTemplate = ({ fullName, email, phoneNumber }) => {
+export const applicationApprovedAdminTemplate = ({ fullName, email, phoneNumber, tempPassword }) => {
   const content = `
     <div class="content-left">
       <p>A lender application has been approved.</p>
@@ -100,6 +99,7 @@ export const applicationApprovedAdminTemplate = ({ fullName, email, phoneNumber 
     'Lender Name': fullName || 'N/A',
     'Email': email,
     'Phone': phoneNumber || 'N/A',
+    'Temporary Password': tempPassword,
     'Status': 'Approved'
   })}
 
