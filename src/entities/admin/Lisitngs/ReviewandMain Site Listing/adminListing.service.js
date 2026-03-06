@@ -487,7 +487,7 @@ export const getNearestLendersByDressIdService = async (
   dressId,
   userLatitude,
   userLongitude,
-  radius = 10000
+  radius = 50000 // 50km
 ) => {
   if (!mongoose.Types.ObjectId.isValid(dressId)) {
     throw new Error('Invalid dress ID');
@@ -499,7 +499,7 @@ export const getNearestLendersByDressIdService = async (
     throw new Error('No lenders associated with this dress');
   }
 
-  // Find lenders within radius and sort by distance
+  // Find lenders within 50km radius and sort by distance
   const nearestLenders = await User.aggregate([
     {
       $geoNear: {
@@ -508,7 +508,7 @@ export const getNearestLendersByDressIdService = async (
           coordinates: [parseFloat(userLongitude), parseFloat(userLatitude)]
         },
         distanceField: 'distance',
-        maxDistance: radius, // in meters
+        maxDistance: radius, // 50km in meters
         spherical: true,
         query: {
           _id: { $in: dress.lenderIds },
@@ -517,7 +517,7 @@ export const getNearestLendersByDressIdService = async (
       }
     },
     {
-      $sort: { distance: 1 } // Nearest first
+      $sort: { distance: 1 }
     },
     {
       $project: {
@@ -529,6 +529,16 @@ export const getNearestLendersByDressIdService = async (
       }
     }
   ]);
+
+  // If no nearby lenders found, return all lenders globally with the dress
+  if (!nearestLenders || nearestLenders.length === 0) {
+    // Find all lenders globally who have the dress
+    const globalLenders = await User.find({
+      _id: { $in: dress.lenderIds },
+      role: 'LENDER'
+    }).select('_id name email location');
+    return globalLenders;
+  }
 
   return nearestLenders;
 };
