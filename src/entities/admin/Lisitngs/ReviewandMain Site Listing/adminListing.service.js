@@ -38,7 +38,7 @@ export const getApprovedDresses = async (filters, page, limit, skip) => {
   // GEO / POSTCODE FILTER
   // ----------------------
   if ((filters.latitude && filters.longitude) || filters.postcode) {
-    const searchRadius = filters.radius || 2000;
+      const searchRadius = filters.radius || 50000;
     let lenderIds = [];
     if (filters.postcode) {
       // Postcode based
