@@ -7,12 +7,12 @@ const { Schema } = mongoose;
 const RentalPriceSchema = new Schema({
   fourDays: {
     type: Number,
-    
+
     min: [0, 'Price must be positive'],
   },
   eightDays: {
     type: Number,
-   
+
     min: [0, 'Price must be positive'],
   },
   _id: false
@@ -39,7 +39,7 @@ const ListingSchema = new Schema(
       type: String,
       trim: true,
     },
-   size: {
+    size: {
       type: [String],
       enum: [
         "XXS",
@@ -55,16 +55,16 @@ const ListingSchema = new Schema(
         "Custom"
       ],
       required: true,
-      trim:true
+      trim: true
     },
-    status:{
-    type:String,
-    enum:['available','booked','not-available'],
-    default:'available'
+    status: {
+      type: String,
+      enum: ['available', 'booked', 'not-available'],
+      default: 'available'
     },
     colour: {
-      type: String,
-      trim: true,
+      type: [String],
+      default: [],
     },
     condition: {
       type: String,
@@ -83,22 +83,22 @@ const ListingSchema = new Schema(
     category: {
       type: String,
       enum: ['Formal',
-    'Casual',
-    'Cocktail',
-    'Bridal',
-    'Party',
-    'Evening Gown',
-    'Ball Gown',
-    'Red Carpet',
-    'Designer',
-    'Haute Couture',
-    'Luxury',
-    'Other'],
+        'Casual',
+        'Cocktail',
+        'Bridal',
+        'Party',
+        'Evening Gown',
+        'Ball Gown',
+        'Red Carpet',
+        'Designer',
+        'Haute Couture',
+        'Luxury',
+        'Other'],
       required: [true, 'Category is required'],
     },
-  
+
     media: {
-      type: [String], 
+      type: [String],
       validate: [(val) => val.length > 0, 'At least one media item is required'],
     },
     description: {
@@ -121,7 +121,7 @@ const ListingSchema = new Schema(
       type: [String],
       default: [],
     },
-    
+
     insurance: {
       type: Boolean,
       default: false,
@@ -144,7 +144,7 @@ const ListingSchema = new Schema(
       type: Boolean,
       default: false,
     },
-},
+  },
   {
     timestamps: true,
     toJSON: {
@@ -159,5 +159,5 @@ const ListingSchema = new Schema(
 );
 
 
-const Listing =  mongoose.model('Listings', ListingSchema);
+const Listing = mongoose.model('Listings', ListingSchema);
 export default Listing

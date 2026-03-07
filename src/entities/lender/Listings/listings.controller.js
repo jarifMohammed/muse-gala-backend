@@ -7,11 +7,14 @@ export const listDress = async (req, res) => {
     const dataWithLender = {
       ...req.body,
       lenderId,
-
     };
 
-    const dress = await listingService.createDress(dataWithLender);
+    // Normalise colour: accept string or array
+    if (dataWithLender.colour && !Array.isArray(dataWithLender.colour)) {
+      dataWithLender.colour = [dataWithLender.colour];
+    }
 
+    const dress = await listingService.createDress(dataWithLender);
 
     generateResponse(res, 201, true, "Dress listed successfully", dress);
   } catch (error) {
@@ -23,13 +26,13 @@ export const getAllDresses = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const skip = (page - 1) * limit;
-   const filters = {
+  const filters = {
     status: req.query.status === "All" ? undefined : req.query.status,
     search: req.query.search || undefined,  // Add search filter here
   };
 
   try {
-    const { data, pagination } = await listingService.getAllDresses(page, limit, skip,filters);
+    const { data, pagination } = await listingService.getAllDresses(page, limit, skip, filters);
     return res.status(200).json({
       success: true,
       message: 'Fetched dresses successfully',
@@ -58,19 +61,26 @@ export const getDressesByLender = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
+    // colour can be a comma-separated list: ?colour=Red,Black
+    const rawColour = req.query.colour;
+    const colours = rawColour
+      ? rawColour.split(',').map((c) => c.trim()).filter(Boolean)
+      : [];
+
     const filters = {
       search: req.query.search,
       condition: req.query.condition,
       status: req.query.status,
       pickupOption: req.query.pickupOption,
-      size: req.query.size
+      size: req.query.size,
+      colour: colours.length ? colours : undefined
     };
 
     const { data, pagination } = await listingService.getDressesByLenderId(
       lenderId, page, limit, skip, filters
     );
 
-    generateResponse(res, 200, true, "Fetched lender's dresses", {data, pagination});
+    generateResponse(res, 200, true, "Fetched lender's dresses", { data, pagination });
   } catch (error) {
     generateResponse(res, 500, false, "Failed to fetch lender's dresses", error.message);
   }
@@ -79,7 +89,11 @@ export const getDressesByLender = async (req, res) => {
 
 export const updateDress = async (req, res) => {
   try {
-    const updated = await listingService.updateDress(req.params.id, req.body);
+    const updateData = { ...req.body };
+    if (updateData.colour && !Array.isArray(updateData.colour)) {
+      updateData.colour = [updateData.colour];
+    }
+    const updated = await listingService.updateDress(req.params.id, updateData);
     if (!updated) return generateResponse(res, 404, false, "Dress not found");
     generateResponse(res, 200, true, "Dress updated successfully", updated);
   } catch (error) {
@@ -97,7 +111,7 @@ export const deleteDress = async (req, res) => {
   }
 };
 
-export const getLenderStatsController = async (req,res) => {
+export const getLenderStatsController = async (req, res) => {
   try {
     const lenderId = req.user?._id || req.params.lenderId;
     if (!lenderId) {
@@ -105,7 +119,7 @@ export const getLenderStatsController = async (req,res) => {
     }
 
     const stats = await listingService.getLenderStats(lenderId);
- 
+
     generateResponse(res, 200, true, "Fetched lender stats successfully", stats);
   } catch (error) {
     generateResponse(res, 500, false, "Failed to fetch lender stats", error.message);

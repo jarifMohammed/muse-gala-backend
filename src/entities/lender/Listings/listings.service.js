@@ -75,7 +75,8 @@ export const getDressesByLenderId = async (
     condition: filters.condition === 'All' ? undefined : filters.condition,
     status: filters.status === 'All' ? undefined : filters.status,
     pickupOption:
-      filters.pickupOption === 'All' ? undefined : filters.pickupOption
+      filters.pickupOption === 'All' ? undefined : filters.pickupOption,
+    colour: Array.isArray(filters.colour) && filters.colour.length ? filters.colour : undefined
   };
 
   const query = { lenderId };
@@ -102,10 +103,15 @@ export const getDressesByLenderId = async (
   if (normalizedFilters.size)
     andConditions.push({ size: normalizedFilters.size });
 
+  // colour filter: match listings whose colour array contains ANY of the selected colours
+  if (normalizedFilters.colour)
+    andConditions.push({ colour: { $in: normalizedFilters.colour } });
+
   // Apply $and if there are conditions
   if (andConditions.length > 0) {
     query.$and = andConditions;
   }
+
 
   const dresses = await listings
     .find(query)
