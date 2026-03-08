@@ -6,6 +6,7 @@ import {
   sendDeactivationCodeService,
   startDeactivationService,
   updateLenderByIdService,
+  updateLenderLocationService,
   verifyDeactivationCodeService
 } from "./account.service.js";
 import { Dispute } from "../../dispute/dispute.model.js";
@@ -50,7 +51,7 @@ export const startDeactivation = async (req, res) => {
 
 export const sendDeactivationCode = async (req, res) => {
   try {
-    const result = await sendDeactivationCodeService(req.user._id); 
+    const result = await sendDeactivationCodeService(req.user._id);
     generateResponse(res, 200, true, "Verification code sent", result);
   } catch (error) {
     generateResponse(res, 500, false, "Failed to send verification code", error.message);
@@ -65,6 +66,16 @@ export const verifyDeactivationCode = async (req, res) => {
     generateResponse(res, 200, true, "Account deactivated", result);
   } catch (error) {
     generateResponse(res, 500, false, "Failed to deactivate account", error.message);
+  }
+};
+
+
+export const updateLenderLocation = async (req, res) => {
+  try {
+    const result = await updateLenderLocationService(req.params.id, req.body);
+    generateResponse(res, 200, true, 'Location updated successfully', result);
+  } catch (error) {
+    generateResponse(res, 500, false, 'Failed to update location', error.message);
   }
 };
 

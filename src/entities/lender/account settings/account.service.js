@@ -98,3 +98,43 @@ export const verifyDeactivationCodeService = async ({ userId, code }) => {
     lenderId: lender._id
   };
 };
+
+export const updateLenderLocationService = async (id, locationData) => {
+  const { latitude, longitude, city, state, country, postcode, suburb, placeName, address } = locationData;
+
+  if (latitude === undefined || longitude === undefined) {
+    throw new Error('latitude and longitude are required');
+  }
+
+  const lender = await User.findById(id);
+  if (!lender) throw new Error('Lender not found');
+
+  lender.latitude = latitude;
+  lender.longitude = longitude;
+  if (city !== undefined) lender.city = city;
+  if (state !== undefined) lender.state = state;
+  if (country !== undefined) lender.country = country;
+  if (postcode !== undefined) lender.postcode = postcode;
+  if (suburb !== undefined) lender.suburb = suburb;
+  if (placeName !== undefined) lender.placeName = placeName;
+  if (address !== undefined) lender.address = address;
+
+  // save() triggers the pre-save hook that rebuilds the GeoJSON location field
+  await lender.save();
+
+  return {
+    message: 'Location updated successfully.',
+    location: {
+      latitude: lender.latitude,
+      longitude: lender.longitude,
+      city: lender.city,
+      state: lender.state,
+      country: lender.country,
+      postcode: lender.postcode,
+      suburb: lender.suburb,
+      placeName: lender.placeName,
+      address: lender.address,
+      geoJson: lender.location
+    }
+  };
+};
