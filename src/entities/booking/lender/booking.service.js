@@ -153,30 +153,7 @@ export const acceptOrRejectBookingService = async ({
       booking.deliveryStatus = 'RejectedByLender';
       booking.paymentStatus = 'NotCharged';
       await booking.save({ session });
-
-      // Send rejection email
-      try {
-        const customer = await User.findById(booking.customer);
-        const MasterDress = mongoose.model('MasterDress');
-        const dress = await MasterDress.findById(booking.masterdressId);
-
-        if (customer?.email) {
-          await sendEmail({
-            to: customer.email,
-            subject: 'Update on your booking',
-            html: bookingRejectedTemplate(
-              customer.firstName || customer.name || 'Customer',
-              dress?.brandName || 'N/A',
-              dress?.dressName || 'Your Dress',
-              dress?.colour || 'N/A',
-              booking.size || 'N/A',
-              booking.deliveryMethod || 'Shipping'
-            )
-          });
-        }
-      } catch (emailError) {
-        console.error('Error sending rejection email:', emailError);
-      }
+        // Email sending removed as per requirement
 
       await session.commitTransaction();
       session.endSession();

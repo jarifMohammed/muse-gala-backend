@@ -46,23 +46,23 @@ export const bookingConfirmedTemplate = (
   bookingId
 ) =>
   baseEmailTemplate({
-    title: 'Booking Confirmation',
-    subtitle: 'Your booking has been confirmed by the lender and your rental is now secured.',
+    title: 'Order Accepted by Lender',
+    subtitle: 'Your order has been accepted by the lender and your rental is now secured.',
     content: `
       <p>Hi ${userName},</p>
-      <p>Thank you — your booking has been confirmed by the lender and your rental is now secured.</p>
-      <h3>Item Details:</h3>
+      <p>Good news — your order has been accepted by the lender! Your dress is now reserved for your rental period.</p>
+      <h3>Rental Details:</h3>
       ${createInfoBox({
       'Brand': brandName,
       'Style': dressName,
       'Size': dressSize,
       'Colour': colour,
       'Booking ID': bookingId || 'N/A',
-      'Rental Period': `${startDate} - ${endDate}`,
-      'Total Amount': `$${totalAmount}`,
+      'Rental Dates': `${startDate} to ${endDate}`,
+      'Total Paid': `$${totalAmount}`,
     })}
-      <p>We’ll keep you updated with any important information as your rental approaches. If you need anything in the meantime, feel free to reach out.</p>
-      <p>We’ll send you a return link before your due date to confirm return.</p>
+      <p>We’ll notify you as soon as your dress is shipped or ready for pickup. If you have any questions, our team is here to help.</p>
+      <p>Enjoy your special occasion!</p>
       <p>— Muse Gala</p>
     `,
   });
