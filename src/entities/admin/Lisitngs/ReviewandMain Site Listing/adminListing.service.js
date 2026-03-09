@@ -26,7 +26,9 @@ export const getApprovedDresses = async (filters, page, limit, skip) => {
 
   // Category filter
   if (filters.category && filters.category !== 'All') {
-    query.category = filters.category;
+    query.category = {
+      $in: Array.isArray(filters.category) ? filters.category : [filters.category]
+    };
   }
 
   // Lender filter
@@ -38,7 +40,7 @@ export const getApprovedDresses = async (filters, page, limit, skip) => {
   // GEO / POSTCODE FILTER
   // ----------------------
   if ((filters.latitude && filters.longitude) || filters.postcode) {
-      const searchRadius = filters.radius || 50000;
+    const searchRadius = filters.radius || 50000;
     let lenderIds = [];
     if (filters.postcode) {
       // Postcode based
@@ -223,7 +225,8 @@ export const adminUpdateDress = async (listingId, adminData = {}) => {
           listingIds: [listing._id.toString()],
           lenderIds: [listing.lenderId],
           sizes: Array.isArray(listing.size) ? listing.size : [listing.size],
-          colors: listing.colour ? [listing.colour] : [],
+          colors: Array.isArray(listing.colour) ? listing.colour : (listing.colour ? [listing.colour] : []),
+          categories: Array.isArray(listing.category) ? listing.category : (listing.category ? [listing.category] : []),
           occasions: listing.occasion || [],
           media: listing.media || [],
           thumbnail: listing.media?.[0] || null,
@@ -261,8 +264,21 @@ export const adminUpdateDress = async (listingId, adminData = {}) => {
         // Always update brand to the latest lender's selected brand
         if (listing.brand) masterDress.brand = listing.brand;
 
-        if (listing.colour && !masterDress.colors.includes(listing.colour))
-          masterDress.colors.push(listing.colour);
+        // Merge colors without duplicates
+        if (listing.colour) {
+          const incomingColours = Array.isArray(listing.colour) ? listing.colour : [listing.colour];
+          masterDress.colors = Array.from(
+            new Set([...masterDress.colors, ...incomingColours])
+          );
+        }
+
+        // Merge categories without duplicates
+        if (listing.category) {
+          const incomingCategories = Array.isArray(listing.category) ? listing.category : [listing.category];
+          masterDress.categories = Array.from(
+            new Set([...(masterDress.categories || []), ...incomingCategories])
+          );
+        }
         if (listing.occasion && listing.occasion.length)
           masterDress.occasions = Array.from(
             new Set([...masterDress.occasions, ...listing.occasion])
@@ -416,7 +432,7 @@ export const getAllMasterDresses = async (query) => {
     ];
   }
 
-   // Price range filtering (basePrice is ROOT level)
+  // Price range filtering (basePrice is ROOT level)
   if (query.minPrice || query.maxPrice) {
     filter.basePrice = {};
 
@@ -434,7 +450,7 @@ export const getAllMasterDresses = async (query) => {
   }
 
 
-   // 🏠 Local pickup filter (independent)
+  // 🏠 Local pickup filter (independent)
   if (query.localPickup !== undefined) {
     filter['shippingDetails.isLocalPickup'] =
       query.localPickup === 'true';

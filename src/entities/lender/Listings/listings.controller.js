@@ -9,9 +9,15 @@ export const listDress = async (req, res) => {
       lenderId,
     };
 
-    // Normalise colour: accept string or array
+    // Normalise fields: accept string or array
     if (dataWithLender.colour && !Array.isArray(dataWithLender.colour)) {
       dataWithLender.colour = [dataWithLender.colour];
+    }
+    if (dataWithLender.size && !Array.isArray(dataWithLender.size)) {
+      dataWithLender.size = [dataWithLender.size];
+    }
+    if (dataWithLender.category && !Array.isArray(dataWithLender.category)) {
+      dataWithLender.category = [dataWithLender.category];
     }
 
     const dress = await listingService.createDress(dataWithLender);
@@ -92,6 +98,12 @@ export const updateDress = async (req, res) => {
     const updateData = { ...req.body };
     if (updateData.colour && !Array.isArray(updateData.colour)) {
       updateData.colour = [updateData.colour];
+    }
+    if (updateData.size && !Array.isArray(updateData.size)) {
+      updateData.size = [updateData.size];
+    }
+    if (updateData.category && !Array.isArray(updateData.category)) {
+      updateData.category = [updateData.category];
     }
     const updated = await listingService.updateDress(req.params.id, updateData);
     if (!updated) return generateResponse(res, 404, false, "Dress not found");

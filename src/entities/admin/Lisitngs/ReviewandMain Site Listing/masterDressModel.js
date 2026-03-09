@@ -15,11 +15,11 @@ const MasterDressSchema = new Schema(
     sizes: [{ type: String }],
     colors: [{ type: String }],
     occasions: [{ type: String }],
+    categories: [{ type: String }],
 
     content: {
       description: { type: String },
       fabric: { type: String },
-      careInstructions: { type: String },
     },
 
     media: [{ type: String, required: true }],

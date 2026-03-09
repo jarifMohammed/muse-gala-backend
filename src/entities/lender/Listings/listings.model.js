@@ -81,19 +81,7 @@ const ListingSchema = new Schema(
       required: [true, 'Dress condition is required'],
     },
     category: {
-      type: String,
-      enum: ['Formal',
-        'Casual',
-        'Cocktail',
-        'Bridal',
-        'Party',
-        'Evening Gown',
-        'Ball Gown',
-        'Red Carpet',
-        'Designer',
-        'Haute Couture',
-        'Luxury',
-        'Other'],
+      type: [String],
       required: [true, 'Category is required'],
     },
 
@@ -112,10 +100,6 @@ const ListingSchema = new Schema(
     material: {
       type: String,
       trim: true,
-    },
-    careInstructions: {
-      type: String,
-      enum: ['Dry Clean Only', 'Hand Wash', 'Machine Wash', 'Delicate Wash', 'Other'],
     },
     occasion: {
       type: [String],
