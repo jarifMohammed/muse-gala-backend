@@ -85,6 +85,7 @@ const BookingSchema = new Schema(
     deliveryStatus: {
       type: String,
       enum: [
+        "Cannot Fullfill",
         'Pending',
         'Confirmed',
         'PreparingShipment',

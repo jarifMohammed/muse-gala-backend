@@ -167,7 +167,7 @@ export const acceptOrRejectBookingService = async ({
     if (!user) throw new Error('Customer not found');
 
     if (!user.stripeCustomerId || !user.defaultPaymentMethodId) {
-      throw new Error('No saved payment method');
+      throw new Error('Customer has no payment method. Cannot accept booking.');
     }
 
     let finalAmount = booking.totalAmount;
