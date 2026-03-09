@@ -99,7 +99,9 @@ export const shippedToCustomerTemplate = (
   brandName,
   dressName,
   colour,
-  dressSize
+  dressSize,
+  trackingNumber,
+  shippingMethod
 ) =>
   baseEmailTemplate({
     title: 'Your dress is on its way',
@@ -109,11 +111,13 @@ export const shippedToCustomerTemplate = (
       <p>Your dress has been dispatched.</p>
       <h3>Dress details</h3>
       ${createInfoBox({
-      'Brand': brandName,
-      'Dress': dressName,
-      'Colour': colour,
-      'Size': dressSize,
-    })}
+        'Brand': brandName,
+        'Dress': dressName,
+        'Colour': colour,
+        'Size': dressSize,
+        'Shipping Method': shippingMethod || 'N/A',
+        'Tracking Number': trackingNumber || 'N/A',
+      })}
       <p>Track your delivery <a href="${process.env.FRONTEND_URL || 'https://musegala.com.au'}/account/chats">here</a>.</p>
       <p>— Muse Gala</p>
     `,

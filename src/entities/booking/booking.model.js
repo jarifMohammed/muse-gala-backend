@@ -58,6 +58,8 @@ const BookingSchema = new Schema(
     listingId: { type: String },
     city: { type: String, default: '' },
     state: { type: String, default: '' },
+    trackingNumber: { type: String },
+    shippingMethod: { type: String },
     country: { type: String, default: '' },
     postcode: { type: String, default: '' },
     suburb: { type: String, default: '' },
@@ -121,7 +123,9 @@ const BookingSchema = new Schema(
         'Overdue',
         'Escalated',
         'HighRisk',
-        'NonReturned'
+        'NonReturned',
+        "AwaitingPickup",
+        "ReadyForPickup"
       ],
       default: 'Pending',
       index: true
@@ -357,7 +361,9 @@ BookingSchema.post('save', async function (doc) {
             dress?.brand || 'N/A',
             dressName,
             dress?.colors?.[0] || 'N/A',
-            doc.size || 'N/A'
+            doc.size || 'N/A',
+            doc.trackingNumber || '',
+            doc.shippingMethod || ''
           ),
         subject: 'Your Dress is On the Way!'
       },
