@@ -1,3 +1,62 @@
+// Local Pickup: Ready for Pickup
+export const readyForPickupTemplate = (
+  userName,
+  brandName,
+  dressName,
+  colour,
+  dressSize,
+  pickupLocation,
+  pickupTime
+) =>
+  baseEmailTemplate({
+    title: 'Your dress is ready for pickup',
+    subtitle: 'Your dress is ready for pickup',
+    content: `
+      <p>Hi ${userName},</p>
+      <p>Your dress is ready for pickup at the following location:</p>
+      <h3>Pickup Details</h3>
+      ${createInfoBox({
+        'Brand': brandName,
+        'Dress': dressName,
+        'Colour': colour,
+        'Size': dressSize,
+        'Pickup Location': pickupLocation || 'N/A',
+        'Pickup Time': pickupTime || 'N/A',
+      })}
+      <p>Enjoy your event!</p>
+      <p>— Muse Gala</p>
+    `,
+  });
+
+// Local Pickup: Dress Picked Up
+export const pickedUpByCustomerTemplate = (
+  userName,
+  brandName,
+  dressName,
+  colour,
+  dressSize,
+  pickupLocation,
+  pickupTime
+) =>
+  baseEmailTemplate({
+    title: 'Dress Picked Up',
+    subtitle: 'Dress Picked Up',
+    content: `
+      <p>Hi ${userName},</p>
+      <p>You have successfully picked up your dress.</p>
+      <h3>Pickup Details</h3>
+      ${createInfoBox({
+        'Brand': brandName,
+        'Dress': dressName,
+        'Colour': colour,
+        'Size': dressSize,
+        'Pickup Location': pickupLocation || 'N/A',
+        'Pickup Time': pickupTime || 'N/A',
+      })}
+      <p>Enjoy your event!</p>
+      <p>— Muse Gala</p>
+    `,
+  });
 // ✅ Booking Email Templates
 import { baseEmailTemplate, createInfoBox, createStatusBadge } from './baseTemplate.js';
 

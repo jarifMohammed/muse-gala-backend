@@ -64,6 +64,7 @@ const BookingSchema = new Schema(
     postcode: { type: String, default: '' },
     suburb: { type: String, default: '' },
     address: { type: String, default: '' },
+    pickupTime: { type: Date },
     size: {
       type: String,
       required: true
@@ -292,7 +293,9 @@ BookingSchema.post('save', async function (doc) {
       dressDeliveredTemplate,
       returnInitiatedTemplate,
       shippedToLenderTemplate,
-      bookingCompletedTemplate
+      bookingCompletedTemplate,
+      readyForPickupTemplate,
+      pickedUpByCustomerTemplate
     } = await import('../../lib/emailTemplates/booking.templates.js');
     const User = mongoose.model('User');
     const MasterDress = mongoose.model('MasterDress');
@@ -366,6 +369,34 @@ BookingSchema.post('save', async function (doc) {
             doc.shippingMethod || ''
           ),
         subject: 'Your Dress is On the Way!'
+      },
+      ReadyForPickup: {
+        recipients: [customer],
+        template: () =>
+          readyForPickupTemplate(
+            customer?.firstName || customer?.name || 'Customer',
+            dress?.brand || 'N/A',
+            dressName,
+            dress?.colors?.[0] || 'N/A',
+            doc.size || 'N/A',
+            doc.address || 'N/A',
+            doc.pickupTime ? new Date(doc.pickupTime).toLocaleString() : 'N/A'
+          ),
+        subject: 'Your Dress is Ready for Pickup!'
+      },
+      PickedUpByCustomer: {
+        recipients: [customer],
+        template: () =>
+          pickedUpByCustomerTemplate(
+            customer?.firstName || customer?.name || 'Customer',
+            dress?.brand || 'N/A',
+            dressName,
+            dress?.colors?.[0] || 'N/A',
+            doc.size || 'N/A',
+            doc.address || 'N/A',
+            doc.pickupTime ? new Date(doc.pickupTime).toLocaleString() : 'N/A'
+          ),
+        subject: 'Dress Picked Up!'
       },
       Delivered: {
         recipients: [customer],
