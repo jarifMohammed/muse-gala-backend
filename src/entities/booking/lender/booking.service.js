@@ -45,7 +45,7 @@ export const getAllocatedBookingsForLenderService = async (lenderId, query) => {
   const [bookings, totalItems] = await Promise.all([
     Booking.find(filter)
       .populate([
-        { path: 'customer', select: 'name email phone' },
+        { path: 'customer', select: 'name firstName lastName email phoneNumber' },
         { path: 'masterdressId' } // master dress document
       ])
       .sort({ createdAt: -1 })
@@ -95,7 +95,7 @@ export const getUpcomingBookingsForLenderService = async (lenderId, query) => {
   const [bookings, totalItems] = await Promise.all([
     Booking.find(filter)
       .populate([
-        { path: 'customer', select: 'name email phone' },
+        { path: 'customer', select: 'name firstName lastName email phone' },
         { path: 'masterdressId' }
       ])
       .sort({ rentalStartDate: 1 }) // closest upcoming first
@@ -153,7 +153,7 @@ export const acceptOrRejectBookingService = async ({
       booking.deliveryStatus = 'RejectedByLender';
       booking.paymentStatus = 'NotCharged';
       await booking.save({ session });
-        // Email sending removed as per requirement
+      // Email sending removed as per requirement
 
       await session.commitTransaction();
       session.endSession();
