@@ -82,14 +82,14 @@ export const getLenderOverviewService = async (lenderId, period) => {
   // -----------------------------
   // 5️⃣ UPCOMING BOOKINGS (future rentals)
   // -----------------------------
-const upcomingOrders = await Booking.find({
-  "allocatedLender.lenderId": lenderId,
-  paymentStatus: "Paid",
-  rentalStartDate: { $gt: new Date() },
-})
-.populate("customer", "name email")
-.populate("masterdressId", "masterDressId dressName media thumbnail")
-.lean();
+  const upcomingOrders = await Booking.find({
+    "allocatedLender.lenderId": lenderId,
+    paymentStatus: "Paid",
+    rentalStartDate: { $gt: new Date() },
+  })
+    .populate("customer", "firstName lastName email")
+    .populate("masterdressId", "masterDressId dressName media thumbnail")
+    .lean();
 
 
 
@@ -140,7 +140,7 @@ export const getRentalCalendarService = async ({ masterDressId, month, year }) =
   }
 
   const bookings = await Booking.find(filter)
-    .populate("customer", "name email")
+    .populate("customer", "firstName lastName email")
     .populate("masterdressId", "dressName")
     .lean();
 
@@ -149,7 +149,7 @@ export const getRentalCalendarService = async ({ masterDressId, month, year }) =
     rentalStartDate: b.rentalStartDate,
     rentalEndDate: b.rentalEndDate,
     dressName: b.masterdressId?.dressName || "Unknown",
-    customer: b.customer?.name || "Unknown",
+    customer: b.customer?.firstName + " " + b.customer?.lastName || "Unknown",
     status: b.paymentStatus,
   }));
 
