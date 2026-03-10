@@ -5,7 +5,7 @@ import { getLenderOverviewService, getRentalCalendarService } from "./overview.s
 export const getLenderOverview = async (req, res) => {
   try {
     const lenderId = req.user._id;
-    const { period = "monthly" } = req.query; 
+    const { period = "monthly" } = req.query;
 
     const data = await getLenderOverviewService(lenderId, period);
 
@@ -19,18 +19,22 @@ export const getLenderOverview = async (req, res) => {
 
 export const getRentalCalendar = async (req, res) => {
   try {
-    let { masterDressId, month, year } = req.query;
+    let { masterDressId, startDate, endDate } = req.query;
 
     const now = new Date();
 
-    // Default month/year
-    if (!month) month = now.toLocaleString("en-US", { month: "long" }); 
-    if (!year) year = now.getFullYear();
+    // Default: current month range if not provided
+    if (!startDate) {
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+    }
+    if (!endDate) {
+      endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59).toISOString();
+    }
 
     const data = await getRentalCalendarService({
       masterDressId,
-      month,
-      year: Number(year),
+      startDate,
+      endDate,
     });
 
     return generateResponse(res, 200, true, "Calendar data fetched", data);

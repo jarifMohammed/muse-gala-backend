@@ -107,30 +107,16 @@ export const getLenderOverviewService = async (lenderId, period) => {
 
 
 
-export const getRentalCalendarService = async ({ masterDressId, month, year }) => {
-  // Month mapping
-  const monthMap = {
-    january: 1, february: 2, march: 3, april: 4,
-    may: 5, june: 6, july: 7, august: 8,
-    september: 9, october: 10, november: 11, december: 12
-  };
-
-  // Convert month name → number (if month is string)
-  if (typeof month === "string" && isNaN(month)) {
-    month = monthMap[month.toLowerCase()];
-  }
-
-  month = Number(month);
-
-  const startOfMonth = new Date(year, month - 1, 1);
-  const endOfMonth = new Date(year, month, 0, 23, 59, 59);
+export const getRentalCalendarService = async ({ masterDressId, startDate, endDate }) => {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
 
   const filter = {
     // overlap logic
     $or: [
       {
-        rentalStartDate: { $lte: endOfMonth },
-        rentalEndDate: { $gte: startOfMonth }
+        rentalStartDate: { $lte: end },
+        rentalEndDate: { $gte: start }
       }
     ]
   };
@@ -154,8 +140,8 @@ export const getRentalCalendarService = async ({ masterDressId, month, year }) =
   }));
 
   return {
-    month,
-    year,
+    startDate,
+    endDate,
     totalEvents: events.length,
     events
   };
