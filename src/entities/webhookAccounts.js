@@ -11,7 +11,7 @@ export const connectedAccountWebhookHandler = async (req, res) => {
 
   let event;
   try {
-    
+
     event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
     console.log('✅ Webhook signature verified:', event.type);
   } catch (err) {

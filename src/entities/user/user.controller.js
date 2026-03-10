@@ -1,5 +1,5 @@
 import { generateResponse } from "../../lib/responseFormate.js";
-import { 
+import {
   getAllUsers,
   getAllAdmins,
   getAllSellers,
@@ -13,9 +13,9 @@ import {
   createMultipleAvatar,
   updateMultipleAvatar,
   deleteMultipleAvatar,
-  
 
-  updateUserFileService,  
+
+  updateUserFileService,
   deleteUserFileService,
   uploadUserFileService
 
@@ -91,7 +91,7 @@ export const deleteUserController = async (req, res) => {
 export const createAvatarController = async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     if (!req.files?.profileImage) {
       return generateResponse(res, 400, false, 'Profile image is required');
     }
@@ -112,7 +112,7 @@ export const updateAvatarProfileController = async (req, res) => {
   try {
     const { id } = req.params;
     const user = await updateAvatarProfile(id, req.files);
-    generateResponse(res, 200, true, 'Avatar updated successfully', user); 
+    generateResponse(res, 200, true, 'Avatar updated successfully', user);
   } catch (error) {
     console.error(error);
     generateResponse(res, 500, false, 'Failed to update avatar', error.message);
