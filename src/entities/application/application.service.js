@@ -42,9 +42,11 @@ export const createApplication = async (data) => {
     );
   } else {
     // Create new user with application info
+    const tempPassword = generateRandomPassword();
     user = new User({
       ...data,
       email: normalizedEmail,
+      password: tempPassword,
       status: 'pending',
       applicationSubmittedAt: new Date(),
       role: 'APPLICANT' // temp role
