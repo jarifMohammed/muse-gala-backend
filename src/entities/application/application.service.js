@@ -106,7 +106,15 @@ export const getAllApplicationsService = async ({
     role: { $in: ['LENDER', 'APPLICANT'] }
   };
 
-  if (status && status !== 'all') query.status = status;
+  if (status && status !== 'all') {
+    query.status = status;
+    // Explicitly enforce the target role based on the status
+    if (status === 'approved') {
+      query.role = 'LENDER';
+    } else if (status === 'pending' || status === 'rejected') {
+      query.role = 'APPLICANT';
+    }
+  }
   if (regex) {
     query.$or = [
       { fullName: { $regex: regex } },
