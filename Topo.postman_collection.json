@@ -8406,7 +8406,7 @@
 									"raw": "{\n    \"basePrice\":200,\n    \"insuranceFee\":5\n}"
 								},
 								"url": {
-									"raw": "{{base_url}}admin/master-dresses/?minPrice=100&maxPrice=150",
+									"raw": "{{base_url}}admin/master-dresses/?shipping=true",
 									"host": [
 										"{{base_url}}admin"
 									],
@@ -8416,12 +8416,8 @@
 									],
 									"query": [
 										{
-											"key": "minPrice",
-											"value": "100"
-										},
-										{
-											"key": "maxPrice",
-											"value": "150"
+											"key": "shipping",
+											"value": "true"
 										}
 									]
 								}
@@ -8943,6 +8939,282 @@
 									],
 									"cookie": [],
 									"body": "{\n    \"status\": true,\n    \"message\": \"Master dresses fetched successfully\",\n    \"data\": [\n        {\n            \"_id\": \"68f8a2911019ada133e50357\",\n            \"dressName\": \"Test dress 3\",\n            \"listingIds\": [\n                \"68f84f5460bf438b1f74d00f\"\n            ],\n            \"lenderIds\": [\n                \"68b4ccdf48a847b1a6708729\"\n            ],\n            \"sizes\": [\n                \"L\",\n                \"XL\"\n            ],\n            \"colors\": [\n                \"#ed1d1d\"\n            ],\n            \"occasions\": [],\n            \"media\": [\n                \"https://res.cloudinary.com/dyxwchbmh/image/upload/v1762929827/master_dresses/media/vmctwiw3qhnvrrcqwddk.png\",\n                \"https://res.cloudinary.com/dyxwchbmh/image/upload/v1762929828/master_dresses/media/ffquylp5eitgntnwutyd.png\",\n                \"https://res.cloudinary.com/dyxwchbmh/image/upload/v1762929829/master_dresses/media/rtxdjbi5vqrbdszmblga.png\"\n            ],\n            \"thumbnail\": \"https://res.cloudinary.com/dyxwchbmh/image/upload/v1762157877/master_dresses/thumbnails/uixyleqc26eoigscwchx.png\",\n            \"shippingDetails\": {\n                \"isLocalPickup\": false,\n                \"isShippingAvailable\": true\n            },\n            \"insuranceFee\": 5,\n            \"basePrice\": 150,\n            \"rrpPrice\": 250,\n            \"isActive\": true,\n            \"createdAt\": \"2025-10-22T09:23:29.877Z\",\n            \"updatedAt\": \"2025-11-12T06:43:50.373Z\",\n            \"slug\": \"test-dress-3\",\n            \"masterDressId\": \"Muse-0001\",\n            \"__v\": 65\n        },\n        {\n            \"_id\": \"6901eb48c049f404b6144889\",\n            \"dressName\": \"Jordan Lynn\",\n            \"listingIds\": [\n                \"68f9e6574bdd8532f213a786\"\n            ],\n            \"lenderIds\": [\n                \"68b4ccdf48a847b1a6708729\",\n                \"68b68106aaeb0dc5eb930045\"\n            ],\n            \"sizes\": [\n                \"XXXL\"\n            ],\n            \"colors\": [\n                \"blue\"\n            ],\n            \"occasions\": [],\n            \"media\": [\n                \"https://res.cloudinary.com/dyxwchbmh/image/upload/v1762929907/master_dresses/media/ltffqptmhg5xbfjbo0ll.png\",\n                \"https://res.cloudinary.com/dyxwchbmh/image/upload/v1762929909/master_dresses/media/rvmtnt2a6uof7fxsgf26.png\"\n            ],\n            \"thumbnail\": \"https://res.cloudinary.com/dyxwchbmh/image/upload/v1762157933/master_dresses/thumbnails/enjuwdhml7hd7qbu7l8w.png\",\n            \"shippingDetails\": {\n                \"isLocalPickup\": true,\n                \"isShippingAvailable\": true\n            },\n            \"insuranceFee\": 5,\n            \"basePrice\": 150,\n            \"rrpPrice\": 320,\n            \"isActive\": true,\n            \"createdAt\": \"2025-10-29T10:24:08.998Z\",\n            \"updatedAt\": \"2025-11-12T06:45:10.077Z\",\n            \"slug\": \"jordan-lynn\",\n            \"masterDressId\": \"Muse-0003\",\n            \"__v\": 8\n        }\n    ],\n    \"pagination\": {\n        \"currentPage\": 1,\n        \"itemsPerPage\": 10,\n        \"totalItems\": 2,\n        \"totalPages\": 1\n    }\n}"
+								},
+								{
+									"name": "get all master dress by shipping methoid",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"basePrice\":200,\n    \"insuranceFee\":5\n}"
+										},
+										"url": {
+											"raw": "{{base_url}}admin/master-dresses/?localPickup=true",
+											"host": [
+												"{{base_url}}admin"
+											],
+											"path": [
+												"master-dresses",
+												""
+											],
+											"query": [
+												{
+													"key": "localPickup",
+													"value": "true"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": null,
+									"header": [
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Access-Control-Allow-Credentials",
+											"value": "true"
+										},
+										{
+											"key": "X-RateLimit-Limit",
+											"value": "100"
+										},
+										{
+											"key": "X-RateLimit-Remaining",
+											"value": "99"
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 13 Jan 2026 00:35:01 GMT"
+										},
+										{
+											"key": "X-RateLimit-Reset",
+											"value": "1768265371"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"9ed-WzSx4YYZS9b+yG9QnvEpWmV4dCw\""
+										},
+										{
+											"key": "Vary",
+											"value": "Accept-Encoding"
+										},
+										{
+											"key": "Content-Encoding",
+											"value": "br"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": true,\n    \"message\": \"Master dresses fetched successfully\",\n    \"data\": [\n        {\n            \"_id\": \"68f9b7d6fd5b2bc92e28e12f\",\n            \"dressName\": \"Test dress 1\",\n            \"listingIds\": [\n                \"68f84ae160bf438b1f74d009\"\n            ],\n            \"lenderIds\": [\n                \"68b4ccdf48a847b1a6708729\"\n            ],\n            \"sizes\": [\n                \"XL\"\n            ],\n            \"colors\": [\n                \"#ed1d1d\"\n            ],\n            \"occasions\": [],\n            \"media\": [\n                \"https://res.cloudinary.com/dyxwchbmh/image/upload/v1762929863/master_dresses/media/c0avzwnwo6agfrp1oimj.jpg\",\n                \"https://res.cloudinary.com/dyxwchbmh/image/upload/v1762929865/master_dresses/media/ddcu28uxeskceommnnbp.jpg\"\n            ],\n            \"thumbnail\": \"https://res.cloudinary.com/dyxwchbmh/image/upload/v1762157899/master_dresses/thumbnails/digkn9cp3wjwc1wnps91.png\",\n            \"shippingDetails\": {\n                \"isLocalPickup\": true,\n                \"isShippingAvailable\": true\n            },\n            \"insuranceFee\": 50,\n            \"basePrice\": 250,\n            \"rrpPrice\": 255,\n            \"isActive\": true,\n            \"createdAt\": \"2025-10-23T05:06:30.690Z\",\n            \"updatedAt\": \"2025-11-12T06:44:25.717Z\",\n            \"slug\": \"test-dress-1\",\n            \"masterDressId\": \"Muse-0002\",\n            \"__v\": 19\n        },\n        {\n            \"_id\": \"6901eb48c049f404b6144889\",\n            \"dressName\": \"Jordan Lynn\",\n            \"listingIds\": [\n                \"68f9e6574bdd8532f213a786\"\n            ],\n            \"lenderIds\": [\n                \"68b4ccdf48a847b1a6708729\",\n                \"68b68106aaeb0dc5eb930045\"\n            ],\n            \"sizes\": [\n                \"XXXL\"\n            ],\n            \"colors\": [\n                \"blue\"\n            ],\n            \"occasions\": [],\n            \"media\": [\n                \"https://res.cloudinary.com/dyxwchbmh/image/upload/v1762929907/master_dresses/media/ltffqptmhg5xbfjbo0ll.png\",\n                \"https://res.cloudinary.com/dyxwchbmh/image/upload/v1762929909/master_dresses/media/rvmtnt2a6uof7fxsgf26.png\"\n            ],\n            \"thumbnail\": \"https://res.cloudinary.com/dyxwchbmh/image/upload/v1762157933/master_dresses/thumbnails/enjuwdhml7hd7qbu7l8w.png\",\n            \"shippingDetails\": {\n                \"isLocalPickup\": true,\n                \"isShippingAvailable\": true\n            },\n            \"insuranceFee\": 5,\n            \"basePrice\": 150,\n            \"rrpPrice\": 320,\n            \"isActive\": true,\n            \"createdAt\": \"2025-10-29T10:24:08.998Z\",\n            \"updatedAt\": \"2025-11-12T06:45:10.077Z\",\n            \"slug\": \"jordan-lynn\",\n            \"masterDressId\": \"Muse-0003\",\n            \"__v\": 8\n        },\n        {\n            \"_id\": \"6902dd3429866d4392e55068\",\n            \"dressName\": \"Test dress 2\",\n            \"listingIds\": [\n                \"68f84f4b60bf438b1f74d00c\"\n            ],\n            \"lenderIds\": [\n                \"68b4ccdf48a847b1a6708729\"\n            ],\n            \"sizes\": [\n                \"S\",\n                \"L\",\n                \"XL\"\n            ],\n            \"colors\": [\n                \"#ed1d1d\"\n            ],\n            \"occasions\": [],\n            \"media\": [\n                \"https://res.cloudinary.com/dyxwchbmh/image/upload/v1762929973/master_dresses/media/x3olxzrx5bmcoi1sgwgd.jpg\"\n            ],\n            \"thumbnail\": \"https://res.cloudinary.com/dyxwchbmh/image/upload/v1762158010/master_dresses/thumbnails/avd43r1zbsmrngjtk2df.png\",\n            \"shippingDetails\": {\n                \"isLocalPickup\": true,\n                \"isShippingAvailable\": true\n            },\n            \"insuranceFee\": 454,\n            \"basePrice\": 45,\n            \"rrpPrice\": 45146,\n            \"isActive\": true,\n            \"createdAt\": \"2025-10-30T03:36:20.169Z\",\n            \"updatedAt\": \"2025-11-12T06:46:14.342Z\",\n            \"slug\": \"test-dress-2\",\n            \"masterDressId\": \"Muse-0005\",\n            \"__v\": 1\n        }\n    ],\n    \"pagination\": {\n        \"currentPage\": 1,\n        \"itemsPerPage\": 10,\n        \"totalItems\": 3,\n        \"totalPages\": 1\n    }\n}"
+								},
+								{
+									"name": "get all master dress",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"basePrice\":200,\n    \"insuranceFee\":5\n}"
+										},
+										"url": {
+											"raw": "{{base_url}}admin/master-dresses/?shipping=true",
+											"host": [
+												"{{base_url}}admin"
+											],
+											"path": [
+												"master-dresses",
+												""
+											],
+											"query": [
+												{
+													"key": "shipping",
+													"value": "true"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": null,
+									"header": [
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Access-Control-Allow-Credentials",
+											"value": "true"
+										},
+										{
+											"key": "X-RateLimit-Limit",
+											"value": "100"
+										},
+										{
+											"key": "X-RateLimit-Remaining",
+											"value": "96"
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 13 Jan 2026 00:36:41 GMT"
+										},
+										{
+											"key": "X-RateLimit-Reset",
+											"value": "1768265371"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"1053-TsQSr75vihaaihkQhjs3N58G5H4\""
+										},
+										{
+											"key": "Vary",
+											"value": "Accept-Encoding"
+										},
+										{
+											"key": "Content-Encoding",
+											"value": "br"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": true,\n    \"message\": \"Master dresses fetched successfully\",\n    \"data\": [\n        {\n            \"_id\": \"68f9b7d6fd5b2bc92e28e12f\",\n            \"dressName\": \"Test dress 1\",\n            \"listingIds\": [\n                \"68f84ae160bf438b1f74d009\"\n            ],\n            \"lenderIds\": [\n                \"68b4ccdf48a847b1a6708729\"\n            ],\n            \"sizes\": [\n                \"XL\"\n            ],\n            \"colors\": [\n                \"#ed1d1d\"\n            ],\n            \"occasions\": [],\n            \"media\": [\n                \"https://res.cloudinary.com/dyxwchbmh/image/upload/v1762929863/master_dresses/media/c0avzwnwo6agfrp1oimj.jpg\",\n                \"https://res.cloudinary.com/dyxwchbmh/image/upload/v1762929865/master_dresses/media/ddcu28uxeskceommnnbp.jpg\"\n            ],\n            \"thumbnail\": \"https://res.cloudinary.com/dyxwchbmh/image/upload/v1762157899/master_dresses/thumbnails/digkn9cp3wjwc1wnps91.png\",\n            \"shippingDetails\": {\n                \"isLocalPickup\": true,\n                \"isShippingAvailable\": true\n            },\n            \"insuranceFee\": 50,\n            \"basePrice\": 250,\n            \"rrpPrice\": 255,\n            \"isActive\": true,\n            \"createdAt\": \"2025-10-23T05:06:30.690Z\",\n            \"updatedAt\": \"2025-11-12T06:44:25.717Z\",\n            \"slug\": \"test-dress-1\",\n            \"masterDressId\": \"Muse-0002\",\n            \"__v\": 19\n        },\n        {\n            \"_id\": \"6901eb48c049f404b6144889\",\n            \"dressName\": \"Jordan Lynn\",\n            \"listingIds\": [\n                \"68f9e6574bdd8532f213a786\"\n            ],\n            \"lenderIds\": [\n                \"68b4ccdf48a847b1a6708729\",\n                \"68b68106aaeb0dc5eb930045\"\n            ],\n            \"sizes\": [\n                \"XXXL\"\n            ],\n            \"colors\": [\n                \"blue\"\n            ],\n            \"occasions\": [],\n            \"media\": [\n                \"https://res.cloudinary.com/dyxwchbmh/image/upload/v1762929907/master_dresses/media/ltffqptmhg5xbfjbo0ll.png\",\n                \"https://res.cloudinary.com/dyxwchbmh/image/upload/v1762929909/master_dresses/media/rvmtnt2a6uof7fxsgf26.png\"\n            ],\n            \"thumbnail\": \"https://res.cloudinary.com/dyxwchbmh/image/upload/v1762157933/master_dresses/thumbnails/enjuwdhml7hd7qbu7l8w.png\",\n            \"shippingDetails\": {\n                \"isLocalPickup\": true,\n                \"isShippingAvailable\": true\n            },\n            \"insuranceFee\": 5,\n            \"basePrice\": 150,\n            \"rrpPrice\": 320,\n            \"isActive\": true,\n            \"createdAt\": \"2025-10-29T10:24:08.998Z\",\n            \"updatedAt\": \"2025-11-12T06:45:10.077Z\",\n            \"slug\": \"jordan-lynn\",\n            \"masterDressId\": \"Muse-0003\",\n            \"__v\": 8\n        },\n        {\n            \"_id\": \"6902dd3029866d4392e55057\",\n            \"dressName\": \"Levi Mcclure\",\n            \"listingIds\": [\n                \"68f84f5460bf438b1f74d00f\"\n            ],\n            \"lenderIds\": [\n                \"68b4ccdf48a847b1a6708729\"\n            ],\n            \"sizes\": [\n                \"XXS\"\n            ],\n            \"colors\": [\n                \"red\"\n            ],\n            \"occasions\": [],\n            \"media\": [\n                \"https://res.cloudinary.com/dyxwchbmh/image/upload/v1762929956/master_dresses/media/kdxcbdblpfynen2uaide.png\"\n            ],\n            \"thumbnail\": \"https://res.cloudinary.com/dyxwchbmh/image/upload/v1762157990/master_dresses/thumbnails/pv5sbverlbinizsrgfro.png\",\n            \"shippingDetails\": {\n                \"isLocalPickup\": false,\n                \"isShippingAvailable\": true\n            },\n            \"insuranceFee\": 545,\n            \"basePrice\": 564,\n            \"rrpPrice\": 541,\n            \"isActive\": true,\n            \"createdAt\": \"2025-10-30T03:36:16.246Z\",\n            \"updatedAt\": \"2025-11-12T06:45:56.734Z\",\n            \"slug\": \"levi-mcclure\",\n            \"masterDressId\": \"Muse-0004\",\n            \"__v\": 2\n        },\n        {\n            \"_id\": \"6902dd3429866d4392e55068\",\n            \"dressName\": \"Test dress 2\",\n            \"listingIds\": [\n                \"68f84f4b60bf438b1f74d00c\"\n            ],\n            \"lenderIds\": [\n                \"68b4ccdf48a847b1a6708729\"\n            ],\n            \"sizes\": [\n                \"S\",\n                \"L\",\n                \"XL\"\n            ],\n            \"colors\": [\n                \"#ed1d1d\"\n            ],\n            \"occasions\": [],\n            \"media\": [\n                \"https://res.cloudinary.com/dyxwchbmh/image/upload/v1762929973/master_dresses/media/x3olxzrx5bmcoi1sgwgd.jpg\"\n            ],\n            \"thumbnail\": \"https://res.cloudinary.com/dyxwchbmh/image/upload/v1762158010/master_dresses/thumbnails/avd43r1zbsmrngjtk2df.png\",\n            \"shippingDetails\": {\n                \"isLocalPickup\": true,\n                \"isShippingAvailable\": true\n            },\n            \"insuranceFee\": 454,\n            \"basePrice\": 45,\n            \"rrpPrice\": 45146,\n            \"isActive\": true,\n            \"createdAt\": \"2025-10-30T03:36:20.169Z\",\n            \"updatedAt\": \"2025-11-12T06:46:14.342Z\",\n            \"slug\": \"test-dress-2\",\n            \"masterDressId\": \"Muse-0005\",\n            \"__v\": 1\n        },\n        {\n            \"_id\": \"6902dd3729866d4392e55079\",\n            \"dressName\": \"Ruby Ellis\",\n            \"listingIds\": [\n                \"68f84ae160bf438b1f74d009\",\n                \"68f9e6574bdd8532f213a786\",\n                \"68f84f4b60bf438b1f74d00c\"\n            ],\n            \"lenderIds\": [\n                \"68b4ccdf48a847b1a6708729\",\n                \"68b4ccdf48a847b1a6708729\",\n                \"68b68106aaeb0dc5eb930045\"\n            ],\n            \"sizes\": [\n                \"5XL\"\n            ],\n            \"colors\": [\n                \"blue\"\n            ],\n            \"occasions\": [],\n            \"media\": [\n                \"https://res.cloudinary.com/dyxwchbmh/image/upload/v1762930102/master_dresses/media/jmuabe4pse0l0skeuiki.jpg\",\n                \"https://res.cloudinary.com/dyxwchbmh/image/upload/v1762930104/master_dresses/media/vxc3szgllwaxwwek1qrt.png\"\n            ],\n            \"thumbnail\": \"https://res.cloudinary.com/dyxwchbmh/image/upload/v1762930042/master_dresses/thumbnails/mdmdocrraswyhoxcimsf.jpg\",\n            \"shippingDetails\": {\n                \"isLocalPickup\": false,\n                \"isShippingAvailable\": true\n            },\n            \"insuranceFee\": 545,\n            \"basePrice\": 545,\n            \"rrpPrice\": 5456,\n            \"isActive\": true,\n            \"createdAt\": \"2025-10-30T03:36:23.936Z\",\n            \"updatedAt\": \"2025-11-12T06:48:25.444Z\",\n            \"slug\": \"ruby-ellis\",\n            \"masterDressId\": \"Muse-0006\",\n            \"__v\": 3\n        }\n    ],\n    \"pagination\": {\n        \"currentPage\": 1,\n        \"itemsPerPage\": 10,\n        \"totalItems\": 5,\n        \"totalPages\": 1\n    }\n}"
 								}
 							]
 						}
@@ -19387,6 +19659,14 @@
 									"body": "{\n    \"status\": true,\n    \"message\": \"Manual booking created successfully\",\n    \"data\": {\n        \"customer\": \"68c8da59cad164267af9f48d\",\n        \"listing\": \"68f9e6574bdd8532f213a786\",\n        \"masterdressId\": \"6902dd3729866d4392e55079\",\n        \"dressName\": \"Ruby Ellis\",\n        \"rentalStartDate\": \"2025-12-10T10:00:00.000Z\",\n        \"rentalEndDate\": \"2025-12-14T10:00:00.000Z\",\n        \"rentalDurationDays\": 4,\n        \"city\": \"\",\n        \"state\": \"\",\n        \"country\": \"\",\n        \"postcode\": \"\",\n        \"suburb\": \"\",\n        \"address\": \"\",\n        \"size\": \"L\",\n        \"deliveryMethod\": \"Shipping\",\n        \"lenderPrice\": 0,\n        \"rentalFee\": 653,\n        \"shippingFee\": 10,\n        \"insuranceFee\": 0,\n        \"totalAmount\": 545,\n        \"deliveryStatus\": \"Pending\",\n        \"stripePaymentIntentId\": \"pi_3SaOV0RttDLyWEo3088NowQT\",\n        \"paymentStatus\": \"Paid\",\n        \"payoutStatus\": \"pending\",\n        \"tryOnRequested\": false,\n        \"tryOnAllowedByLender\": false,\n        \"tryOnOutcome\": \"ProceededWithRental\",\n        \"isManualBooking\": false,\n        \"statusHistory\": [\n            {\n                \"status\": \"Pending\",\n                \"timestamp\": \"2025-12-03T22:26:15.574Z\",\n                \"updatedBy\": \"68c8da59cad164267af9f48d\",\n                \"_id\": \"6930b9079203b51d4f95d732\",\n                \"id\": \"6930b9079203b51d4f95d732\"\n            }\n        ],\n        \"refundDetails\": [],\n        \"createdAt\": \"2025-12-03T22:26:15.574Z\",\n        \"updatedAt\": \"2025-12-03T22:26:15.574Z\",\n        \"id\": \"6930b9079203b51d4f95d731\"\n    }\n}"
 								}
 							]
+						},
+						{
+							"name": "New Request",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
 						}
 					]
 				},
