@@ -107,12 +107,12 @@ export const getLenderOverviewService = async (lenderId, period) => {
 
 
 
-export const getRentalCalendarService = async ({ masterDressId, startDate, endDate }) => {
+export const getRentalCalendarService = async ({ lenderId, masterDressId, startDate, endDate }) => {
   const start = new Date(startDate);
   const end = new Date(endDate);
 
   const filter = {
-    // overlap logic
+    "allocatedLender.lenderId": lenderId,  // ← scoped to logged-in lender
     $or: [
       {
         rentalStartDate: { $lte: end },
@@ -135,8 +135,9 @@ export const getRentalCalendarService = async ({ masterDressId, startDate, endDa
     rentalStartDate: b.rentalStartDate,
     rentalEndDate: b.rentalEndDate,
     dressName: b.masterdressId?.dressName || "Unknown",
-    customer: b.customer?.firstName + " " + b.customer?.lastName || "Unknown",
-    status: b.paymentStatus,
+    customer: (b.customer?.firstName + " " + b.customer?.lastName).trim() || "Unknown",
+    paymentStatus: b.paymentStatus,
+    deliveryStatus: b.deliveryStatus,
   }));
 
   return {

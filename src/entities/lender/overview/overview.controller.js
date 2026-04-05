@@ -19,6 +19,7 @@ export const getLenderOverview = async (req, res) => {
 
 export const getRentalCalendar = async (req, res) => {
   try {
+    const lenderId = req.user._id;
     let { masterDressId, startDate, endDate } = req.query;
 
     const now = new Date();
@@ -32,6 +33,7 @@ export const getRentalCalendar = async (req, res) => {
     }
 
     const data = await getRentalCalendarService({
+      lenderId,
       masterDressId,
       startDate,
       endDate,
