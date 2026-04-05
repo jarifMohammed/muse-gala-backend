@@ -5,6 +5,7 @@ import { Booking } from '../../booking/booking.model.js';
 import { ChatRoom } from '../../message/chatRoom.model.js';
 import Payment from './payment.model.js';
 import { refundProcessedTemplate } from '../../../lib/emailTemplates/dispute.templates.js';
+import { bookingCreatedTemplate } from '../../../lib/emailTemplates/booking.templates.js';
 
 /**
  * Handle Stripe webhook events for booking payments
@@ -18,22 +19,37 @@ export const handleBookingPaymentEvents = async (event) => {
         const session = event.data.object;
         const { paymentId, bookingId } = session.metadata;
 
-        const payment = await Payment.findById(paymentId);
-        if (!payment) return console.warn(`Payment not found: ${paymentId}`);
-        if (payment.status === 'Paid') return; // already handled
+        if (paymentId) {
+          const payment = await Payment.findById(paymentId);
+          if (payment && payment.status !== 'Paid') {
+            payment.status = 'Paid';
+            payment.stripe.paymentIntentId = session.payment_intent;
+            await payment.save();
+          }
+        }
 
-        // Update Payment
-        payment.status = 'Paid';
-        payment.stripe.paymentIntentId = session.payment_intent;
-        await payment.save();
+        if (!bookingId) break;
 
-        // Update Booking
-        // Update Booking (atomic update instead of save())
+        // Update Booking if it's a direct payment
+        const updateData = {};
+        if (session.mode === 'payment') {
+          updateData.paymentStatus = 'Paid';
+        }
+
         const booking = await Booking.findByIdAndUpdate(
           bookingId,
-          { paymentStatus: 'Paid' },
+          updateData,
           { new: true }
-        ).populate('customer');
+        ).populate(['customer', 'lender', 'masterdressId']);
+
+        if (!booking) {
+          console.warn(`Booking not found: ${bookingId}`);
+          break;
+        }
+
+        console.log(
+          `Checkout session completed (${session.mode}): Booking ${bookingId}`
+        );
 
         console.log(
           `Checkout session completed: Payment ${paymentId}, Booking ${bookingId}`
@@ -52,7 +68,7 @@ export const handleBookingPaymentEvents = async (event) => {
           );
         } else {
           // ensure both are in participants even if room already exists
-          const updated = await ChatRoom.findByIdAndUpdate(
+          await ChatRoom.findByIdAndUpdate(
             chatRoom._id,
             {
               $addToSet: {
@@ -63,25 +79,25 @@ export const handleBookingPaymentEvents = async (event) => {
             },
             { new: true }
           );
-          chatRoom = updated;
           console.log(
             `ChatRoom already exists, ensured participants [${booking.customer._id}, ${booking.lender._id}]`
           );
         }
 
-        // Send email alerts to admins who opted in
-        const adminsToNotify = await User.find({
-          role: 'ADMIN',
-          'notificationPreferences.receiveEmailAlertsForNewOrders': {
-            $exists: true,
-            $eq: true
-          }
-        }).select('email lastName notificationPreferences');
+        // Send email alerts to admins who opted in (Only for actual payments)
+        if (paymentId) {
+          const adminsToNotify = await User.find({
+            role: 'ADMIN',
+            'notificationPreferences.receiveEmailAlertsForNewOrders': {
+              $exists: true,
+              $eq: true
+            }
+          }).select('email lastName notificationPreferences');
 
-        if (adminsToNotify.length > 0) {
-          const subject = '📦 New Order Received';
+          if (adminsToNotify.length > 0) {
+            const subject = '📦 New Order Received';
 
-          const html = `
+            const html = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #eee; border-radius: 8px; overflow: hidden;">
           <!-- Header -->
           <div style="background-color: #4CAF50; color: white; padding: 16px; text-align: center;">
@@ -120,16 +136,57 @@ export const handleBookingPaymentEvents = async (event) => {
         </div>
         `;
 
-          // Send email to each admin
-          await Promise.all(
-            adminsToNotify.map((admin) =>
-              sendEmail({ to: admin.email, subject, html })
-            )
-          );
+            // Send email to each admin
+            await Promise.all(
+              adminsToNotify.map((admin) =>
+                sendEmail({ to: admin.email, subject, html })
+              )
+            );
 
-          console.log(
-            `📧 Email sent to ${adminsToNotify.length} admin(s) about new order`
-          );
+            console.log(
+              `📧 Email sent to ${adminsToNotify.length} admin(s) about new order`
+            );
+          }
+        }
+
+        // Send "Pending Lender Approval" confirmation email to customer and lender
+        try {
+          if (booking.customer?.email) {
+            await sendEmail({
+              to: booking.customer.email,
+              subject: 'Booking Confirmation - Pending Lender Approval',
+              html: bookingCreatedTemplate(
+                booking.customer.firstName || booking.customer.name || 'Customer',
+                booking.masterdressId?.brand || 'N/A',
+                booking.masterdressId?.dressName || 'N/A',
+                booking.color || booking.masterdressId?.colors?.[0] || 'N/A',
+                booking.size || 'N/A',
+                booking.deliveryMethod || 'N/A',
+                booking.rentalDurationDays?.toString() || 'N/A',
+                booking.totalAmount?.toFixed(2) || '0.00'
+              )
+            });
+          }
+
+          if (booking.lender?.email) {
+            await sendEmail({
+              to: booking.lender.email,
+              subject: 'New Booking Request for Your Dress',
+              html: bookingCreatedTemplate(
+                booking.lender.firstName || booking.lender.name || 'Lender',
+                booking.masterdressId?.brand || 'N/A',
+                booking.masterdressId?.dressName || 'N/A',
+                booking.color || booking.masterdressId?.colors?.[0] || 'N/A',
+                booking.size || 'N/A',
+                booking.deliveryMethod || 'N/A',
+                booking.rentalDurationDays?.toString() || 'N/A',
+                booking.totalAmount?.toFixed(2) || '0.00'
+              )
+            });
+          }
+          console.log(`📧 Booking confirmation emails sent for booking ${bookingId}`);
+        } catch (emailError) {
+          console.error('Error sending booking confirmation emails in webhook:', emailError);
         }
 
         break;

@@ -8,7 +8,8 @@ import {
   verifyCodeService,
   resetPasswordService,
   changePasswordService,
-
+  requestEmailUpdateService,
+  confirmEmailUpdateService
 } from './auth.service.js';
 
 
@@ -205,5 +206,40 @@ export const changePassword = async (req, res, next) => {
   }
 };
 
+export const requestEmailUpdate = async (req, res, next) => {
+  const userId = req.user._id;
+  const { newEmail } = req.body;
+  try {
+    await requestEmailUpdateService({ userId, newEmail });
+    generateResponse(res, 200, true, 'OTP sent to your new email address', null);
+  } catch (error) {
+    if (error.message === 'User ID and new email are required') {
+      generateResponse(res, 400, false, error.message, null);
+    } else if (error.message === 'Email already in use') {
+      generateResponse(res, 409, false, 'Email already in use by another account', null);
+    } else if (error.message === 'User not found') {
+      generateResponse(res, 404, false, 'User not found', null);
+    } else {
+      next(error);
+    }
+  }
+};
 
-
+export const confirmEmailUpdate = async (req, res, next) => {
+  const userId = req.user._id;
+  const { otp } = req.body;
+  try {
+    const data = await confirmEmailUpdateService({ userId, otp });
+    generateResponse(res, 200, true, 'Email updated successfully', data);
+  } catch (error) {
+    if (error.message === 'User ID and OTP are required') {
+      generateResponse(res, 400, false, error.message, null);
+    } else if (error.message === 'No pending email update found') {
+      generateResponse(res, 404, false, 'No pending email update found', null);
+    } else if (error.message === 'Invalid or expired OTP') {
+      generateResponse(res, 403, false, 'Invalid or expired OTP', null);
+    } else {
+      next(error);
+    }
+  }
+};

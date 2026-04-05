@@ -3,47 +3,47 @@ import { baseEmailTemplate, createInfoBox, createStatusBadge } from './baseTempl
 
 export const kycVerifiedTemplate = (userName) =>
   baseEmailTemplate({
-    title: 'VERIFICATION COMPLETE',
-    subtitle: 'Verification complete',
+    title: 'ID VERIFICATION COMPLETE',
+    subtitle: 'ID verification complete',
     content: `
       <p>Hi ${userName},</p>
-      <p>Your identity verification is complete.</p>
+      <p>Your ID verification is complete.</p>
       <p>Your account is now fully verified.</p>
     `,
   });
 
 export const kycRequiresInputTemplate = (userName) =>
   baseEmailTemplate({
-    title: 'VERIFICATION STILL REQUIRED',
-    subtitle: 'Verification still required',
+    title: 'ID VERIFICATION STILL REQUIRED',
+    subtitle: 'ID verification still required',
     content: `
       <p>Hi ${userName},</p>
-      <p>We need a little more information to complete your verification.</p>
+      <p>We need a little more information to complete your ID verification.</p>
       <p>Please log in to your account to continue.</p>
     `,
-    buttonText: 'CONTINUE VERIFICATION',
+    buttonText: 'CONTINUE ID VERIFICATION',
     buttonUrl: process.env.FRONTEND_URL || 'https://musegala.com.au',
   });
 
 export const kycProcessingTemplate = (userName) =>
   baseEmailTemplate({
-    title: 'VERIFICATION IN PROGRESS',
-    subtitle: 'Verification in progress',
+    title: 'ID VERIFICATION IN PROGRESS',
+    subtitle: 'ID verification in progress',
     content: `
       <p>Hi ${userName},</p>
-      <p>Your verification is currently being processed.</p>
+      <p>Your ID verification is currently being processed.</p>
       <p>We’ll notify you once it’s complete.</p>
     `,
   });
 
 export const kycFailedTemplate = (userName) =>
   baseEmailTemplate({
-    title: 'VERIFICATION INCOMPLETE',
-    subtitle: 'Verification incomplete',
+    title: 'ID VERIFICATION INCOMPLETE',
+    subtitle: 'ID verification incomplete',
     content: `
       <p>Hi ${userName},</p>
-      <p>Your verification session was not completed.</p>
-      <p>Please start a new verification session to continue.</p>
+      <p>Your ID verification session was not completed.</p>
+      <p>Please start a new ID verification session to continue.</p>
     `,
     buttonText: 'START NEW SESSION',
     buttonUrl: process.env.FRONTEND_URL || 'https://musegala.com.au',
@@ -51,12 +51,12 @@ export const kycFailedTemplate = (userName) =>
 
 export const kycInitiatedTemplate = (userName, verificationLink) =>
   baseEmailTemplate({
-    title: 'VERIFICATION REQUIRED',
-    subtitle: 'Verification required',
+    title: 'ID VERIFICATION REQUIRED',
+    subtitle: 'ID verification required',
     content: `
       <p>Hi ${userName},</p>
-      <p>To continue, please complete identity verification.</p>
+      <p>To continue, please complete ID verification.</p>
     `,
-    buttonText: 'START VERIFICATION',
+    buttonText: 'START ID VERIFICATION',
     buttonUrl: verificationLink,
   });

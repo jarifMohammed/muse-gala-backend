@@ -94,6 +94,7 @@ export const createBookingService = async ({ userId, role, body }) => {
         distance: lender.distance,
         location: lender.location,
         allocationType: 'LocalPickup',
+        listingId: lenderListing._id,
         price:
           rentalDurationDays <= 4
             ? lenderListing.rentalPrice.fourDays
@@ -125,14 +126,13 @@ export const createBookingService = async ({ userId, role, body }) => {
 
       allocatedLender = {
         lenderId: lowestPriceListing.lenderId,
+        listingId: lowestPriceListing._id,
         email: lowestPriceListing.lenderEmail || '',
         price:
           rentalDurationDays <= 4
             ? lowestPriceListing.rentalPrice.fourDays
             : lowestPriceListing.rentalPrice.eightDays,
         allocationType: 'Shipping'
-
-        // <-- NO location field at all
       };
     }
 
@@ -209,6 +209,8 @@ export const createBookingService = async ({ userId, role, body }) => {
       customerNotes: customerNotes || '',
       lenderNotes: lenderNotes || '',
       adminNotes: adminNotes || '',
+      lender: allocatedLender.lenderId,
+      listing: allocatedLender.listingId,
       allocatedLender
     };
 
@@ -251,49 +253,6 @@ export const createBookingService = async ({ userId, role, body }) => {
 
     await session.commitTransaction();
     session.endSession();
-
-    // Send booking created email after successful commit
-    try {
-      const customer = await User.findById(userId);
-      const lender = await User.findById(allocatedLender.lenderId);
-
-      if (customer?.email) {
-        await sendEmail({
-          to: customer.email,
-          subject: 'Booking Confirmation - Pending Lender Approval',
-          html: bookingCreatedTemplate(
-            customer.firstName || customer.name || 'Customer',
-            masterDress.brand || 'N/A',
-            masterDress.dressName,
-            booking.color || masterDress.colors?.[0] || 'N/A',
-            size || 'N/A',
-            deliveryMethod,
-            rentalDurationDays.toString(),
-            totalAmount.toFixed(2)
-          )
-        });
-      }
-
-      // Also notify lender
-      if (lender?.email) {
-        await sendEmail({
-          to: lender.email,
-          subject: 'New Booking Request for Your Dress',
-          html: bookingCreatedTemplate(
-            lender.firstName || lender.name || 'Lender',
-            masterDress.brand || 'N/A',
-            masterDress.dressName,
-            booking.color || masterDress.colors?.[0] || 'N/A',
-            size || 'N/A',
-            deliveryMethod,
-            rentalDurationDays.toString(),
-            totalAmount.toFixed(2)
-          )
-        });
-      }
-    } catch (emailError) {
-      console.error('Error sending booking created emails:', emailError);
-    }
 
     return booking;
   } catch (error) {

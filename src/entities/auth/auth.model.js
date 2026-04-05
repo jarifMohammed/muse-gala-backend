@@ -56,6 +56,11 @@ const UserSchema = new mongoose.Schema(
       default: null
     },
 
+    pendingEmail: {
+      type: String,
+      default: null
+    },
+
     refreshToken: {
       type: String,
       default: ''

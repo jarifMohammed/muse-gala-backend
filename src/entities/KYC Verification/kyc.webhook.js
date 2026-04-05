@@ -35,15 +35,15 @@ export const handleVerificationSessionEvent = async (event) => {
       user.stripeVerificationSessionUrl = null;
       user.stripeVerificationSessionExpiresAt = null;
 
-      // Send verification success email
+      // Send ID verification success email
       try {
         await sendEmail({
           to: user.email,
-          subject: 'Verification complete',
+          subject: 'ID verification complete',
           html: kycVerifiedTemplate(user.firstName || user.lastName || user.username || 'User')
         });
       } catch (emailError) {
-        console.error('Error sending KYC verified email:', emailError);
+        console.error('Error sending ID verification verified email:', emailError);
       }
       break;
 
@@ -54,17 +54,17 @@ export const handleVerificationSessionEvent = async (event) => {
       user.kycDetails = session;
       // Keep session info so user can resume
 
-      // Send requires input email
+      // Send ID verification still required email
       try {
         await sendEmail({
           to: user.email,
-          subject: 'Verification still required',
+          subject: 'ID verification still required',
           html: kycRequiresInputTemplate(
             user.firstName || user.lastName || user.username || 'User'
           )
         });
       } catch (emailError) {
-        console.error('Error sending KYC requires input email:', emailError);
+        console.error('Error sending ID verification requires input email:', emailError);
       }
       break;
 
@@ -75,15 +75,15 @@ export const handleVerificationSessionEvent = async (event) => {
       user.kycDetails = session;
       // Keep session info so user can resume
 
-      // Send processing email
+      // Send ID verification in progress email
       try {
         await sendEmail({
           to: user.email,
-          subject: 'Verification in progress',
+          subject: 'ID verification in progress',
           html: kycProcessingTemplate(user.firstName || user.lastName || user.username || 'User')
         });
       } catch (emailError) {
-        console.error('Error sending KYC processing email:', emailError);
+        console.error('Error sending ID verification processing email:', emailError);
       }
       break;
 
@@ -99,15 +99,15 @@ export const handleVerificationSessionEvent = async (event) => {
       user.stripeVerificationSessionUrl = null;
       user.stripeVerificationSessionExpiresAt = null;
 
-      // Send failed/expired email
+      // Send ID verification failed/expired email
       try {
         await sendEmail({
           to: user.email,
-          subject: 'Verification incomplete',
+          subject: 'ID verification incomplete',
           html: kycFailedTemplate(user.firstName || user.lastName || user.username || 'User')
         });
       } catch (emailError) {
-        console.error('Error sending KYC failed email:', emailError);
+        console.error('Error sending ID verification failed email:', emailError);
       }
       break;
 

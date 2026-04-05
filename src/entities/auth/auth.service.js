@@ -251,3 +251,52 @@ export const changePasswordService = async ({
 
   return;
 };
+
+// ─── Email Update (OTP-based) ────────────────────────────────────────────────
+
+export const requestEmailUpdateService = async ({ userId, newEmail }) => {
+  if (!userId || !newEmail) throw new Error('User ID and new email are required');
+
+  const taken = await User.findOne({ email: newEmail });
+  if (taken) throw new Error('Email already in use');
+
+  const user = await User.findById(userId);
+  if (!user) throw new Error('User not found');
+
+  const otp = String(Math.floor(100000 + Math.random() * 900000));
+  const otpExpires = new Date(Date.now() + emailExpires);
+
+  user.pendingEmail = newEmail;
+  user.otp = otp;
+  user.otpExpires = otpExpires;
+  await user.save({ validateBeforeSave: false });
+
+  await sendEmail({
+    to: newEmail,
+    subject: 'Verify your new email address',
+    html: verificationCodeTemplate(otp)
+  });
+
+  return;
+};
+
+export const confirmEmailUpdateService = async ({ userId, otp }) => {
+  if (!userId || !otp) throw new Error('User ID and OTP are required');
+
+  const user = await User.findById(userId);
+  if (!user) throw new Error('User not found');
+
+  if (!user.otp || !user.otpExpires || !user.pendingEmail)
+    throw new Error('No pending email update found');
+
+  if (user.otp !== otp || new Date() > user.otpExpires)
+    throw new Error('Invalid or expired OTP');
+
+  user.email = user.pendingEmail;
+  user.pendingEmail = null;
+  user.otp = null;
+  user.otpExpires = null;
+  await user.save({ validateBeforeSave: false });
+
+  return { email: user.email };
+};
