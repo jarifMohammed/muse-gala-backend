@@ -41,8 +41,8 @@ const MasterDressSchema = new Schema(
 
 // Auto-generate slug and masterDressId before saving
 MasterDressSchema.pre("save", async function (next) {
-  // Generate slug if missing
-  if (!this.slug) {
+  // Generate slug if missing or dressName was modified
+  if (!this.slug || this.isModified("dressName")) {
     this.slug = this.dressName.toLowerCase().replaceAll(" ", "-");
   }
 

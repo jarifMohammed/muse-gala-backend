@@ -203,16 +203,17 @@ export const adminUpdateDress = async (listingId, adminData = {}) => {
     if (!listing) throw new Error('Listing not found');
 
     let masterDress = null;
+    const isNowApproved = adminData.approvalStatus === 'approved' && listing.approvalStatus !== 'approved';
+
+    // 2️⃣ Update listing fields dynamically so MasterDress inherits the latest fields
+    Object.assign(listing, adminData);
 
     // 1️⃣ If status is being changed to "approved" and not already approved
-    if (
-      adminData.approvalStatus === 'approved' &&
-      listing.approvalStatus !== 'approved'
-    ) {
+    if (isNowApproved) {
       listing.approvalStatus = 'approved';
       listing.isActive = true;
 
-      // Check for existing MasterDress
+      // Check for existing MasterDress with potentially new admin-edited name
       masterDress = await MasterDress.findOne({
         dressName: listing.dressName
       }).session(session);
@@ -302,8 +303,6 @@ export const adminUpdateDress = async (listingId, adminData = {}) => {
       await masterDress.save({ session });
     }
 
-    // 2️⃣ Update listing fields dynamically
-    Object.assign(listing, adminData); // Spread all admin-provided fields
     await listing.save({ session });
 
     await session.commitTransaction();
