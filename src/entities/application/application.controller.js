@@ -93,3 +93,18 @@ export const updateApplication = async (req, res) => {
     return generateResponse(res, 500, false, 'Internal server error');
   }
 };
+
+// RESEND TEMPORARY PASSWORD
+export const resendTempPassword = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await ApplicationService.resendLenderPassword(id);
+    return generateResponse(res, 200, true, 'Temporary password resent successfully');
+  } catch (error) {
+    console.error('Error resending temporary password:', error);
+    if (error.message.includes('not an approved lender')) {
+      return generateResponse(res, 400, false, error.message);
+    }
+    return generateResponse(res, 500, false, 'Internal server error');
+  }
+};

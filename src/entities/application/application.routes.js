@@ -1,5 +1,5 @@
 import express from 'express';
-import { deleteApplication, getAllApplications, getApplicationById, newApplication, updateApplication } from './application.controller.js';
+import { deleteApplication, getAllApplications, getApplicationById, newApplication, updateApplication, resendTempPassword } from './application.controller.js';
 import { superAdminOrAdminMiddleware,verifyToken } from '../../core/middlewares/authMiddleware.js';
 
 const router = express.Router();
@@ -9,5 +9,6 @@ router.get('/', getAllApplications)
 router.get('/:id', verifyToken, superAdminOrAdminMiddleware, getApplicationById)
 router.patch('/:id', updateApplication)
 router.delete('/:id', verifyToken, superAdminOrAdminMiddleware, deleteApplication)
+router.post('/:id/resend-password', verifyToken, superAdminOrAdminMiddleware, resendTempPassword)
 
 export default router;

@@ -258,3 +258,44 @@ export const deleteApplication = async (id) => {
   await user.save();
   return user;
 };
+
+export const resendLenderPassword = async (id) => {
+  const user = await User.findById(id).select('-password -accessToken -refreshToken');
+
+  if (!user || user.role !== 'LENDER' || user.status !== 'approved') {
+    throw new Error('User is not an approved lender. Cannot resend password.');
+  }
+
+  const tempPassword = generateRandomPassword();
+  user.password = tempPassword;
+  
+  await user.save();
+
+  const userEmailContent = applicationApprovedTemplate({
+    fullName: user.fullName || user.firstName || 'Lender',
+    email: user.email,
+    tempPassword
+  });
+
+  const adminEmailContent = applicationApprovedAdminTemplate({
+    fullName: user.fullName || user.firstName || 'N/A',
+    email: user.email,
+    phoneNumber: user.phoneNumber || 'N/A',
+    tempPassword
+  });
+
+  await Promise.all([
+    sendEmail({
+      to: user.email,
+      subject: 'Your New Temporary Password - Muse Gala',
+      html: userEmailContent
+    }),
+    sendEmail({
+      to: adminEmail,
+      subject: 'Resent: A Lender Application Password',
+      html: adminEmailContent
+    })
+  ]);
+
+  return user;
+};
