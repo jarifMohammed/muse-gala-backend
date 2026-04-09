@@ -100,7 +100,7 @@ export const verifyDeactivationCodeService = async ({ userId, code }) => {
 };
 
 export const updateLenderLocationService = async (id, locationData) => {
-  const { latitude, longitude, city, state, country, postcode, suburb, placeName, address } = locationData;
+  const { latitude, longitude, city, state, country, postcode, suburb, placeName, address, precision } = locationData;
 
   if (latitude === undefined || longitude === undefined) {
     throw new Error('latitude and longitude are required');
@@ -118,6 +118,7 @@ export const updateLenderLocationService = async (id, locationData) => {
   if (suburb !== undefined) lender.suburb = suburb;
   if (placeName !== undefined) lender.placeName = placeName;
   if (address !== undefined) lender.address = address;
+  if (precision !== undefined) lender.precision = precision;
 
   // save() triggers the pre-save hook that rebuilds the GeoJSON location field
   await lender.save();
@@ -134,6 +135,7 @@ export const updateLenderLocationService = async (id, locationData) => {
       suburb: lender.suburb,
       placeName: lender.placeName,
       address: lender.address,
+      precision: lender.precision,
       geoJson: lender.location
     }
   };

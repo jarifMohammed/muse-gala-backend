@@ -122,6 +122,7 @@ const UserSchema = new mongoose.Schema(
     latitude: { type: Number, default: 0 },
     longitude: { type: Number, default: 0 },
     address: { type: String, default: '' },
+    precision: { type: String, default: 'approximate', enum: ['exact', 'approximate', 'interpolated'] },
 
     // stripe customer setup save card info
     stripeCustomerId: { type: String, default: null },
@@ -215,6 +216,33 @@ UserSchema.pre('save', function (next) {
       coordinates: [this.longitude, this.latitude] // [lng, lat]
     };
   }
+  next();
+});
+
+UserSchema.pre('findOneAndUpdate', function (next) {
+  const update = this.getUpdate();
+  if (!update) return next();
+
+  let lat = update.latitude;
+  let lng = update.longitude;
+
+  // Check if updating via $set (most common for findByIdAndUpdate)
+  if (update.$set) {
+    if (update.$set.latitude !== undefined) lat = update.$set.latitude;
+    if (update.$set.longitude !== undefined) lng = update.$set.longitude;
+  }
+
+  // If ANY location coordinate is being explicitly updated, build the GeoJSON point
+  if (lat !== undefined || lng !== undefined) {
+    if (typeof lat === 'number' && typeof lng === 'number') {
+      if (!update.$set) update.$set = {};
+      update.$set.location = {
+        type: 'Point',
+        coordinates: [lng, lat]
+      };
+    }
+  }
+
   next();
 });
 
