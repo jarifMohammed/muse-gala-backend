@@ -232,7 +232,7 @@ export const adminUpdateDress = async (listingId, adminData = {}) => {
           media: listing.media || [],
           thumbnail: listing.media?.[0] || null,
           pickupOption: listing.pickupOption,
-          isActive: true,
+          isActive: false,
           basePrice: adminData.basePrice ?? null,
           insuranceFee: adminData.insuranceFee ?? null,
           rrpPrice: adminData.rrpPrice ?? null,
@@ -298,6 +298,9 @@ export const adminUpdateDress = async (listingId, adminData = {}) => {
           masterDress.shippingDetails.flexibilityNotes =
             adminData.flexibilityNotes;
         if (adminData.thumbnail) masterDress.thumbnail = adminData.thumbnail;
+        
+        // Ensure isActive is false during merging as per requirement
+        masterDress.isActive = false;
       }
 
       await masterDress.save({ session });
@@ -421,14 +424,20 @@ export const getAllMasterDresses = async (query) => {
   const skip = (page - 1) * limit;
 
   // Only active master dresses
-  const filter = { isActive: true };
-
+  const filter = {};
+  
   // Optional search filter
   if (query.search) {
     filter.$or = [
       { dressName: { $regex: query.search, $options: 'i' } },
-      { slug: { $regex: query.search, $options: 'i' } }
+      { slug: { $regex: query.search, $options: 'i' } },
+      { brand: { $regex: query.search, $options: 'i' } }
     ];
+  }
+
+  // Brand Name filter
+  if (query.brandName || query.brand) {
+    filter.brand = { $regex: query.brandName || query.brand, $options: 'i' };
   }
 
   // Price range filtering (basePrice is ROOT level)
@@ -459,6 +468,15 @@ export const getAllMasterDresses = async (query) => {
   if (query.shipping !== undefined) {
     filter['shippingDetails.isShippingAvailable'] =
       query.shipping === 'true';
+  }
+
+  // 🔄 Flexible isActive filter
+  if (query.isActive !== undefined) {
+    if (query.isActive !== 'All') {
+      filter.isActive = query.isActive === 'true';
+    } else {
+      delete filter.isActive; // Show all if "All" is selected
+    }
   }
 
   const [data, totalItems] = await Promise.all([

@@ -34,7 +34,7 @@ const MasterDressSchema = new Schema(
 
     basePrice: { type: Number },
     rrpPrice: { type: Number },
-    isActive: { type: Boolean, default: true },
+    isActive: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
