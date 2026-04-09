@@ -49,6 +49,44 @@ const {
   }
 };
 
+export const getApprovedMarkers = async (req, res) => {
+  try {
+    const {
+      search,
+      size,
+      lenderId,
+      minPrice,
+      maxPrice,
+      category,
+      latitude, 
+      longitude, 
+      radius
+    } = req.query;
+
+    const filters = {
+      search: search?.trim() || undefined,
+      size: size === "All" ? undefined : size,
+      lenderId: lenderId === "All" ? undefined : lenderId,
+      minPrice: minPrice !== undefined && minPrice !== "All" ? parseFloat(minPrice) : undefined,
+      maxPrice: maxPrice !== undefined && maxPrice !== "All" ? parseFloat(maxPrice) : undefined,
+      category: category === "All" ? undefined : category,
+      latitude: latitude ? parseFloat(latitude) : undefined,
+      longitude: longitude ? parseFloat(longitude) : undefined,
+      radius: radius ? parseFloat(radius) : 50000, 
+    };
+
+    const data = await listingService.getApprovedMarkersService(filters);
+    
+    return res.status(200).json({
+      status: true,
+      message: 'Map markers fetched successfully',
+      data
+    });
+  } catch (err) {
+    generateResponse(res, 500, false, 'Failed to fetch map markers', err.message);
+  }
+};
+
 export const adminUpdateAnyDress = async (req, res) => {
   const listingId = req.params.id;
 

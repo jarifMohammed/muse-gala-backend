@@ -533,3 +533,108 @@ export const getNearestLendersByDressIdService = async (
 
   return nearestLenders;
 };
+
+export const getApprovedMarkersService = async (filters) => {
+  const query = { isActive: true };
+  
+  if (filters.search) {
+    query.$or = [
+      { dressName: { $regex: filters.search, $options: 'i' } },
+      { brand: { $regex: filters.search, $options: 'i' } }
+    ];
+  }
+
+  if (filters.size && filters.size !== 'All') {
+    query.sizes = {
+      $in: Array.isArray(filters.size) ? filters.size : [filters.size]
+    };
+  }
+
+  if (filters.category && filters.category !== 'All') {
+    query.categories = {
+      $in: Array.isArray(filters.category) ? filters.category : [filters.category]
+    };
+  }
+
+  if (filters.lenderId && filters.lenderId !== 'All') {
+    query.lenderIds = typeof filters.lenderId === 'string' ? new mongoose.Types.ObjectId(filters.lenderId) : filters.lenderId;
+  }
+
+  if ((filters.latitude && filters.longitude) || filters.postcode) {
+    const searchRadius = filters.radius ? parseFloat(filters.radius) : 50000;
+    let localLenderIds = [];
+    if (filters.postcode) {
+      const lenders = await User.find({ role: 'LENDER', postcode: filters.postcode }).select('_id');
+      localLenderIds = lenders.map((l) => l._id);
+    } else if (filters.latitude && filters.longitude) {
+      const lenders = await User.find({
+        role: 'LENDER',
+        location: {
+          $nearSphere: {
+            $geometry: { type: 'Point', coordinates: [parseFloat(filters.longitude), parseFloat(filters.latitude)] },
+            $maxDistance: searchRadius
+          }
+        }
+      }).select('_id');
+      localLenderIds = lenders.map((l) => l._id);
+    }
+
+    if (localLenderIds.length > 0) {
+      query.lenderIds = { $in: localLenderIds };
+    } else {
+      query.lenderIds = { $in: [] };
+    }
+  }
+
+  if (
+    (filters.minPrice !== undefined && filters.minPrice !== 'All') ||
+    (filters.maxPrice !== undefined && filters.maxPrice !== 'All')
+  ) {
+    query.basePrice = {};
+    if (filters.minPrice !== undefined && filters.minPrice !== 'All') query.basePrice.$gte = parseFloat(filters.minPrice);
+    if (filters.maxPrice !== undefined && filters.maxPrice !== 'All') query.basePrice.$lte = parseFloat(filters.maxPrice);
+  }
+
+  const pipeline = [
+    { $match: query },
+    { $unwind: '$lenderIds' },
+    {
+      $group: {
+        _id: '$lenderIds',
+        masterDressCount: { $sum: 1 },
+        products: {
+          $push: {
+            id: '$_id',
+            name: '$dressName',
+            image: { $ifNull: ['$thumbnail', { $arrayElemAt: ['$media', 0] }] },
+            brand: '$brand',
+            basePrice: '$basePrice'
+          }
+        }
+      }
+    },
+    {
+      $lookup: {
+        from: 'users',
+        localField: '_id',
+        foreignField: '_id',
+        as: 'lender'
+      }
+    },
+    { $unwind: '$lender' },
+    {
+      $project: {
+        _id: 0,
+        lenderId: '$_id',
+        latitude: '$lender.latitude',
+        longitude: '$lender.longitude',
+        lenderName: { $concat: ['$lender.firstName', ' ', '$lender.lastName'] },
+        masterDressCount: 1,
+        products: 1
+      }
+    }
+  ];
+
+  const markers = await MasterDress.aggregate(pipeline);
+  return markers;
+};

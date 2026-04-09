@@ -9,13 +9,14 @@ import {
   getMasterDressesController,
   getMasterDressByIdController,
   getNearestLendersByDressId,
-
+  getApprovedMarkers
 } from './adminListing.controller.js';
 import { multerUpload } from '../../../../core/middlewares/multer.js';
 
 const router = express.Router();
 
 router.get('/', getAllApprovedDresses);
+router.get('/map-markers', getApprovedMarkers);
 router.get('/master-dresses', getMasterDressesController);
 router.get('/master-dress/:id',getMasterDressByIdController);
 router.get('/lenders/nearby/:dressId', getNearestLendersByDressId);
