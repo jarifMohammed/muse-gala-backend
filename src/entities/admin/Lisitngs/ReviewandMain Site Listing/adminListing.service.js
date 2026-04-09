@@ -606,6 +606,7 @@ export const getApprovedMarkersService = async (filters) => {
           $push: {
             id: '$_id',
             name: '$dressName',
+            sizes: '$sizes',
             image: { $ifNull: ['$thumbnail', { $arrayElemAt: ['$media', 0] }] },
             brand: '$brand',
             basePrice: '$basePrice'
