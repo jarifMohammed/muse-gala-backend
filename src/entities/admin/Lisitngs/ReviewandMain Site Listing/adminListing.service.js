@@ -7,33 +7,33 @@ import MasterDress from './masterDressModel.js';
 
 // get dress from listing
 export const getApprovedDresses = async (filters, page, limit, skip) => {
-  const query = { approvalStatus: 'approved', isActive: true };
+  const query = { isActive: true };
+  
   // Search filter
   if (filters.search) {
     query.$or = [
       { dressName: { $regex: filters.search, $options: 'i' } },
-      { brand: { $regex: filters.search, $options: 'i' } },
-      { description: { $regex: filters.search, $options: 'i' } }
+      { brand: { $regex: filters.search, $options: 'i' } }
     ];
   }
 
   // Size filter
   if (filters.size && filters.size !== 'All') {
-    query.size = {
+    query.sizes = {
       $in: Array.isArray(filters.size) ? filters.size : [filters.size]
     };
   }
 
   // Category filter
   if (filters.category && filters.category !== 'All') {
-    query.category = {
+    query.categories = {
       $in: Array.isArray(filters.category) ? filters.category : [filters.category]
     };
   }
 
   // Lender filter
   if (filters.lenderId && filters.lenderId !== 'All') {
-    query.lenderId = filters.lenderId;
+    query.lenderIds = filters.lenderId;
   }
 
   // ----------------------
@@ -41,14 +41,14 @@ export const getApprovedDresses = async (filters, page, limit, skip) => {
   // ----------------------
   if ((filters.latitude && filters.longitude) || filters.postcode) {
     const searchRadius = filters.radius || 50000;
-    let lenderIds = [];
+    let localLenderIds = [];
     if (filters.postcode) {
       // Postcode based
       const lenders = await User.find({
         role: 'LENDER',
         postcode: filters.postcode
       }).select('_id');
-      lenderIds = lenders.map((l) => l._id);
+      localLenderIds = lenders.map((l) => l._id);
     } else if (filters.latitude && filters.longitude && filters.radius) {
       // Geo based
       const lenders = await User.find({
@@ -57,66 +57,51 @@ export const getApprovedDresses = async (filters, page, limit, skip) => {
           $nearSphere: {
             $geometry: {
               type: 'Point',
-              coordinates: [filters.longitude, filters.latitude]
+              coordinates: [parseFloat(filters.longitude), parseFloat(filters.latitude)]
             },
             $maxDistance: searchRadius
           }
         }
       }).select('_id');
-      lenderIds = lenders.map((l) => l._id);
+      localLenderIds = lenders.map((l) => l._id);
     }
 
     // Only apply if lenders found
-    if (lenderIds.length > 0) {
-      query.lenderId = { $in: lenderIds };
+    if (localLenderIds.length > 0) {
+      query.lenderIds = { $in: localLenderIds };
     } else {
       // No nearby lenders, force zero results
-      query.lenderId = { $in: [] };
+      query.lenderIds = { $in: [] };
     }
   }
 
-  // Unified price filter (applies to both fourDays and eightDays)
   // Price filter
   if (
     (filters.minPrice !== undefined && filters.minPrice !== 'All') ||
     (filters.maxPrice !== undefined && filters.maxPrice !== 'All')
   ) {
-    query.$or = [
-      {
-        'rentalPrice.fourDays': {
-          ...(filters.minPrice !== undefined && filters.minPrice !== 'All'
-            ? { $gte: filters.minPrice }
-            : {}),
-          ...(filters.maxPrice !== undefined && filters.maxPrice !== 'All'
-            ? { $lte: filters.maxPrice }
-            : {})
-        }
-      },
-      {
-        'rentalPrice.eightDays': {
-          ...(filters.minPrice !== undefined && filters.minPrice !== 'All'
-            ? { $gte: filters.minPrice }
-            : {}),
-          ...(filters.maxPrice !== undefined && filters.maxPrice !== 'All'
-            ? { $lte: filters.maxPrice }
-            : {})
-        }
-      }
-    ];
+    query.basePrice = {};
+    if (filters.minPrice !== undefined && filters.minPrice !== 'All') {
+      query.basePrice.$gte = parseFloat(filters.minPrice);
+    }
+    if (filters.maxPrice !== undefined && filters.maxPrice !== 'All') {
+      query.basePrice.$lte = parseFloat(filters.maxPrice);
+    }
   }
 
   const [data, totalItems] = await Promise.all([
-    Listing
+    MasterDress
       .find(query)
       .skip(skip)
       .limit(limit)
       .populate({
-        path: 'lenderId',
+        path: 'lenderIds',
         select: 'fullName firstName lastName email longitude latitude'
       })
       .lean(),
-    Listing.countDocuments(query)
+    MasterDress.countDocuments(query)
   ]);
+  
   // ----------------------
   if (totalItems === 0) {
     let reason = 'No dresses found.';
@@ -147,40 +132,13 @@ export const getApprovedDresses = async (filters, page, limit, skip) => {
       message: reason
     };
   }
+  
   const populatedData = data.map((dress) => ({
     ...dress,
-    lenderName: dress.lenderId
-      ? `${dress.lenderId.firstName} ${dress.lenderId.lastName}`
-      : 'Unknown',
-    lenderId: dress.lenderId
+    lenders: dress.lenderIds // Attach populated array to 'lenders' property
   }));
 
   const totalPages = Math.ceil(totalItems / limit);
-
-  // Define reason for consistency
-  let reason;
-  if (totalItems === 0) {
-    if (filters.postcode)
-      reason = `No dresses found for postcode "${filters.postcode}".`;
-    else if (filters.latitude && filters.longitude && filters.radius)
-      reason = `No dresses found within ${filters.radius}m of your location.`;
-    else if (filters.category && filters.category !== 'All')
-      reason = `No dresses found in category "${filters.category}".`;
-    else if (filters.size && filters.size !== 'All')
-      reason = `No dresses available in size "${filters.size}".`;
-    else if (filters.lenderId && filters.lenderId !== 'All')
-      reason = `No dresses found for this lender.`;
-    else if (
-      (filters.minPrice !== undefined && filters.minPrice !== 'All') ||
-      (filters.maxPrice !== undefined && filters.maxPrice !== 'All')
-    )
-      reason = `No dresses found in the selected price range.`;
-    else if (filters.search)
-      reason = `No dresses matched your search "${filters.search}".`;
-    else reason = 'No dresses found.';
-  } else {
-    reason = `${totalItems} dresses found.`;
-  }
 
   return {
     data: populatedData,
@@ -189,7 +147,7 @@ export const getApprovedDresses = async (filters, page, limit, skip) => {
       totalItems,
       itemsPerPage: limit
     },
-    reason
+    reason: `${totalItems} dresses found.`
   };
 };
 
@@ -298,7 +256,7 @@ export const adminUpdateDress = async (listingId, adminData = {}) => {
           masterDress.shippingDetails.flexibilityNotes =
             adminData.flexibilityNotes;
         if (adminData.thumbnail) masterDress.thumbnail = adminData.thumbnail;
-        
+
         // Ensure isActive is false during merging as per requirement
         masterDress.isActive = false;
       }
@@ -425,7 +383,7 @@ export const getAllMasterDresses = async (query) => {
 
   // Only active master dresses
   const filter = {};
-  
+
   // Optional search filter
   if (query.search) {
     filter.$or = [
