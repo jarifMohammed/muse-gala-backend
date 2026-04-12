@@ -455,6 +455,8 @@ export const getAllMasterDresses = async (query) => {
     lenders: dress.lenderIds 
   }));
 
+  const totalPages = Math.ceil(totalItems / limit);
+
   return {
     data: populatedData,
     pagination: {
