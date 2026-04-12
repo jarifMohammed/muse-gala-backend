@@ -65,6 +65,7 @@ MasterDressSchema.pre("save", async function (next) {
   next();
 });
 MasterDressSchema.index({ dressName: 'text', slug: 'text' });
+MasterDressSchema.index({ lenderIds: 1 });
 
 const MasterDress = mongoose.model("MasterDress", MasterDressSchema);
 export default MasterDress;

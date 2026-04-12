@@ -96,7 +96,7 @@ export const getApprovedDresses = async (filters, page, limit, skip) => {
       .limit(limit)
       .populate({
         path: 'lenderIds',
-        select: 'fullName firstName lastName email longitude latitude'
+        select: 'fullName phoneNumber businessAddress instagramHandle'
       })
       .lean(),
     MasterDress.countDocuments(query)
@@ -438,15 +438,25 @@ export const getAllMasterDresses = async (query) => {
   }
 
   const [data, totalItems] = await Promise.all([
-    MasterDress.find(filter).skip(skip).limit(limit).lean(),
+    MasterDress.find(filter)
+      .skip(skip)
+      .limit(limit)
+      .populate({
+        path: 'lenderIds',
+        select: 'fullName phoneNumber businessAddress instagramHandle'
+      })
+      .lean(),
     MasterDress.countDocuments(filter)
   ]);
 
   // const totalItems = await MasterDress.countDocuments(filter);
-  const totalPages = Math.ceil(totalItems / limit);
+  const populatedData = data.map((dress) => ({
+    ...dress,
+    lenders: dress.lenderIds 
+  }));
 
   return {
-    data,
+    data: populatedData,
     pagination: {
       currentPage: page,
       itemsPerPage: limit,
@@ -460,18 +470,31 @@ export const getAllMasterDresses = async (query) => {
 
 export const getMasterDressById = async (id) => {
   // Try finding by _id first
-  let masterDress = await MasterDress.findById(id).lean();
+  let masterDress = await MasterDress.findById(id)
+    .populate({
+      path: 'lenderIds',
+      select: 'fullName phoneNumber businessAddress instagramHandle'
+    })
+    .lean();
 
   // If not found, try masterDressId
   if (!masterDress) {
-    masterDress = await MasterDress.findOne({ masterDressId: id }).lean();
+    masterDress = await MasterDress.findOne({ masterDressId: id })
+      .populate({
+        path: 'lenderIds',
+        select: 'fullName phoneNumber businessAddress instagramHandle'
+      })
+      .lean();
   }
 
   if (!masterDress) {
     throw new Error('Master Dress not found');
   }
 
-  return masterDress;
+  return {
+    ...masterDress,
+    lenders: masterDress.lenderIds
+  };
 };
 
 export const getNearestLendersByDressIdService = async (
