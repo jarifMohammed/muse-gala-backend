@@ -3,7 +3,7 @@ import { baseEmailTemplate } from './emailTemplates/baseTemplate.js';
 export const deactivationOtpEmail = (name, code) =>
   baseEmailTemplate({
     title: 'ACCOUNT DEACTIVATION VERIFICATION',
-    subtitle: 'Account deactivation verification',
+    
     content: `
       <p>Hi ${name},</p>
       <p>To continue with account deactivation, enter the code below.</p>
