@@ -10,7 +10,7 @@ export const subscriptionActivatedTemplate = (
 ) =>
   baseEmailTemplate({
     title: 'SUBSCRIPTION ACTIVATED',
-    subtitle: 'Subscription activated',
+
     content: `
       <p>Hi ${lenderName},</p>
       <p>Your subscription is now active.</p>
@@ -35,7 +35,7 @@ export const subscriptionPaymentConfirmationTemplate = (
 ) =>
   baseEmailTemplate({
     title: 'PAYMENT SUCCESSFUL',
-    subtitle: 'Thank you for your subscription payment!',
+
     content: `
       <p>Hi ${lenderName},</p>
       <p>Your subscription payment has been processed successfully.</p>
@@ -68,7 +68,7 @@ export const subscriptionPaymentFailedTemplate = (
 ) =>
   baseEmailTemplate({
     title: 'PAYMENT FAILED',
-    subtitle: 'We were unable to process your subscription payment.',
+
     content: `
       <p>Hi ${lenderName},</p>
       <p>Unfortunately, we were unable to process your subscription payment. Please review the details below and try again.</p>
@@ -99,7 +99,7 @@ export const subscriptionCheckoutExpiredTemplate = (
 ) =>
   baseEmailTemplate({
     title: 'CHECKOUT SESSION EXPIRED',
-    subtitle: 'Checkout session expired',
+
     content: `
       <p>Hi ${lenderName},</p>
       <p>Your checkout session has expired.</p>
@@ -120,7 +120,7 @@ export const subscriptionRefundedTemplate = (
 ) =>
   baseEmailTemplate({
     title: 'REFUND PROCESSED',
-    subtitle: 'Subscription refund processed',
+
     content: `
       <p>Hi ${lenderName},</p>
       <p>Your subscription refund has been processed.</p>
@@ -146,7 +146,7 @@ export const subscriptionExpiringTemplate = (
 
   return baseEmailTemplate({
     title: 'YOUR SUBSCRIPTION IS EXPIRING',
-    subtitle: 'Your subscription is expiring',
+
     content: `
       <p>Hi ${lenderName},</p>
       <p>Your subscription will expire soon.</p>

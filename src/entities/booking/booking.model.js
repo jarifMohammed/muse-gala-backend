@@ -81,7 +81,7 @@ const BookingSchema = new Schema(
 
     lenderPrice: { type: Number, default: 0 },
     rentalFee: { type: Number },
-    shippingFee: { type: Number, default: 10, immutable: true },
+    shippingFee: { type: Number, default: 14.95, immutable: true },
     insuranceFee: { type: Number, default: 0 },
     totalAmount: { type: Number },
 

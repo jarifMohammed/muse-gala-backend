@@ -4,7 +4,7 @@ import { baseEmailTemplate, createInfoBox, createStatusBadge } from './baseTempl
 export const disputeCreatedTemplate = (userName, bookingId, brandName, dressName, colour, dressSize) =>
   baseEmailTemplate({
     title: 'DISPUTE CREATED',
-    subtitle: 'We’re reviewing your request',
+
     content: `
       <p>Hi ${userName},</p>
       <p>A dispute has been opened for your booking.</p>
@@ -23,7 +23,7 @@ export const disputeCreatedTemplate = (userName, bookingId, brandName, dressName
 export const disputeUnderReviewTemplate = (userName, bookingId, brandName, dressName, colour, dressSize) =>
   baseEmailTemplate({
     title: 'DISPUTE UNDER REVIEW',
-    subtitle: 'Your dispute is under review',
+
     content: `
       <p>Hi ${userName},</p>
       <p>Your dispute is currently being reviewed by our team.</p>
@@ -41,7 +41,7 @@ export const disputeUnderReviewTemplate = (userName, bookingId, brandName, dress
 export const disputeMoreInfoNeededTemplate = (userName, bookingId, brandName, dressName, colour, dressSize) =>
   baseEmailTemplate({
     title: 'ADDITIONAL INFORMATION REQUIRED',
-    subtitle: 'Additional information required',
+
     content: `
       <p>Hi ${userName},</p>
       <p>We need a little more information to continue reviewing your dispute.</p>
@@ -61,7 +61,7 @@ export const disputeMoreInfoNeededTemplate = (userName, bookingId, brandName, dr
 export const disputeEscalatedTemplate = (userName, bookingId, brandName, dressName, colour, dressSize) =>
   baseEmailTemplate({
     title: 'DISPUTE ESCALATED',
-    subtitle: 'Your dispute has been escalated',
+
     content: `
       <p>Hi ${userName},</p>
       <p>Your dispute has been escalated for further review.</p>
@@ -79,7 +79,7 @@ export const disputeEscalatedTemplate = (userName, bookingId, brandName, dressNa
 export const disputeResolvedTemplate = (userName, bookingId, resolution, refundAmount, brandName, dressName, colour, dressSize) =>
   baseEmailTemplate({
     title: 'DISPUTE RESOLVED',
-    subtitle: 'Your dispute has been resolved',
+
     content: `
       <p>Hi ${userName},</p>
       <p>Your dispute has been reviewed and resolved.</p>
@@ -99,7 +99,7 @@ export const disputeResolvedTemplate = (userName, bookingId, resolution, refundA
 export const refundProcessedTemplate = (userName, bookingId, refundAmount, brandName, dressName, colour, dressSize) =>
   baseEmailTemplate({
     title: 'REFUND PROCESSED',
-    subtitle: 'Refund processed',
+
     content: `
       <p>Hi ${userName},</p>
       <p>Your refund has been processed successfully.</p>
@@ -118,7 +118,7 @@ export const refundProcessedTemplate = (userName, bookingId, refundAmount, brand
 export const disputeResponseTemplate = (userName, bookingId) =>
   baseEmailTemplate({
     title: 'DISPUTE UPDATE',
-    subtitle: 'New update on your dispute',
+
     content: `
       <p>Hi ${userName},</p>
       <p>There’s a new update on your dispute.</p>
@@ -134,7 +134,7 @@ export const disputeResponseTemplate = (userName, bookingId) =>
 export const disputeClosedTemplate = (userName, reason, bookingId) =>
   baseEmailTemplate({
     title: 'DISPUTE CASE CLOSED',
-    subtitle: 'Your dispute case has been officially closed.',
+
     content: `
       <p>Hello ${userName},</p>
       <p>Your dispute case has been officially closed.</p>

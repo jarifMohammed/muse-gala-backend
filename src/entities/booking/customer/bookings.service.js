@@ -56,7 +56,7 @@ export const createBookingService = async ({ userId, role, body }) => {
 
     // --- Base fees ---
     const insuranceFee = masterDress.insuranceFee || 0;
-    const shippingFee = 10;
+    const shippingFee = 14.95;
 
     // --- Allocate lender ---
 
@@ -139,10 +139,18 @@ export const createBookingService = async ({ userId, role, body }) => {
     if (!allocatedLender) throw new Error('Failed to allocate lender.');
 
     // --- Calculate rentalFee & totalAmount ---
-    const rentalFee =
-      allocatedLender.allocationType === 'Shipping'
-        ? masterDress.basePrice
-        : masterDress.basePrice + (rentalDurationDays >= 8 ? 15 : 0);
+    let rentalFee = masterDress.basePrice;
+    if (rentalDurationDays >= 8) {
+      let multiplier = 1.2; // Default for 800+
+      const basePrice = masterDress.basePrice;
+
+      if (basePrice <= 150) multiplier = 1.7;
+      else if (basePrice <= 300) multiplier = 1.55;
+      else if (basePrice <= 500) multiplier = 1.4;
+      else if (basePrice <= 800) multiplier = 1.3;
+
+      rentalFee = basePrice * multiplier;
+    }
 
     let totalAmount = rentalFee + insuranceFee + shippingFee;
 

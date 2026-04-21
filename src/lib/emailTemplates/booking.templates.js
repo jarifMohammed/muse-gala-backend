@@ -10,19 +10,19 @@ export const readyForPickupTemplate = (
 ) =>
   baseEmailTemplate({
     title: 'Your dress is ready for pickup',
-    subtitle: 'Your dress is ready for pickup',
+
     content: `
       <p>Hi ${userName},</p>
       <p>Your dress is ready for pickup at the following location:</p>
       <h3>Pickup Details</h3>
       ${createInfoBox({
-        'Brand': brandName,
-        'Dress': dressName,
-        'Colour': colour,
-        'Size': dressSize,
-        'Pickup Location': pickupLocation || 'N/A',
-        'Pickup Time': pickupTime || 'N/A',
-      })}
+      'Brand': brandName,
+      'Dress': dressName,
+      'Colour': colour,
+      'Size': dressSize,
+      'Pickup Location': pickupLocation || 'N/A',
+      'Pickup Time': pickupTime || 'N/A',
+    })}
       <p>Enjoy your event!</p>
       <p>— Muse Gala</p>
     `,
@@ -40,19 +40,19 @@ export const pickedUpByCustomerTemplate = (
 ) =>
   baseEmailTemplate({
     title: 'Dress Picked Up',
-    subtitle: 'Dress Picked Up',
+
     content: `
       <p>Hi ${userName},</p>
       <p>You have successfully picked up your dress.</p>
       <h3>Pickup Details</h3>
       ${createInfoBox({
-        'Brand': brandName,
-        'Dress': dressName,
-        'Colour': colour,
-        'Size': dressSize,
-        'Pickup Location': pickupLocation || 'N/A',
-        'Pickup Time': pickupTime || 'N/A',
-      })}
+      'Brand': brandName,
+      'Dress': dressName,
+      'Colour': colour,
+      'Size': dressSize,
+      'Pickup Location': pickupLocation || 'N/A',
+      'Pickup Time': pickupTime || 'N/A',
+    })}
       <p>Enjoy your event!</p>
       <p>— Muse Gala</p>
     `,
@@ -72,7 +72,7 @@ export const bookingCreatedTemplate = (
 ) =>
   baseEmailTemplate({
     title: 'Your booking is being reviewed',
-    subtitle: '',
+
     content: `
       <p>Hi ${userName},</p>
       <p>Your booking has been received.<br>The lender is reviewing availability and will confirm shortly.</p>
@@ -106,7 +106,7 @@ export const bookingConfirmedTemplate = (
 ) =>
   baseEmailTemplate({
     title: 'Order Accepted by Lender',
-    subtitle: 'Your order has been accepted by the lender and your rental is now secured.',
+
     content: `
       <p>Hi ${userName},</p>
       <p>Good news — your order has been accepted by the lender! Your dress is now reserved for your rental period.</p>
@@ -136,7 +136,7 @@ export const labelReadyTemplate = (
 ) =>
   baseEmailTemplate({
     title: 'Your dress will be dispatched shortly',
-    subtitle: 'Your dress will be dispatched shortly',
+
     content: `
       <p>Hi ${userName},</p>
       <p>Your shipping label has been created.</p>
@@ -164,19 +164,19 @@ export const shippedToCustomerTemplate = (
 ) =>
   baseEmailTemplate({
     title: 'Your dress is on its way',
-    subtitle: 'Your dress is on its way',
+
     content: `
       <p>Hi ${userName},</p>
       <p>Your dress has been dispatched.</p>
       <h3>Dress details</h3>
       ${createInfoBox({
-        'Brand': brandName,
-        'Dress': dressName,
-        'Colour': colour,
-        'Size': dressSize,
-        'Shipping Method': shippingMethod || 'N/A',
-        'Tracking Number': trackingNumber || 'N/A',
-      })}
+      'Brand': brandName,
+      'Dress': dressName,
+      'Colour': colour,
+      'Size': dressSize,
+      'Shipping Method': shippingMethod || 'N/A',
+      'Tracking Number': trackingNumber || 'N/A',
+    })}
       <p>Track your delivery <a href="${process.env.FRONTEND_URL || 'https://musegala.com.au'}/account/chats">here</a>.</p>
       <p>— Muse Gala</p>
     `,
@@ -192,7 +192,7 @@ export const dressDeliveredTemplate = (
 ) =>
   baseEmailTemplate({
     title: 'Your dress has arrived',
-    subtitle: 'Your dress has arrived',
+
     content: `
       <p>Hi ${userName},</p>
       <p>Your dress has arrived.</p>
@@ -216,7 +216,7 @@ export const returnInitiatedTemplate = (
 ) =>
   baseEmailTemplate({
     title: 'RETURN PROCESS INITIATED',
-    subtitle: 'Your return request has been initiated.',
+
     content: `
       <p>Hello ${userName},</p>
       <p>Your return request has been initiated. Here are the next steps:</p>
@@ -237,7 +237,7 @@ export const shippedToLenderTemplate = (
 ) =>
   baseEmailTemplate({
     title: 'DRESS RETURN SHIPPED',
-    subtitle: 'Your dress has been shipped back to the lender.',
+
     content: `
       <p>Hello ${userName},</p>
       <p>Your dress has been shipped back to the lender. Thank you for renting with us!</p>
@@ -260,7 +260,7 @@ export const bookingCompletedTemplate = (
 ) =>
   baseEmailTemplate({
     title: 'BOOKING COMPLETED',
-    subtitle: 'Thank you for choosing Muse Gala!',
+
     content: `
       <p>Hello ${userName},</p>
       <p>Thank you for choosing Muse Gala! Your booking has been completed successfully.</p>
@@ -289,7 +289,7 @@ export const bookingCancelledTemplate = (
 ) =>
   baseEmailTemplate({
     title: 'BOOKING CANCELLED',
-    subtitle: 'Your booking has been cancelled.',
+
     content: `
       <p>Hi ${userName},</p>
       <p>Your booking has been cancelled.</p>
@@ -314,7 +314,7 @@ export const bookingRejectedTemplate = (
 ) =>
   baseEmailTemplate({
     title: 'Update on your booking',
-    subtitle: 'Update on your booking',
+
     content: `
       <p>Hi ${userName},</p>
       <p>Unfortunately, this booking couldn’t be confirmed.</p>
@@ -335,7 +335,7 @@ export const bookingRejectedTemplate = (
 export const paymentFailedTemplate = (userName, dressName, amount, error) =>
   baseEmailTemplate({
     title: 'PAYMENT FAILED',
-    subtitle: 'Payment Failed',
+
     content: `
       <p>Hi ${userName},</p>
       <p>We were unable to process payment for your booking of <strong>${dressName}</strong>.</p>
@@ -351,7 +351,7 @@ export const paymentFailedTemplate = (userName, dressName, amount, error) =>
 export const shipmentPreparingTemplate = (userName, dressName, estimatedShipDate) =>
   baseEmailTemplate({
     title: 'PREPARING YOUR SHIPMENT',
-    subtitle: 'Preparing Your Shipment',
+
     content: `
       <p>Hi ${userName},</p>
       <p>We’re getting your dress <strong>${dressName}</strong> ready for shipment.</p>

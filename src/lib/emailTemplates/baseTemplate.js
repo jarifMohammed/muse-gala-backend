@@ -8,16 +8,17 @@
  * ---------------------------------------------------------
  * Option 1: Host your logo on Cloudinary, AWS S3, or your server
  *           and replace the URL below with your hosted logo URL.
- * 
+ *
  * Option 2: If you already use Cloudinary in this project,
  *           upload your logo there and use the generated URL.
- * 
+ *
  * IMPORTANT: Use PNG or JPG format for email logos - SVG is NOT supported
  *            by most email clients (Gmail, Outlook, Yahoo, etc.)
  * ---------------------------------------------------------
  */
 // Using Cloudinary's format conversion (f_png) to convert SVG to PNG for email compatibility
-const LOGO_URL = 'https://res.cloudinary.com/dmhbf8kc7/image/upload/f_png/v1770466905/Artboard_1_1_k1cftb';
+const LOGO_URL =
+  'https://res.cloudinary.com/dmhbf8kc7/image/upload/f_png/v1770466905/Artboard_1_1_k1cftb';
 // Fallback: 'https://your-domain.com/images/muse-gala-logo.png'
 const LOGO_WIDTH = 70;
 const LOGO_HEIGHT = 60;
@@ -57,7 +58,7 @@ export const baseEmailTemplate = ({
   content,
   buttonText = '',
   buttonUrl = '',
-  showDivider = true,
+  showDivider = true
 }) => `
   <!DOCTYPE html>
   <html>
@@ -197,7 +198,7 @@ export const baseEmailTemplate = ({
       .divider {
         height: 1px;
         background-color: #e0e0e0;
-        margin: 40px 0;
+        margin: 60px 0 40px 0;
       }
       .footer {
         margin-top: 40px;
@@ -259,9 +260,13 @@ export const baseEmailTemplate = ({
         ${content}
       </div>
 
-      ${buttonText && buttonUrl ? `
+      ${
+        buttonText && buttonUrl
+          ? `
         <a href="${buttonUrl}" class="cta-button">${buttonText}</a>
-      ` : ''}
+      `
+          : ''
+      }
 
       ${showDivider ? '<div class="divider"></div>' : ''}
 

@@ -7,7 +7,7 @@ import { baseEmailTemplate, createInfoBox, createStatusBadge } from './baseTempl
 export const payoutRequestCreatedTemplate = (lenderName, requestedAmount) =>
   baseEmailTemplate({
     title: 'PAYOUT REQUEST RECEIVED',
-    subtitle: 'Payout request received',
+
     content: `
       <p>Hi ${lenderName},</p>
       <p>Your payout request has been received and is pending approval.</p>
@@ -24,7 +24,7 @@ export const payoutRequestCreatedTemplate = (lenderName, requestedAmount) =>
 export const payoutRequestReceivedTemplate = (lenderName, bookingId, requestedAmount) =>
   baseEmailTemplate({
     title: 'NEW PAYOUT REQUEST',
-    subtitle: 'New payout request',
+
     content: `
       <p>A new payout request is ready for review.</p>
       ${createInfoBox({
@@ -41,7 +41,7 @@ export const payoutRequestReceivedTemplate = (lenderName, bookingId, requestedAm
 export const payoutTransferredTemplate = (lenderName, transferredAmount) =>
   baseEmailTemplate({
     title: 'PAYOUT COMPLETED',
-    subtitle: 'Payout completed',
+
     content: `
       <p>Hi ${lenderName},</p>
       <p>Your payout has been transferred successfully.</p>
@@ -58,7 +58,7 @@ export const payoutTransferredTemplate = (lenderName, transferredAmount) =>
 export const payoutFailedTemplate = (recipientName) =>
   baseEmailTemplate({
     title: 'PAYOUT ISSUE',
-    subtitle: 'Payout issue',
+
     content: `
       <p>Hi ${recipientName},</p>
       <p>We were unable to process your payout.</p>

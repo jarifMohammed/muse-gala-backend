@@ -4,7 +4,7 @@ import { baseEmailTemplate, createInfoBox } from './emailTemplates/baseTemplate.
 const lenderCredentialsTemplate = (name, email, password) =>
   baseEmailTemplate({
     title: 'WELCOME TO MUSE GALA',
-    subtitle: 'Welcome to Muse Gala',
+
     content: `
       <p>Hello ${name},</p>
       <p>Your lender account has been approved.</p>

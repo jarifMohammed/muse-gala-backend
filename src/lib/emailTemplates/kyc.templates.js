@@ -4,7 +4,7 @@ import { baseEmailTemplate, createInfoBox, createStatusBadge } from './baseTempl
 export const kycVerifiedTemplate = (userName) =>
   baseEmailTemplate({
     title: 'ID VERIFICATION COMPLETE',
-    subtitle: 'ID verification complete',
+
     content: `
       <p>Hi ${userName},</p>
       <p>Your ID verification is complete.</p>
@@ -15,7 +15,7 @@ export const kycVerifiedTemplate = (userName) =>
 export const kycRequiresInputTemplate = (userName) =>
   baseEmailTemplate({
     title: 'ID VERIFICATION STILL REQUIRED',
-    subtitle: 'ID verification still required',
+
     content: `
       <p>Hi ${userName},</p>
       <p>We need a little more information to complete your ID verification.</p>
@@ -28,7 +28,7 @@ export const kycRequiresInputTemplate = (userName) =>
 export const kycProcessingTemplate = (userName) =>
   baseEmailTemplate({
     title: 'ID VERIFICATION IN PROGRESS',
-    subtitle: 'ID verification in progress',
+
     content: `
       <p>Hi ${userName},</p>
       <p>Your ID verification is currently being processed.</p>
@@ -39,7 +39,7 @@ export const kycProcessingTemplate = (userName) =>
 export const kycFailedTemplate = (userName) =>
   baseEmailTemplate({
     title: 'ID VERIFICATION INCOMPLETE',
-    subtitle: 'ID verification incomplete',
+
     content: `
       <p>Hi ${userName},</p>
       <p>Your ID verification session was not completed.</p>
@@ -52,7 +52,7 @@ export const kycFailedTemplate = (userName) =>
 export const kycInitiatedTemplate = (userName, verificationLink) =>
   baseEmailTemplate({
     title: 'ID VERIFICATION REQUIRED',
-    subtitle: 'ID verification required',
+
     content: `
       <p>Hi ${userName},</p>
       <p>To continue, please complete ID verification.</p>

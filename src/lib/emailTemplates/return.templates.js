@@ -143,7 +143,7 @@ export const highRiskReturnTemplate = (
 ) => {
     return baseEmailTemplate({
         title: 'Urgent Return Notice',
-        subtitle: 'Replacement liability warning.',
+
         content: `
       <p>Hi ${userName},</p>
       <p>We have not yet received confirmation of your return for <strong>${dressName}</strong>.</p>
@@ -173,7 +173,7 @@ export const nonReturnedTemplate = (
 ) => {
     return baseEmailTemplate({
         title: 'Outstanding Rental Return',
-        subtitle: 'Final notice regarding your return.',
+
         content: `
       <p>Hi ${userName},</p>
       <p>Your rental return for <strong>${dressName}</strong> remains outstanding.</p>
@@ -239,7 +239,7 @@ export const lenderReturnNotificationTemplate = (
 ) => {
     return baseEmailTemplate({
         title: 'RETURN INCOMING',
-        subtitle: 'A customer has confirmed their return.',
+
         content: `
       <p>Hi ${lenderName},</p>
       <p>A customer has confirmed they are returning <strong>${dressName}</strong>.</p>

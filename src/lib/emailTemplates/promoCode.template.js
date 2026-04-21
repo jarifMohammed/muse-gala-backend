@@ -10,7 +10,7 @@ export const promoCodeTemplate = ({ code, expiresAt }) => {
 
   return baseEmailTemplate({
     title: 'A GIFT FROM MUSE GALA',
-    subtitle: 'A gift from Muse Gala',
+
     content: `
       <p>Here’s a little something for your next booking.</p>
       ${createInfoBox({
