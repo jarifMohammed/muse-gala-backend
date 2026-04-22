@@ -46,7 +46,8 @@ export const getAllocatedBookingsForLenderService = async (lenderId, query) => {
     Booking.find(filter)
       .populate([
         { path: 'customer', select: 'name firstName lastName email phoneNumber' },
-        { path: 'masterdressId' } // master dress document
+        { path: 'masterdressId' },
+        { path: 'listing' }
       ])
       .sort({ createdAt: -1 })
       .skip(skip)
@@ -96,7 +97,8 @@ export const getUpcomingBookingsForLenderService = async (lenderId, query) => {
     Booking.find(filter)
       .populate([
         { path: 'customer', select: 'name firstName lastName email phone' },
-        { path: 'masterdressId' }
+        { path: 'masterdressId' },
+        { path: 'listing' }
       ])
       .sort({ rentalStartDate: 1 }) // closest upcoming first
       .skip(skip)
