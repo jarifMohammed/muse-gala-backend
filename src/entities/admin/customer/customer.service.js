@@ -11,9 +11,15 @@ export const getCustomerStatsService = async () => {
 
   const totalBookings = await Booking.countDocuments();
 
+  const totalPendingVerifications = await User.countDocuments({
+    role: "USER",
+    kycStatus: "pending"
+  });
+
   return {
     totalCustomers,
-    totalBookings
+    totalBookings,
+    totalPendingVerifications
   };
 };
 
