@@ -347,17 +347,8 @@ export const getBookingStatsService = async (query) => {
 
   const skip = (page - 1) * limit;
 
-  // 🔎 Search filter
+  // 🔎 Base filters (Date range)
   let matchStage = {};
-
-  if (search) {
-    matchStage.$or = [
-      { dressName: { $regex: search, $options: "i" } },
-      { customerEmail: { $regex: search, $options: "i" } } // Added email search for better admin utility
-    ];
-  }
-
-  // 📅 Date range filter
   if (startDate && endDate) {
     matchStage.createdAt = {
       $gte: new Date(startDate),
@@ -370,80 +361,115 @@ export const getBookingStatsService = async (query) => {
   }
 
   const result = await Booking.aggregate([
-    { $match: matchStage },
+    // 🔎 Lookup customer data early to allow filtering and name projection
+    {
+      $lookup: {
+        from: "users",
+        localField: "customer",
+        foreignField: "_id",
+        as: "customerData"
+      }
+    },
+    { $unwind: { path: "$customerData", preserveNullAndEmptyArrays: true } },
 
-  {
-    $lookup: {
-      from: "payouts",
-      localField: "_id",
-      foreignField: "bookingId",
-      as: "payouts"
-    }
-  },
-
-  // ✅ Compute revenue per booking
-  {
-    $addFields: {
-      bookingRevenue: {
-        $sum: {
-          $map: {
+    {
+      $addFields: {
+        customerName: {
+          $trim: {
             input: {
-              $filter: {
-                input: "$payouts",
-                as: "p",
-                cond: { $eq: ["$$p.status", "paid"] }
-              }
-            },
-            as: "paidPayout",
-            in: {
-              $subtract: [
-                "$$paidPayout.bookingAmount",
-                { $ifNull: ["$$paidPayout.requestedAmount", 0] }
+              $concat: [
+                { $ifNull: ["$customerData.firstName", ""] },
+                " ",
+                { $ifNull: ["$customerData.lastName", ""] }
               ]
+            }
+          }
+        },
+        customerEmail: "$customerData.email"
+      }
+    },
+
+    // 🔎 Search filter (now includes customer name and email)
+    {
+      $match: (function() {
+        let match = { ...matchStage };
+        if (search) {
+          match.$or = [
+            { dressName: { $regex: search, $options: "i" } },
+            { customerName: { $regex: search, $options: "i" } },
+            { customerEmail: { $regex: search, $options: "i" } }
+          ];
+        }
+        return match;
+      })()
+    },
+
+    {
+      $lookup: {
+        from: "payouts",
+        localField: "_id",
+        foreignField: "bookingId",
+        as: "payouts"
+      }
+    },
+
+    {
+      $addFields: {
+        bookingRevenue: {
+          $sum: {
+            $map: {
+              input: {
+                $filter: {
+                  input: "$payouts",
+                  as: "p",
+                  cond: { $eq: ["$$p.status", "paid"] }
+                }
+              },
+              as: "paidPayout",
+              in: {
+                $subtract: [
+                  "$$paidPayout.bookingAmount",
+                  { $ifNull: ["$$paidPayout.requestedAmount", 0] }
+                ]
+              }
             }
           }
         }
       }
+    },
+
+    // 📊 Global stats
+    {
+      $group: {
+        _id: null,
+        totalBookings: { $sum: 1 },
+        totalBookingAmount: { $sum: "$totalAmount" },
+        totalRevenue: { $sum: "$bookingRevenue" },
+        pendingDeliveries: {
+          $sum: {
+            $cond: [
+              { $in: ["$deliveryStatus", ["Pending", "PR Pending"]] },
+              1,
+              0
+            ]
+          }
+        },
+        bookings: { $push: "$$ROOT" }
+      }
+    },
+
+    // 📑 Pagination
+    {
+      $project: {
+        _id: 0,
+        totalBookings: 1,
+        totalBookingAmount: 1,
+        totalRevenue: 1,
+        pendingDeliveries: 1,
+        bookings: { $slice: ["$bookings", skip, Number(limit)] }
+      }
     }
-  },
-
-  // 📊 Global stats
-  {
-    $group: {
-      _id: null,
-
-      totalBookings: { $sum: 1 },
-      totalBookingAmount: { $sum: "$totalAmount" },
-
-      // ✅ CORRECT revenue
-      totalRevenue: { $sum: "$bookingRevenue" },
-
-      pendingDeliveries: {
-        $sum: {
-          $cond: [
-            { $in: ["$deliveryStatus", ["Pending", "PR Pending"]] },
-            1,
-            0
-          ]
-        }
-      },
-
-      bookings: { $push: "$$ROOT" }
-    }
-  },
-
-  // 📑 Pagination
-  {
-    $project: {
-      _id: 0,
-      totalBookings: 1,
-      totalBookingAmount: 1,
-      totalRevenue: 1,
-      pendingDeliveries: 1,
-      bookings: { $slice: ["$bookings", skip, Number(limit)] }
-    }
-  }
-]);
+  ]);
 
   return result[0] || {
     bookings: [],
@@ -463,8 +489,12 @@ export const getBookingByIdService = async (bookingId) => {
   const bookingObjectId =new  mongoose.Types.ObjectId(bookingId);
 
   const booking = await Booking.findById(bookingObjectId)
-    .populate("customer", "-password -refreshToken -otp -otpExpires")
-    .populate("allocatedLender.lenderId", "-password -refreshToken -otp -otpExpires")
+    .populate("customer", "firstName lastName email fullName")
+    .populate({
+      path: "allocatedLender.lenderId",
+      select: "firstName lastName email fullName businessName",
+      model: "User"
+    })
     .lean();
 
   if (!booking) {

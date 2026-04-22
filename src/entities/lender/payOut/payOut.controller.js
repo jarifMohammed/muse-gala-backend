@@ -6,6 +6,7 @@ import {
   payoutFailedTemplate
 } from '../../../lib/emailTemplates/payout.templates.js';
 import User from '../../auth/auth.model.js';
+import { Booking } from '../../booking/booking.model.js';
 import payOutModel from './payOut.model.js';
 import {
   createPayoutRequestService,
