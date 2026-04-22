@@ -448,6 +448,7 @@ export const createManualBookingService = async ({ userId, body }) => {
     // Create booking (only if payment success)
     const bookingData = {
       customer: userId,
+      lender: userId,
       masterdressId: masterDress._id,
       dressName: listing.dressName,
       listing: listing._id,
@@ -456,12 +457,19 @@ export const createManualBookingService = async ({ userId, body }) => {
       rentalDurationDays,
       size,
       rentalFee,
+      lenderPrice: rentalFee,
       totalAmount,
       stripePaymentIntentId: paymentIntent.id,
       paymentStatus: 'Paid',
       deliveryStatus: 'Delivered',
       deliveryMethod: 'Manual booking',
-      isManualBooking: true
+      isManualBooking: true,
+      allocatedLender: {
+        lenderId: userId,
+        email: lender.email,
+        price: rentalFee,
+        allocationType: 'Shipping'
+      }
     };
 
     const booking = new Booking(bookingData);
