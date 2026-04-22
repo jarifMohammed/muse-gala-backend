@@ -14,8 +14,39 @@ export const createPayoutRequestService = async ({ lenderId, bookingId }) => {
   // 1️⃣ Validate lender
   const lender = await User.findById(lenderId);
   if (!lender) throw new Error("Lender not found");
-  if (!lender.stripeOnboardingCompleted) {
-    throw new Error("Complete Stripe onboarding before requesting payouts");
+
+  // Determine Payout Method
+  const settings = lender.payoutSettings || {};
+  let finalMethod = settings.preferredMethod || 'Manual';
+  let finalDetails = {};
+
+  // If lender is onboarded, we can respect their Stripe preference
+  if (finalMethod === 'Stripe') {
+    if (!lender.stripeOnboardingCompleted) {
+      // Fallback to manual if Stripe selected but not onboarded, or throw error
+      throw new Error("Stripe onboarding is not complete. Please complete onboarding or switch to Manual payout.");
+    }
+    finalMethod = 'Stripe';
+  } else {
+    // Manual Method logic
+    if (settings.manualMethod === 'PayID') {
+      if (!settings.payIDDetails?.value) throw new Error("PayID details missing.");
+      finalMethod = 'PayID';
+      finalDetails = { 
+        type: settings.payIDDetails.type, 
+        value: settings.payIDDetails.value 
+      };
+    } else {
+      // Default to Bank Transfer
+      if (!settings.bankDetails?.accountNumber) throw new Error("Bank details missing.");
+      finalMethod = 'BankTransfer';
+      finalDetails = {
+        accountName: settings.bankDetails.accountName,
+        bsb: settings.bankDetails.bsb,
+        accountNumber: settings.bankDetails.accountNumber,
+        bankName: settings.bankDetails.bankName
+      };
+    }
   }
 
   // 2️⃣ Find booking that is Paid
@@ -54,6 +85,8 @@ export const createPayoutRequestService = async ({ lenderId, bookingId }) => {
       requestedAmount,
       commission,
       status: "pending",
+      payoutMethod: finalMethod,
+      payoutDetails: finalDetails
     }),
     Booking.findByIdAndUpdate(
       booking._id,

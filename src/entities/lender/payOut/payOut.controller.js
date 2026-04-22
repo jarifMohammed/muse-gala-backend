@@ -127,9 +127,6 @@ export const transferPayout = async (req, res, next) => {
       return res.status(400).json({ message: 'Invalid payout ID' });
     }
 
-    /* =========================
-       1. FETCH PAYOUT
-    ========================= */
     const payout = await payOutModel.findById(payoutId).lean();
     if (!payout) {
       return res.status(404).json({ message: 'Payout not found' });
@@ -139,128 +136,93 @@ export const transferPayout = async (req, res, next) => {
       return res.status(400).json({ message: 'Payout already completed' });
     }
 
-    /* =========================
-       2. FETCH LENDER
-    ========================= */
     const lender = await User.findById(payout.lenderId).lean();
     if (!lender) {
       return res.status(404).json({ message: 'Lender not found' });
     }
 
-    const {
-      stripeAccountId,
-      chargesEnabled,
-      payoutsEnabled,
-      detailsSubmitted,
-      stripeOnboardingCompleted
-    } = lender;
+    const isStripe = payout.payoutMethod === 'Stripe';
 
-    /* =========================
-       3. VALIDATE STRIPE ACCOUNT
-    ========================= */
-    const errors = [];
-    if (!stripeAccountId) errors.push('Missing stripeAccountId');
-    if (!chargesEnabled) errors.push('chargesEnabled is false');
-    if (!payoutsEnabled) errors.push('payoutsEnabled is false');
-    if (!detailsSubmitted) errors.push('detailsSubmitted is false');
-    if (!stripeOnboardingCompleted)
-      errors.push('stripeOnboardingCompleted is false');
+    if (isStripe) {
+      /* =========================
+         STRIPE LOGIC (Automated)
+      ========================= */
+      const {
+        stripeAccountId,
+        chargesEnabled,
+        payoutsEnabled,
+        detailsSubmitted,
+        stripeOnboardingCompleted
+      } = lender;
 
-    if (errors.length > 0) {
-      // Send failure email to lender
-      try {
-        await sendEmail({
-          to: lender.email,
-          subject: 'Payout issue',
-          html: payoutFailedTemplate(
-            `${lender.firstName || ''} ${lender.lastName || ''}`.trim() ||
-            'Lender'
-          )
-        });
-      } catch (emailError) {
-        console.error(
-          'Failed to send payout failure email to lender:',
-          emailError
-        );
+      const errors = [];
+      if (!stripeAccountId) errors.push('Missing stripeAccountId');
+      if (!chargesEnabled) errors.push('chargesEnabled is false');
+      if (!payoutsEnabled) errors.push('payoutsEnabled is false');
+      if (!detailsSubmitted) errors.push('detailsSubmitted is false');
+      if (!stripeOnboardingCompleted) errors.push('stripeOnboardingCompleted is false');
+
+      if (errors.length > 0) {
+        // Send failure emails...
+        try {
+          await sendEmail({
+            to: lender.email,
+            subject: 'Payout issue',
+            html: payoutFailedTemplate(`${lender.firstName || ''} ${lender.lastName || ''}`.trim() || 'Lender')
+          });
+        } catch (e) {}
+        return res.status(400).json({ message: 'Stripe account is not ready', errors });
       }
 
-      // Send failure email to admin
-      try {
-        const adminEmail = process.env.ADMIN_EMAIL || 'admin@topocreates.com';
-        await sendEmail({
-          to: adminEmail,
-          subject: 'Payout issue',
-          html: payoutFailedTemplate('Admin')
-        });
-      } catch (emailError) {
-        console.error(
-          'Failed to send payout failure email to admin:',
-          emailError
-        );
-      }
-
-      return res.status(400).json({
-        message: 'Stripe account is not ready for payout',
-        errors
+      const transfer = await stripe.transfers.create({
+        amount: Math.round(payout.requestedAmount * 100), // in cents
+        currency: 'aud',
+        destination: stripeAccountId,
+        metadata: { payoutId: payout._id.toString() }
       });
+
+      await Promise.all([
+        payOutModel.findByIdAndUpdate(payoutId, {
+          status: 'paid',
+          updatedAt: new Date(),
+          stripeTransferId: transfer.id
+        }),
+        Booking.findByIdAndUpdate(payout.bookingId, { payoutStatus: 'transferred' })
+      ]);
+
+    } else {
+      /* =========================
+         MANUAL LOGIC (Bank/PayID)
+      ========================= */
+      // Admin handles the actual transfer outside the system. 
+      // We just mark it as paid in the DB.
+      await Promise.all([
+        payOutModel.findByIdAndUpdate(payoutId, {
+          status: 'paid',
+          updatedAt: new Date(),
+          notes: `Manual payout processed via ${payout.payoutMethod}`
+        }),
+        Booking.findByIdAndUpdate(payout.bookingId, { payoutStatus: 'transferred' })
+      ]);
     }
 
-    /* =========================
-       4. INITIATE STRIPE TRANSFER
-    ========================= */
-    const transfer = await stripe.transfers.create({
-      amount: payout.requestedAmount * 100, // in cents
-      currency: 'aud', // adjust your currency
-      destination: stripeAccountId,
-      metadata: {
-        payoutId: payout._id.toString(),
-        bookingId: payout.bookingId.toString(),
-        lenderId: payout.lenderId.toString()
-      }
-    });
-
-    /* =========================
-       5. UPDATE PAYOUT STATUS (Payout & Booking)
-    ========================= */
-    await Promise.all([
-      payOutModel.findByIdAndUpdate(payoutId, {
-        status: 'paid',
-        updatedAt: new Date(),
-        stripeTransferId: transfer.id
-      }),
-      // Also update booking payoutStatus to 'transferred'
-      Booking.findByIdAndUpdate(
-        payout.bookingId,
-        { payoutStatus: 'transferred' },
-        { new: true }
-      )
-    ]);
-
-    /* =========================
-       6. SEND SUCCESS EMAIL TO LENDER
-    ========================= */
+    // Success Email
     try {
       await sendEmail({
         to: lender.email,
         subject: 'Payout completed',
         html: payoutTransferredTemplate(
-          `${lender.firstName || ''} ${lender.lastName || ''}`.trim() ||
-          'Lender',
+          `${lender.firstName || ''} ${lender.lastName || ''}`.trim() || 'Lender',
           payout.requestedAmount.toFixed(2)
         )
       });
-    } catch (emailError) {
-      console.error(
-        'Failed to send payout success email to lender:',
-        emailError
-      );
-    }
+    } catch (e) {}
 
     return res.status(200).json({
       success: true,
-      message: 'Payout transferred successfully',
-      transfer
+      message: isStripe ? 'Payout transferred via Stripe' : 'Payout marked as paid manually'
     });
+
   } catch (error) {
     next(error);
   }

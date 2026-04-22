@@ -205,6 +205,33 @@ const UserSchema = new mongoose.Schema(
       receiveEmailAlertsForNewOrders: { type: Boolean, default: false },
       sendRemindersForReturnDeadlines: { type: Boolean, default: false }
     },
+
+    // Payout settings for Australia (Dual System: Stripe + Manual)
+    payoutSettings: {
+      preferredMethod: { 
+        type: String, 
+        enum: ['Stripe', 'Manual'], 
+        default: 'Manual' 
+      },
+      manualMethod: { 
+        type: String, 
+        enum: ['BankTransfer', 'PayID'], 
+        default: 'BankTransfer' 
+      },
+      bankDetails: {
+        accountName: { type: String, trim: true },
+        bsb: { type: String, trim: true },           // 6-digit Australian BSB
+        accountNumber: { type: String, trim: true },
+        bankName: { type: String, trim: true }
+      },
+      payIDDetails: {
+        type: { 
+          type: String, 
+          enum: ['Mobile', 'Email', 'ABN', 'Organization ID'] 
+        },
+        value: { type: String, trim: true }
+      }
+    },
   },
   { timestamps: true }
 );

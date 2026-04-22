@@ -49,6 +49,14 @@ const payoutSchema = new Schema(
       type: Date,
       default: Date.now,
     },
+    payoutMethod: { 
+      type: String, 
+      enum: ['Stripe', 'BankTransfer', 'PayID'], 
+      required: true 
+    },
+    payoutDetails: { 
+      type: Object 
+    },
     processedAt: {
       type: Date,
     },
