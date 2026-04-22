@@ -460,8 +460,8 @@ export const getBookingByIdService = async (bookingId) => {
   const bookingObjectId =new  mongoose.Types.ObjectId(bookingId);
 
   const booking = await Booking.findById(bookingObjectId)
-    .populate("customer", "firstName lastName email")
-    .populate("allocatedLender.lenderId", "firstName lastName email")
+    .populate("customer", "-password -refreshToken -otp -otpExpires")
+    .populate("allocatedLender.lenderId", "-password -refreshToken -otp -otpExpires")
     .lean();
 
   if (!booking) {
