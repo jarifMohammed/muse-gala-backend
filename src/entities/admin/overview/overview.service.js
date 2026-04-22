@@ -418,7 +418,7 @@ export const getBookingStatsService = async (query) => {
       pendingDeliveries: {
         $sum: {
           $cond: [
-            { $ne: ["$deliveryStatus", "completed"] },
+            { $in: ["$deliveryStatus", ["Pending", "PR Pending"]] },
             1,
             0
           ]
