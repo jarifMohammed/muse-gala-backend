@@ -43,8 +43,8 @@ export const onboardLender = async (req, res) => {
 
     const onboardingUrl = await createOnboardingLink(
       lender.stripeAccountId,
-      `${process.env.FRONTEND_URL}/stripe/refresh`,
-      `${process.env.FRONTEND_URL}/stripe/return`
+      `${process.env.LENDER_FRONTEND_URL}/stripe/refresh`,
+      `${process.env.LENDER_FRONTEND_URL}/account-settings`
     );
 
     return generateResponse(res, 200, true, 'Onboarding link created successfully', { url: onboardingUrl });
@@ -98,7 +98,7 @@ export const getStripeLoginLink = async (req, res) => {
     }
 
     const url = await createStripeLoginLink(user.stripeAccountId,
-       `${process.env.FRONTEND_URL}/stripe/refresh`
+       `${process.env.LENDER_FRONTEND_URL}/stripe/refresh`
     );
 
     

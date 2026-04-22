@@ -102,6 +102,14 @@ export const createSetupIntentService = async (userId, bookingId = null) => {
   }
 
   // 2. Create Stripe Checkout Session for SetupIntent
+  const successUrl = user.role === 'LENDER' 
+    ? `${process.env.LENDER_FRONTEND_URL}/account-settings`
+    : `${process.env.FRONTEND_URL}/booking-success`;
+
+  const cancelUrl = user.role === 'LENDER'
+    ? `${process.env.LENDER_FRONTEND_URL}/account-settings`
+    : `${process.env.FRONTEND_URL}/payment/cancel`;
+
   const session = await stripe.checkout.sessions.create({
     mode: 'setup',
     customer: stripeCustomerId,
@@ -110,8 +118,8 @@ export const createSetupIntentService = async (userId, bookingId = null) => {
       userId: user._id.toString(),
       ...(bookingId && { bookingId: bookingId.toString() })
     },
-    success_url: `${process.env.FRONTEND_URL}/booking-success`,
-    cancel_url: `${process.env.FRONTEND_URL}/payment/cancel`
+    success_url: successUrl,
+    cancel_url: cancelUrl
   });
 
   return { url: session.url };

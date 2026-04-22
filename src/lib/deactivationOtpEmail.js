@@ -11,6 +11,7 @@ export const deactivationOtpEmail = (name, code) =>
         ${code}
       </div>
       <p>This code expires in 10 minutes.</p>
+      
       <p>— Muse Gala</p>
     `,
   });

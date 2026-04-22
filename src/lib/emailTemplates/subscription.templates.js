@@ -19,7 +19,7 @@ export const subscriptionActivatedTemplate = (
       <p>— Muse Gala</p>
     `,
     buttonText: 'GO TO DASHBOARD',
-    buttonUrl: process.env.FRONTEND_URL || 'https://musegala.com.au',
+    buttonUrl: process.env.LENDER_FRONTEND_URL || 'https://lender.musegala.com.au',
   });
 
 /**
@@ -88,7 +88,7 @@ export const subscriptionPaymentFailedTemplate = (
       <p class="text-muted text-small">Your subscription will not be active until payment is successful.</p>
     `,
     buttonText: 'RETRY PAYMENT',
-    buttonUrl: `${process.env.FRONTEND_URL}/subscription/checkout`,
+    buttonUrl: `${process.env.LENDER_FRONTEND_URL}/subscription/checkout`,
   });
 
 /**
@@ -107,7 +107,7 @@ export const subscriptionCheckoutExpiredTemplate = (
       <p>— Muse Gala</p>
     `,
     buttonText: 'GO TO DASHBOARD',
-    buttonUrl: `${process.env.FRONTEND_URL}/subscription/plans`,
+    buttonUrl: `${process.env.LENDER_FRONTEND_URL}/subscription-plans`,
   });
 
 /**
@@ -154,6 +154,6 @@ export const subscriptionExpiringTemplate = (
       <p>— Muse Gala</p>
     `,
     buttonText: 'RENEW SUBSCRIPTION',
-    buttonUrl: `${process.env.FRONTEND_URL}/subscription/renew`,
+    buttonUrl: `${process.env.LENDER_FRONTEND_URL}/subscription/renew`,
   });
 };
