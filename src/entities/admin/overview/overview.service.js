@@ -339,6 +339,8 @@ export const getBookingStatsService = async (query) => {
     search,
     month,
     year,
+    startDate,
+    endDate,
     page = 1,
     limit = 10
   } = query;
@@ -351,23 +353,24 @@ export const getBookingStatsService = async (query) => {
   if (search) {
     matchStage.$or = [
       { dressName: { $regex: search, $options: "i" } },
-      { customer: { $regex: search, $options: "i" } }
+      { customerEmail: { $regex: search, $options: "i" } } // Added email search for better admin utility
     ];
   }
 
-  // 📅 Month-wise filter
-  if (month && year) {
-    const startDate = new Date(year, month - 1, 1);
-    const endDate = new Date(year, month, 1);
-
+  // 📅 Date range filter
+  if (startDate && endDate) {
     matchStage.createdAt = {
-      $gte: startDate,
-      $lt: endDate
+      $gte: new Date(startDate),
+      $lte: new Date(endDate + "T23:59:59.999")
     };
+  } else if (month && year) {
+    const start = new Date(year, month - 1, 1);
+    const end = new Date(year, month, 1);
+    matchStage.createdAt = { $gte: start, $lt: end };
   }
 
- const result = await Booking.aggregate([
-  { $match: matchStage },
+  const result = await Booking.aggregate([
+    { $match: matchStage },
 
   {
     $lookup: {
