@@ -10,6 +10,7 @@ import {
 import User from '../../auth/auth.model.js';
 import Listing from '../../lender/Listings/listings.model.js';
 import MasterDress from '../../admin/Lisitngs/ReviewandMain Site Listing/masterDressModel.js';
+import { reallocateBookingService } from '../sla.service.js';
 
 export const getAllocatedBookingsForLenderService = async (lenderId, query) => {
   const page = parseInt(query.page, 10) || 1;
@@ -152,14 +153,12 @@ export const acceptOrRejectBookingService = async ({
     // REJECT BOOKING
     // ------------------------------
     if (action === 'reject') {
-      booking.deliveryStatus = 'RejectedByLender';
-      booking.paymentStatus = 'NotCharged';
-      await booking.save({ session });
-      // Email sending removed as per requirement
-
-      await session.commitTransaction();
+      await session.abortTransaction();
       session.endSession();
-      return { deliveryStatus: 'rejected', booking };
+      
+      // Delegate to reallocation service
+      const reallocResult = await reallocateBookingService(bookingId, 'Rejected');
+      return { deliveryStatus: 'rejected_reallocated', details: reallocResult };
     }
 
     // ------------------------------
@@ -285,6 +284,10 @@ export const acceptOrRejectBookingService = async ({
     booking.deliveryStatus = 'AcceptedByLender';
     booking.paymentErrorMessage = null;
 
+    // Clear SLA timers
+    booking.slaExpiresAt = undefined;
+    booking.slaReminderAt = undefined;
+
     await booking.save({ session });
 
     // ------------------------------
@@ -304,12 +307,12 @@ export const acceptOrRejectBookingService = async ({
       const lender = await User.findById(booking.allocatedLender.lenderId);
 
       const startDate = new Date(booking.rentalStartDate).toLocaleDateString(
-        'en-US',
-        { year: 'numeric', month: 'short', day: 'numeric' }
+        'en-AU',
+        { timeZone: 'Australia/Sydney', year: 'numeric', month: 'short', day: 'numeric' }
       );
       const endDate = new Date(booking.rentalEndDate).toLocaleDateString(
-        'en-US',
-        { year: 'numeric', month: 'short', day: 'numeric' }
+        'en-AU',
+        { timeZone: 'Australia/Sydney', year: 'numeric', month: 'short', day: 'numeric' }
       );
 
       if (customer?.email) {

@@ -20,6 +20,8 @@ import { stripeWebhookHandler } from './entities/webhook.js';
 import { connectedAccountWebhookHandler } from './entities/webhookAccounts.js';
 import { startReturnReminderJob } from './lib/returnReminderJob.js';
 import { startOverdueEscalationJob } from './lib/overdueEscalationJob.js';
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './core/config/swagger.js';
 //import { startReminderJob } from './lib/reminderJob.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -120,6 +122,7 @@ app.get('/health', (req, res) => {
 
 
 // API routes
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api', appRouter);
 
 

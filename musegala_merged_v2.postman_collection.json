@@ -13283,7 +13283,7 @@
                     }
                   ],
                   "cookie": [],
-                  "body": "{\n    \"status\": true,\n    \"message\": \"Dress updated successfully\",\n    \"data\": {\n        \"listing\": {\n            \"lenderId\": \"68b94fb3081f0762d7adff16\",\n            \"dressId\": \"MuG-asos-sequin-party-dress-NPU6WF\",\n            \"dressName\": \"Sequin Party Dress\",\n            \"brand\": \"ASOS\",\n            \"size\": \"S\",\n            \"status\": \"available\",\n            \"colour\": \"#FFD700\",\n            \"condition\": \"Like New\",\n            \"category\": \"Party\",\n            \"media\": [\n                \"https://files.edgestore.dev/vkpagg64z2y0yvdx/publicFiles/_public/16641581-e08b-44b1-ab61-a1a4af224697.avif\",\n                \"https://files.edgestore.dev/vkpagg64z2y0yvdx/publicFiles/_public/c7eeab95-a2bd-4bd6-a7f3-56c652e3c9a1.avif\"\n            ],\n            \"description\": \"Sparkling gold sequin dress with a fitted silhouette and short sleeves. Ideal for parties, New Year’s Eve, or special events. Lightweight lining ensures comfort while you shine.\",\n            \"rentalPrice\": {\n                \"fourDays\": 50,\n                \"eightDays\": 85\n            },\n            \"material\": \"100% Polyester\",\n            \"careInstructions\": \"Hand Wash\",\n            \"occasion\": [],\n            \"insurance\": false,\n            \"pickupOption\": \"Australia-wide\",\n            \"approvalStatus\": \"approved\",\n            \"reasonsForRejection\": \"\",\n            \"isActive\": true,\n            \"createdAt\": \"2025-09-04T09:46:39.744Z\",\n            \"updatedAt\": \"2025-10-18T20:53:34.285Z\",\n            \"id\": \"68b95fff6ab6ab72ca144047\"\n        },\n        \"masterDress\": {\n            \"dressName\": \"Sequin Party Dress\",\n            \"listingIds\": [\n                \"68b95fff6ab6ab72ca144047\"\n            ],\n            \"lenderIds\": [\n                \"68b94fb3081f0762d7adff16\"\n            ],\n            \"sizes\": [\n                \"S\"\n            ],\n            \"colors\": [\n                \"#FFD700\"\n            ],\n            \"occasions\": [],\n            \"media\": [\n                \"https://files.edgestore.dev/vkpagg64z2y0yvdx/publicFiles/_public/16641581-e08b-44b1-ab61-a1a4af224697.avif\",\n                \"https://files.edgestore.dev/vkpagg64z2y0yvdx/publicFiles/_public/c7eeab95-a2bd-4bd6-a7f3-56c652e3c9a1.avif\"\n            ],\n            \"thumbnail\": \"https://files.edgestore.dev/vkpagg64z2y0yvdx/publicFiles/_public/16641581-e08b-44b1-ab61-a1a4af224697.avif\",\n            \"shippingDetails\": {\n                \"isLocalPickup\": false,\n                \"isShippingAvailable\": true\n            },\n            \"basePrice\": null,\n            \"isActive\": true,\n            \"_id\": \"68f3fe4e151f5766f7bf6752\",\n            \"createdAt\": \"2025-10-18T20:53:34.106Z\",\n            \"updatedAt\": \"2025-10-18T20:53:34.106Z\",\n            \"slug\": \"sequin-party-dress\",\n            \"masterDressId\": \"Muse-0001\",\n            \"__v\": 0\n        }\n    }\n}"
+                  "body": "{\n    \"status\": true,\n    \"message\": \"Dress updated successfully\",\n    \"data\": {\n        \"listing\": {\n            \"lenderId\": \"68b94fb3081f0762d7adff16\",\n            \"dressId\": \"MuG-asos-sequin-party-dress-NPU6WF\",\n            \"dressName\": \"Sequin Party Dress\",\n            \"brand\": \"ASOS\",\n            \"size\": \"S\",\n            \"status\": \"available\",\n            \"colour\": \"#FFD700\",\n            \"condition\": \"Like New\",\n            \"category\": \"Party\",\n            \"media\": [\n                \"https://files.edgestore.dev/vkpagg64z2y0yvdx/publicFiles/_public/16641581-e08b-44b1-ab61-a1a4af224697.avif\",\n                \"https://files.edgestore.dev/vkpagg64z2y0yvdx/publicFiles/_public/c7eeab95-a2bd-4bd6-a7f3-56c652e3c9a1.avif\"\n            ],\n            \"description\": \"Sparkling gold sequin dress with a fitted silhouette and short sleeves. Ideal for parties, New Year\u2019s Eve, or special events. Lightweight lining ensures comfort while you shine.\",\n            \"rentalPrice\": {\n                \"fourDays\": 50,\n                \"eightDays\": 85\n            },\n            \"material\": \"100% Polyester\",\n            \"careInstructions\": \"Hand Wash\",\n            \"occasion\": [],\n            \"insurance\": false,\n            \"pickupOption\": \"Australia-wide\",\n            \"approvalStatus\": \"approved\",\n            \"reasonsForRejection\": \"\",\n            \"isActive\": true,\n            \"createdAt\": \"2025-09-04T09:46:39.744Z\",\n            \"updatedAt\": \"2025-10-18T20:53:34.285Z\",\n            \"id\": \"68b95fff6ab6ab72ca144047\"\n        },\n        \"masterDress\": {\n            \"dressName\": \"Sequin Party Dress\",\n            \"listingIds\": [\n                \"68b95fff6ab6ab72ca144047\"\n            ],\n            \"lenderIds\": [\n                \"68b94fb3081f0762d7adff16\"\n            ],\n            \"sizes\": [\n                \"S\"\n            ],\n            \"colors\": [\n                \"#FFD700\"\n            ],\n            \"occasions\": [],\n            \"media\": [\n                \"https://files.edgestore.dev/vkpagg64z2y0yvdx/publicFiles/_public/16641581-e08b-44b1-ab61-a1a4af224697.avif\",\n                \"https://files.edgestore.dev/vkpagg64z2y0yvdx/publicFiles/_public/c7eeab95-a2bd-4bd6-a7f3-56c652e3c9a1.avif\"\n            ],\n            \"thumbnail\": \"https://files.edgestore.dev/vkpagg64z2y0yvdx/publicFiles/_public/16641581-e08b-44b1-ab61-a1a4af224697.avif\",\n            \"shippingDetails\": {\n                \"isLocalPickup\": false,\n                \"isShippingAvailable\": true\n            },\n            \"basePrice\": null,\n            \"isActive\": true,\n            \"_id\": \"68f3fe4e151f5766f7bf6752\",\n            \"createdAt\": \"2025-10-18T20:53:34.106Z\",\n            \"updatedAt\": \"2025-10-18T20:53:34.106Z\",\n            \"slug\": \"sequin-party-dress\",\n            \"masterDressId\": \"Muse-0001\",\n            \"__v\": 0\n        }\n    }\n}"
                 }
               ]
             },
@@ -36625,6 +36625,2097 @@
             }
           },
           "response": []
+        }
+      ]
+    },
+    {
+      "name": "NEWLY ADDED (Merged)",
+      "item": [
+        {
+          "name": "Auth",
+          "item": [
+            {
+              "name": "auth/refresh-access-token",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}auth/refresh-access-token",
+                  "host": [
+                    "{{base_url}}auth"
+                  ],
+                  "path": [
+                    "auth",
+                    "refresh-access-token"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "auth/forget-password",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}auth/forget-password",
+                  "host": [
+                    "{{base_url}}auth"
+                  ],
+                  "path": [
+                    "auth",
+                    "forget-password"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "auth/verify-code",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}auth/verify-code",
+                  "host": [
+                    "{{base_url}}auth"
+                  ],
+                  "path": [
+                    "auth",
+                    "verify-code"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "auth/reset-password",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}auth/reset-password",
+                  "host": [
+                    "{{base_url}}auth"
+                  ],
+                  "path": [
+                    "auth",
+                    "reset-password"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "auth/logout",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}auth/logout",
+                  "host": [
+                    "{{base_url}}auth"
+                  ],
+                  "path": [
+                    "auth",
+                    "logout"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "User",
+          "item": [
+            {
+              "name": "user/all-users",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}user/all-users",
+                  "host": [
+                    "{{base_url}}user"
+                  ],
+                  "path": [
+                    "user",
+                    "all-users"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "user/all-admins",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}user/all-admins",
+                  "host": [
+                    "{{base_url}}user"
+                  ],
+                  "path": [
+                    "user",
+                    "all-admins"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "user/all-sellers",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}user/all-sellers",
+                  "host": [
+                    "{{base_url}}user"
+                  ],
+                  "path": [
+                    "user",
+                    "all-sellers"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "user/:id",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}user/:id",
+                  "host": [
+                    "{{base_url}}user"
+                  ],
+                  "path": [
+                    "user",
+                    ":id"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "user/:id",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}user/:id",
+                  "host": [
+                    "{{base_url}}user"
+                  ],
+                  "path": [
+                    "user",
+                    ":id"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "user/:id",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}user/:id",
+                  "host": [
+                    "{{base_url}}user"
+                  ],
+                  "path": [
+                    "user",
+                    ":id"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "user/upload-avatar/:id",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}user/upload-avatar/:id",
+                  "host": [
+                    "{{base_url}}user"
+                  ],
+                  "path": [
+                    "user",
+                    "upload-avatar",
+                    ":id"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "user/upload-avatar/:id",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}user/upload-avatar/:id",
+                  "host": [
+                    "{{base_url}}user"
+                  ],
+                  "path": [
+                    "user",
+                    "upload-avatar",
+                    ":id"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "user/upload-avatar/:id",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}user/upload-avatar/:id",
+                  "host": [
+                    "{{base_url}}user"
+                  ],
+                  "path": [
+                    "user",
+                    "upload-avatar",
+                    ":id"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "user/upload-multiple-avatar/:id",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}user/upload-multiple-avatar/:id",
+                  "host": [
+                    "{{base_url}}user"
+                  ],
+                  "path": [
+                    "user",
+                    "upload-multiple-avatar",
+                    ":id"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "user/upload-multiple-avatar/:id",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}user/upload-multiple-avatar/:id",
+                  "host": [
+                    "{{base_url}}user"
+                  ],
+                  "path": [
+                    "user",
+                    "upload-multiple-avatar",
+                    ":id"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "user/upload-multiple-avatar/:id",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}user/upload-multiple-avatar/:id",
+                  "host": [
+                    "{{base_url}}user"
+                  ],
+                  "path": [
+                    "user",
+                    "upload-multiple-avatar",
+                    ":id"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "user/upload-file/:id",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}user/upload-file/:id",
+                  "host": [
+                    "{{base_url}}user"
+                  ],
+                  "path": [
+                    "user",
+                    "upload-file",
+                    ":id"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "user/upload-file/:id",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}user/upload-file/:id",
+                  "host": [
+                    "{{base_url}}user"
+                  ],
+                  "path": [
+                    "user",
+                    "upload-file",
+                    ":id"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "user/upload-file/:id",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}user/upload-file/:id",
+                  "host": [
+                    "{{base_url}}user"
+                  ],
+                  "path": [
+                    "user",
+                    "upload-file",
+                    ":id"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Newslettersubscription",
+          "item": [
+            {
+              "name": "newsletterSubscription/create",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}newsletterSubscription/create",
+                  "host": [
+                    "{{base_url}}newsletterSubscription"
+                  ],
+                  "path": [
+                    "newsletterSubscription",
+                    "create"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "newsletterSubscription/unsubscribe",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}newsletterSubscription/unsubscribe",
+                  "host": [
+                    "{{base_url}}newsletterSubscription"
+                  ],
+                  "path": [
+                    "newsletterSubscription",
+                    "unsubscribe"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "newsletterSubscription/get-all-newsletter-subscriptions",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}newsletterSubscription/get-all-newsletter-subscriptions",
+                  "host": [
+                    "{{base_url}}newsletterSubscription"
+                  ],
+                  "path": [
+                    "newsletterSubscription",
+                    "get-all-newsletter-subscriptions"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Application",
+          "item": [
+            {
+              "name": "application/:id/resend-password",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}application/:id/resend-password",
+                  "host": [
+                    "{{base_url}}application"
+                  ],
+                  "path": [
+                    "application",
+                    ":id",
+                    "resend-password"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Lender",
+          "item": [
+            {
+              "name": "lender/",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}lender/",
+                  "host": [
+                    "{{base_url}}lender"
+                  ],
+                  "path": [
+                    "lender",
+                    ""
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "lender/admin/",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}lender/admin/",
+                  "host": [
+                    "{{base_url}}lender"
+                  ],
+                  "path": [
+                    "lender",
+                    "admin",
+                    ""
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "lender/admin/lender/:lenderId/stats",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}lender/admin/lender/:lenderId/stats",
+                  "host": [
+                    "{{base_url}}lender"
+                  ],
+                  "path": [
+                    "lender",
+                    "admin",
+                    "lender",
+                    ":lenderId",
+                    "stats"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Payment",
+          "item": [
+            {
+              "name": "payment/create-checkout-session",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}payment/create-checkout-session",
+                  "host": [
+                    "{{base_url}}payment"
+                  ],
+                  "path": [
+                    "payment",
+                    "create-checkout-session"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "payment/savePaymentInfo",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}payment/savePaymentInfo",
+                  "host": [
+                    "{{base_url}}payment"
+                  ],
+                  "path": [
+                    "payment",
+                    "savePaymentInfo"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Account",
+          "item": [
+            {
+              "name": "lender/account/admin/:lenderId",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}lender/account/admin/:lenderId",
+                  "host": [
+                    "{{base_url}}lender"
+                  ],
+                  "path": [
+                    "lender",
+                    "account",
+                    "admin",
+                    ":lenderId"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "lender/account/:id/location",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}lender/account/:id/location",
+                  "host": [
+                    "{{base_url}}lender"
+                  ],
+                  "path": [
+                    "lender",
+                    "account",
+                    ":id",
+                    "location"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Message",
+          "item": [
+            {
+              "name": "message/chatrooms/admin/all",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}message/chatrooms/admin/all",
+                  "host": [
+                    "{{base_url}}message"
+                  ],
+                  "path": [
+                    "message",
+                    "chatrooms",
+                    "admin",
+                    "all"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "message/",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}message/",
+                  "host": [
+                    "{{base_url}}message"
+                  ],
+                  "path": [
+                    "message",
+                    ""
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Payout",
+          "item": [
+            {
+              "name": "payout/my",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}payout/my",
+                  "host": [
+                    "{{base_url}}payout"
+                  ],
+                  "path": [
+                    "payout",
+                    "my"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "payout/transfer/:payoutId",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}payout/transfer/:payoutId",
+                  "host": [
+                    "{{base_url}}payout"
+                  ],
+                  "path": [
+                    "payout",
+                    "transfer",
+                    ":payoutId"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Adminlisting",
+          "item": [
+            {
+              "name": "admin/map-markers",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/map-markers",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "map-markers"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "admin/master-dresses",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/master-dresses",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "master-dresses"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "admin/lenders/nearby/:dressId",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/lenders/nearby/:dressId",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "lenders",
+                    "nearby",
+                    ":dressId"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Promocode",
+          "item": [
+            {
+              "name": "admin/promo/",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/promo/",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "promo",
+                    ""
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "admin/promo/",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/promo/",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "promo",
+                    ""
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "admin/promo/user",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/promo/user",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "promo",
+                    "user"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "admin/promo/:id",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/promo/:id",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "promo",
+                    ":id"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "admin/promo/:id",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/promo/:id",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "promo",
+                    ":id"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "admin/promo/:id",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/promo/:id",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "promo",
+                    ":id"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "admin/promo/:id/send-email",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/promo/:id/send-email",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "promo",
+                    ":id",
+                    "send-email"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Team",
+          "item": [
+            {
+              "name": "admin/team/",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/team/",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "team",
+                    ""
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "admin/team/",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/team/",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "team",
+                    ""
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "admin/team/:id",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/team/:id",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "team",
+                    ":id"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "admin/team/:id/permissions",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/team/:id/permissions",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "team",
+                    ":id",
+                    "permissions"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Support",
+          "item": [
+            {
+              "name": "support/stats",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}support/stats",
+                  "host": [
+                    "{{base_url}}support"
+                  ],
+                  "path": [
+                    "support",
+                    "stats"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Edit",
+          "item": [
+            {
+              "name": "admin/edit/sections",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/edit/sections",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "edit",
+                    "sections"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "admin/edit/image",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/edit/image",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "edit",
+                    "image"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "admin/edit/update",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/edit/update",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "edit",
+                    "update"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "admin/edit/delete",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/edit/delete",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "edit",
+                    "delete"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Overview",
+          "item": [
+            {
+              "name": "lender/overview/",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}lender/overview/",
+                  "host": [
+                    "{{base_url}}lender"
+                  ],
+                  "path": [
+                    "lender",
+                    "overview",
+                    ""
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "lender/overview/rental-calendar",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}lender/overview/rental-calendar",
+                  "host": [
+                    "{{base_url}}lender"
+                  ],
+                  "path": [
+                    "lender",
+                    "overview",
+                    "rental-calendar"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Subscription",
+          "item": [
+            {
+              "name": "subscription/get-all",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}subscription/get-all",
+                  "host": [
+                    "{{base_url}}subscription"
+                  ],
+                  "path": [
+                    "subscription",
+                    "get-all"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "subscription/delete/:id",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}subscription/delete/:id",
+                  "host": [
+                    "{{base_url}}subscription"
+                  ],
+                  "path": [
+                    "subscription",
+                    "delete",
+                    ":id"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Onboarding",
+          "item": [
+            {
+              "name": "lender/refresh",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}lender/refresh",
+                  "host": [
+                    "{{base_url}}lender"
+                  ],
+                  "path": [
+                    "lender",
+                    "refresh"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Customerdispute",
+          "item": [
+            {
+              "name": "customer/disputes/",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}customer/disputes/",
+                  "host": [
+                    "{{base_url}}customer"
+                  ],
+                  "path": [
+                    "customer",
+                    "disputes",
+                    ""
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "customer/disputes/my-disputes",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}customer/disputes/my-disputes",
+                  "host": [
+                    "{{base_url}}customer"
+                  ],
+                  "path": [
+                    "customer",
+                    "disputes",
+                    "my-disputes"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "customer/disputes/my-disputes/:disputeId",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}customer/disputes/my-disputes/:disputeId",
+                  "host": [
+                    "{{base_url}}customer"
+                  ],
+                  "path": [
+                    "customer",
+                    "disputes",
+                    "my-disputes",
+                    ":disputeId"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "customer/disputes/my-disputes/:disputeId",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}customer/disputes/my-disputes/:disputeId",
+                  "host": [
+                    "{{base_url}}customer"
+                  ],
+                  "path": [
+                    "customer",
+                    "disputes",
+                    "my-disputes",
+                    ":disputeId"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "customer/disputes/my-disputes/:disputeId/timeline",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}customer/disputes/my-disputes/:disputeId/timeline",
+                  "host": [
+                    "{{base_url}}customer"
+                  ],
+                  "path": [
+                    "customer",
+                    "disputes",
+                    "my-disputes",
+                    ":disputeId",
+                    "timeline"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Lenderdispute",
+          "item": [
+            {
+              "name": "lender/disputes/",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}lender/disputes/",
+                  "host": [
+                    "{{base_url}}lender"
+                  ],
+                  "path": [
+                    "lender",
+                    "disputes",
+                    ""
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "lender/disputes/my-disputes",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}lender/disputes/my-disputes",
+                  "host": [
+                    "{{base_url}}lender"
+                  ],
+                  "path": [
+                    "lender",
+                    "disputes",
+                    "my-disputes"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "lender/disputes/:disputeId",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}lender/disputes/:disputeId",
+                  "host": [
+                    "{{base_url}}lender"
+                  ],
+                  "path": [
+                    "lender",
+                    "disputes",
+                    ":disputeId"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "lender/disputes/:disputeId/escalate",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}lender/disputes/:disputeId/escalate",
+                  "host": [
+                    "{{base_url}}lender"
+                  ],
+                  "path": [
+                    "lender",
+                    "disputes",
+                    ":disputeId",
+                    "escalate"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "lender/disputes/:disputeId/reply",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}lender/disputes/:disputeId/reply",
+                  "host": [
+                    "{{base_url}}lender"
+                  ],
+                  "path": [
+                    "lender",
+                    "disputes",
+                    ":disputeId",
+                    "reply"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Admindispute",
+          "item": [
+            {
+              "name": "admin/disputes/all",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/disputes/all",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "disputes",
+                    "all"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "admin/disputes/:disputeId",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/disputes/:disputeId",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "disputes",
+                    ":disputeId"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "admin/disputes/refund",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/disputes/refund",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "disputes",
+                    "refund"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "admin/disputes/:disputeId/response",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/disputes/:disputeId/response",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "disputes",
+                    ":disputeId",
+                    "response"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "admin/disputes/:disputeId/resolve",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/disputes/:disputeId/resolve",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "disputes",
+                    ":disputeId",
+                    "resolve"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "admin/disputes/:disputeId/charge",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/disputes/:disputeId/charge",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "disputes",
+                    ":disputeId",
+                    "charge"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "admin/disputes/:id",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/disputes/:id",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "disputes",
+                    ":id"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Customerbooking",
+          "item": [
+            {
+              "name": "customer/bookings/create",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}customer/bookings/create",
+                  "host": [
+                    "{{base_url}}customer"
+                  ],
+                  "path": [
+                    "customer",
+                    "bookings",
+                    "create"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "customer/bookings/accept-reject",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}customer/bookings/accept-reject",
+                  "host": [
+                    "{{base_url}}customer"
+                  ],
+                  "path": [
+                    "customer",
+                    "bookings",
+                    "accept-reject"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "customer/bookings/all",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}customer/bookings/all",
+                  "host": [
+                    "{{base_url}}customer"
+                  ],
+                  "path": [
+                    "customer",
+                    "bookings",
+                    "all"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "customer/bookings/promo-validate",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}customer/bookings/promo-validate",
+                  "host": [
+                    "{{base_url}}customer"
+                  ],
+                  "path": [
+                    "customer",
+                    "bookings",
+                    "promo-validate"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "customer/bookings/search",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}customer/bookings/search",
+                  "host": [
+                    "{{base_url}}customer"
+                  ],
+                  "path": [
+                    "customer",
+                    "bookings",
+                    "search"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "customer/bookings/allocated",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}customer/bookings/allocated",
+                  "host": [
+                    "{{base_url}}customer"
+                  ],
+                  "path": [
+                    "customer",
+                    "bookings",
+                    "allocated"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "customer/bookings/upcoming",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}customer/bookings/upcoming",
+                  "host": [
+                    "{{base_url}}customer"
+                  ],
+                  "path": [
+                    "customer",
+                    "bookings",
+                    "upcoming"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "customer/bookings/user/me",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}customer/bookings/user/me",
+                  "host": [
+                    "{{base_url}}customer"
+                  ],
+                  "path": [
+                    "customer",
+                    "bookings",
+                    "user",
+                    "me"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Overviewadmin",
+          "item": [
+            {
+              "name": "admin/overview/dashboard/stats",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/overview/dashboard/stats",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "overview",
+                    "dashboard",
+                    "stats"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "admin/overview/dashboard/revenue-trends",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/overview/dashboard/revenue-trends",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "overview",
+                    "dashboard",
+                    "revenue-trends"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "admin/overview/dashboard/top-lenders",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/overview/dashboard/top-lenders",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "overview",
+                    "dashboard",
+                    "top-lenders"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "admin/overview/dashboard/top-dresses",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/overview/dashboard/top-dresses",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "overview",
+                    "dashboard",
+                    "top-dresses"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "admin/overview/dashboard/bookings/stats",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/overview/dashboard/bookings/stats",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "overview",
+                    "dashboard",
+                    "bookings",
+                    "stats"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "admin/overview/dashboard/finance/booking-revenue",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/overview/dashboard/finance/booking-revenue",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "overview",
+                    "dashboard",
+                    "finance",
+                    "booking-revenue"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "admin/overview/dashboard/finance/payout/stats",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/overview/dashboard/finance/payout/stats",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "overview",
+                    "dashboard",
+                    "finance",
+                    "payout",
+                    "stats"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "admin/overview/dashboard/finance/subscriptionAnalytics",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/overview/dashboard/finance/subscriptionAnalytics",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "overview",
+                    "dashboard",
+                    "finance",
+                    "subscriptionAnalytics"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "admin/overview/dashboard/finance/refund-analytics",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/overview/dashboard/finance/refund-analytics",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "overview",
+                    "dashboard",
+                    "finance",
+                    "refund-analytics"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "admin/overview/dashboard/bookings/:id",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/overview/dashboard/bookings/:id",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "overview",
+                    "dashboard",
+                    "bookings",
+                    ":id"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "admin/overview/dashboard/finance/revenue-breakdown",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/overview/dashboard/finance/revenue-breakdown",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "overview",
+                    "dashboard",
+                    "finance",
+                    "revenue-breakdown"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "admin/overview/lender-stats",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}admin/overview/lender-stats",
+                  "host": [
+                    "{{base_url}}admin"
+                  ],
+                  "path": [
+                    "admin",
+                    "overview",
+                    "lender-stats"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Return",
+          "item": [
+            {
+              "name": "return/generate-link/:bookingId",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}return/generate-link/:bookingId",
+                  "host": [
+                    "{{base_url}}return"
+                  ],
+                  "path": [
+                    "return",
+                    "generate-link",
+                    ":bookingId"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "return/admin/attention",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}return/admin/attention",
+                  "host": [
+                    "{{base_url}}return"
+                  ],
+                  "path": [
+                    "return",
+                    "admin",
+                    "attention"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "return/admin/overdue-summary",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}return/admin/overdue-summary",
+                  "host": [
+                    "{{base_url}}return"
+                  ],
+                  "path": [
+                    "return",
+                    "admin",
+                    "overdue-summary"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "return/admin/approve-charge/:bookingId",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}return/admin/approve-charge/:bookingId",
+                  "host": [
+                    "{{base_url}}return"
+                  ],
+                  "path": [
+                    "return",
+                    "admin",
+                    "approve-charge",
+                    ":bookingId"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "return/lender/report-issue/:bookingId",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}return/lender/report-issue/:bookingId",
+                  "host": [
+                    "{{base_url}}return"
+                  ],
+                  "path": [
+                    "return",
+                    "lender",
+                    "report-issue",
+                    ":bookingId"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "return/:token",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}return/:token",
+                  "host": [
+                    "{{base_url}}return"
+                  ],
+                  "path": [
+                    "return",
+                    ":token"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "return/:token/submit",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}return/:token/submit",
+                  "host": [
+                    "{{base_url}}return"
+                  ],
+                  "path": [
+                    "return",
+                    ":token",
+                    "submit"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
         }
       ]
     }

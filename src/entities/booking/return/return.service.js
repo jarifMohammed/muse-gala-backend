@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import fs from 'fs';
+import logger from '../../../core/config/logger.js';
 import { Booking } from '../booking.model.js';
 import { generateReturnToken, verifyReturnToken, buildReturnUrl } from '../../../lib/returnToken.js';
 import { sendEmail } from '../../../lib/resendEmial.js';
@@ -96,26 +96,25 @@ export const handleReturnDueStatus = async (bookingId) => {
     const dressColour = updatedBooking.masterdressId?.colors?.[0] || 'N/A';
 
     const dueDate = new Date(updatedBooking.rentalEndDate).toLocaleDateString('en-AU', {
+        timeZone: 'Australia/Sydney',
         year: 'numeric',
         month: 'long',
         day: 'numeric'
     });
 
-    const logFile = './hook_debug.log';
-    const timestamp = new Date().toISOString();
-    fs.appendFileSync(logFile, `[${timestamp}] SERVICE: handleReturnDueStatus called for ${bookingId}\n`);
+    logger.info(`SERVICE: handleReturnDueStatus called for ${bookingId}`);
 
     console.log(`[ReturnFlow] Processing Return Due for booking ${bookingId}. Customer: ${updatedBooking.customer?.email}, Dress: ${dressName}`);
 
     if (!updatedBooking.returnToken) {
-        fs.appendFileSync(logFile, `[${timestamp}] SERVICE: Token generation FAILED for ${bookingId}\n`);
+        logger.error(`SERVICE: Token generation FAILED for ${bookingId}`);
         console.error(`[ReturnFlow] Token generation FAILED for booking ${bookingId}`);
         throw new Error('Failed to generate return token. Please try again or contact support.');
     }
 
     const returnUrl = buildReturnUrl(updatedBooking.returnToken);
     console.log(`[ReturnFlow] Generated return URL: ${returnUrl}`);
-    fs.appendFileSync(logFile, `[${timestamp}] SERVICE: Generated URL ${returnUrl}\n`);
+    logger.info(`SERVICE: Generated URL ${returnUrl}`);
     if (booking.customer?.email) {
         try {
             console.log(`[ReturnFlow] Sending return link email to ${booking.customer.email} for booking ${bookingId}`);
@@ -224,6 +223,7 @@ export const getReturnPageData = async (token) => {
     const booking = await verifyReturnToken(token);
 
     const dueDate = new Date(booking.rentalEndDate).toLocaleDateString('en-AU', {
+        timeZone: 'Australia/Sydney',
         year: 'numeric',
         month: 'long',
         day: 'numeric'

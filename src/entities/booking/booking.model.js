@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import fs from 'fs';
+import logger from '../../core/config/logger.js';
 
 const { Schema } = mongoose;
 // lender allocation data for both the shipping and the local pick up
@@ -199,6 +199,18 @@ const BookingSchema = new Schema(
     lenderNotes: { type: String },
     adminNotes: { type: String },
 
+    // ── SLA Auto-Allocation Fields ──
+    allocationHistory: [{
+      lenderId: { type: Schema.Types.ObjectId, ref: 'User' },
+      listingId: { type: Schema.Types.ObjectId, ref: 'Listings' },
+      allocatedAt: { type: Date },
+      status: { type: String, enum: ['Rejected', 'Timeout', 'Pending', 'Accepted'] }
+    }],
+    slaExpiresAt: { type: Date, index: true },
+    slaReminderAt: { type: Date },
+    slaReminderSent: { type: Boolean, default: false },
+    allocationAttempts: { type: Number, default: 1 },
+
     // ── Return Flow Fields ──
     returnToken: { type: String, index: true, unique: true, sparse: true },
     returnTokenExpiresAt: { type: Date },
@@ -239,13 +251,9 @@ const BookingSchema = new Schema(
 // Pre-save hook: initialize statusHistory and calculate fees
 BookingSchema.pre('save', async function (next) {
   try {
-    const logFile = './hook_debug.log';
-    const timestamp = new Date().toISOString();
-
     // Detect status changes for the post-save hook using $locals
     if (this.isModified('deliveryStatus')) {
-      const msg = `[${timestamp}] PRE-SAVE: ID=${this._id} Status changing to "${this.deliveryStatus}" (isNew: ${this.isNew})\n`;
-      fs.appendFileSync(logFile, msg);
+      logger.info(`PRE-SAVE: ID=${this._id} Status changing to "${this.deliveryStatus}" (isNew: ${this.isNew})`);
       this.$locals.statusModified = true;
 
       // Automatically track status changes in history for existing bookings
@@ -278,11 +286,8 @@ BookingSchema.pre('save', async function (next) {
 // Post-save hook: Send emails on status changes + trigger return flow
 BookingSchema.post('save', async function (doc) {
   // Log immediately at start of hook (before any imports that could fail)
-  const logFile = './hook_debug.log';
-  const timestamp = new Date().toISOString();
   const statusModified = doc.$locals?.statusModified || doc.isNew;
-  const msg = `[${timestamp}] POST-SAVE: ID=${doc._id} Status="${doc.deliveryStatus}" Modified=${!!statusModified} New=${doc.isNew}\n`;
-  fs.appendFileSync(logFile, msg);
+  logger.info(`POST-SAVE: ID=${doc._id} Status="${doc.deliveryStatus}" Modified=${!!statusModified} New=${doc.isNew}`);
 
   try {
     const { sendEmail } = await import('../../lib/resendEmial.js');
@@ -310,8 +315,7 @@ BookingSchema.post('save', async function (doc) {
         const { handleReturnDueStatus } = await import('./return/return.service.js');
         await handleReturnDueStatus(doc._id);
       } catch (returnErr) {
-        console.error('[ReturnFlow] Error handling Return Due status:', returnErr);
-        fs.appendFileSync(logFile, `[${timestamp}] POST-SAVE ERROR: Return Due handling failed: ${returnErr.message}\n`);
+        logger.error(`[ReturnFlow] Error handling Return Due status: ${returnErr.message}`, { error: returnErr });
       }
       return;
     }
@@ -321,8 +325,7 @@ BookingSchema.post('save', async function (doc) {
         const { handleDressReturnedStatus } = await import('./return/return.service.js');
         await handleDressReturnedStatus(doc._id);
       } catch (returnErr) {
-        console.error('[ReturnFlow] Error handling Dress Returned status:', returnErr);
-        fs.appendFileSync(logFile, `[${timestamp}] POST-SAVE ERROR: Dress Returned handling failed: ${returnErr.message}\n`);
+        logger.error(`[ReturnFlow] Error handling Dress Returned status: ${returnErr.message}`, { error: returnErr });
       }
       return;
     }
@@ -339,7 +342,7 @@ BookingSchema.post('save', async function (doc) {
           shipmentPreparingTemplate(
             customer?.firstName || customer?.name || 'Customer',
             dressName,
-            new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toLocaleDateString()
+            new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toLocaleDateString('en-AU', { timeZone: 'Australia/Sydney' })
           ),
         subject: 'Preparing Your Shipment'
       },
@@ -407,7 +410,8 @@ BookingSchema.post('save', async function (doc) {
             dressName,
             dress?.colors?.[0] || 'N/A',
             doc.size || 'N/A',
-            new Date(doc.rentalEndDate).toLocaleDateString('en-US', {
+            new Date(doc.rentalEndDate).toLocaleDateString('en-AU', {
+              timeZone: 'Australia/Sydney',
               year: 'numeric',
               month: 'short',
               day: 'numeric'
@@ -421,7 +425,8 @@ BookingSchema.post('save', async function (doc) {
           returnInitiatedTemplate(
             recipient?.firstName || recipient?.name || 'User',
             dressName,
-            new Date(doc.rentalEndDate).toLocaleDateString('en-US', {
+            new Date(doc.rentalEndDate).toLocaleDateString('en-AU', {
+              timeZone: 'Australia/Sydney',
               year: 'numeric',
               month: 'short',
               day: 'numeric'
@@ -436,7 +441,7 @@ BookingSchema.post('save', async function (doc) {
             lender?.firstName || lender?.name || 'Lender',
             dressName,
             doc.stripePaymentIntentId || 'RETURN123',
-            new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toLocaleDateString()
+            new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toLocaleDateString('en-AU', { timeZone: 'Australia/Sydney' })
           ),
         subject: 'Dress Return Shipped'
       },
@@ -476,8 +481,7 @@ BookingSchema.post('save', async function (doc) {
       }
     }
   } catch (err) {
-    console.error('Error in booking post-save hook:', err);
-    fs.appendFileSync('./hook_debug.log', `[${new Date().toISOString()}] POST-SAVE ERROR: ${err.message}\n`);
+    logger.error(`Error in booking post-save hook: ${err.message}`, { error: err });
   }
 });
 

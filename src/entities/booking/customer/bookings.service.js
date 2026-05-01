@@ -14,6 +14,7 @@ import {
   bookingCancelledTemplate
 } from '../../../lib/emailTemplates/booking.templates.js';
 import User from '../../auth/auth.model.js';
+import { calculateSlaTimestamps } from '../../../lib/slaCalculator.js';
 
 export const createBookingService = async ({ userId, role, body }) => {
   const session = await mongoose.startSession();
@@ -199,6 +200,8 @@ export const createBookingService = async ({ userId, role, body }) => {
     }
 
     // --- Prepare booking data ---
+    const { slaExpiresAt, slaReminderAt } = calculateSlaTimestamps(rentalStartDate);
+
     const bookingData = {
       customer: user._id,
       masterdressId: masterDress._id,
@@ -219,7 +222,11 @@ export const createBookingService = async ({ userId, role, body }) => {
       adminNotes: adminNotes || '',
       lender: allocatedLender.lenderId,
       listing: allocatedLender.listingId,
-      allocatedLender
+      allocatedLender,
+      slaExpiresAt,
+      slaReminderAt,
+      allocationAttempts: 1,
+      allocationHistory: []
     };
 
     // Try-on fields only for Pickup
