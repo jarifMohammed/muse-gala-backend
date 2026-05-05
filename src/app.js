@@ -7,6 +7,7 @@ import mongoSanitize from 'express-mongo-sanitize';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import path from 'path';
+import crypto from 'crypto';
 import { fileURLToPath } from 'url';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
@@ -84,18 +85,25 @@ app.use((req, res, next) => {
 
 app.use(express.urlencoded({ extended: true }));
 app.use((req, res, next) => {
+  // Add unique request ID
+  req.id = req.headers['x-request-id'] || crypto.randomUUID();
+  res.setHeader('X-Request-Id', req.id);
+
   const start = process.hrtime.bigint();
 
   res.on('finish', () => {
     const durationMs = Number(process.hrtime.bigint() - start) / 1e6;
     const memUsedMB = (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2);
+    
     logger.info({
+      requestId: req.id,
       method: req.method,
       url: req.originalUrl,
       status: res.statusCode,
       duration: `${durationMs.toFixed(2)}ms`,
       memoryMB: memUsedMB,
-      userAgent: req.headers['user-agent'] || ''
+      userAgent: req.headers['user-agent'] || '',
+      ip: req.ip
     });
   });
 
