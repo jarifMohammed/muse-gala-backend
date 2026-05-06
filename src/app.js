@@ -15,7 +15,6 @@ import compression from 'compression';
 import logger from './core/config/logger.js';
 import errorHandler from './core/middlewares/errorMiddleware.js';
 import notFound from './core/middlewares/notFound.js';
-import { globalLimiter } from './lib/limit.js';
 import appRouter from './core/app/appRouter.js';
 import { stripeWebhookHandler } from './entities/webhook.js';
 import { connectedAccountWebhookHandler } from './entities/webhookAccounts.js';
@@ -23,6 +22,8 @@ import { startReturnReminderJob } from './lib/returnReminderJob.js';
 import { startOverdueEscalationJob } from './lib/overdueEscalationJob.js';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './core/config/swagger.js';
+import basicAuth from 'express-basic-auth';
+import { globalLimiter, swaggerLimiter } from './lib/limit.js';
 //import { startReminderJob } from './lib/reminderJob.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -130,7 +131,12 @@ app.get('/health', (req, res) => {
 
 
 // API routes
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+const swaggerAuth = basicAuth({
+  users: { [process.env.SWAGGER_USER || 'admin']: process.env.SWAGGER_PASSWORD || 'musegala_secure_docs' },
+  challenge: true,
+});
+
+app.use('/api-docs', swaggerLimiter, swaggerAuth, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api', appRouter);
 
 
