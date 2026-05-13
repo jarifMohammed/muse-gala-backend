@@ -43,10 +43,8 @@ app.use(helmet());
 const allowedOrigins = [
   'https://musegala.com.au',
   'https://www.musegala.com.au',
-  'https://muse-gala-admin-dashboard.vercel.app',
-  'https://muse-gala-website.vercel.app',
-  'https://muse-gala-lender-dashboard.vercel.app',
-
+  'https://lender.musegala.com.au',
+  'https://admin.musegala.com.au',
   'http://localhost:3000',
   'http://localhost:5173',
 ];
@@ -95,7 +93,7 @@ app.use((req, res, next) => {
   res.on('finish', () => {
     const durationMs = Number(process.hrtime.bigint() - start) / 1e6;
     const memUsedMB = (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2);
-    
+
     logger.info({
       requestId: req.id,
       method: req.method,
