@@ -22,3 +22,22 @@ export const startOrResumeVerification = async (req, res) => {
     return generateResponse(res, 500, false, 'Failed to start or resume verification');
   }
 };
+
+export const getKYCVerificationStatus = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return generateResponse(res, 404, false, 'User not found');
+    }
+
+    return generateResponse(res, 200, true, {
+      status: user.kycStatus || 'not_started',
+      verified: user.kycVerified || false,
+    });
+  } catch (error) {
+    console.error('Error fetching KYC verification status:', error);
+    return generateResponse(res, 500, false, 'Failed to fetch verification status');
+  }
+};

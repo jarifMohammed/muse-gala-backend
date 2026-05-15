@@ -7,7 +7,7 @@ import {
     } from "./user.controller.js";
 import { superAdminOrAdminMiddleware, userMiddleware, verifyToken } from "../../core/middlewares/authMiddleware.js";
 import express from "express";
-import { startOrResumeVerification } from "../KYC Verification/kyc.controller.js";
+import { startOrResumeVerification, getKYCVerificationStatus } from "../KYC Verification/kyc.controller.js";
 
 
 const router = express.Router();
@@ -40,6 +40,7 @@ router.delete("/upload-file/:id", verifyToken, deletefileController);
 
 //kyc verification
 router.get('/kyc/verify', verifyToken, userMiddleware, startOrResumeVerification);
+router.get('/kyc/status/:userId', getKYCVerificationStatus);
 
 export default router;
 
