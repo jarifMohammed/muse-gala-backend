@@ -5,6 +5,8 @@ import {
   adminNewSubscriberNotification,
   subscriberWelcomeEmail
 } from './emailTemplates/newsletterTemplates.js';
+import promoCodeModel from '../admin/promoCode/promoCode.model.js';
+import { promoCodeTemplate } from '../../lib/emailTemplates/promoCode.template.js';
 
 export const createNewsletterSubscriptionService = async (email) => {
   const existingSubscription = await NewsletterSubscription.findOne({ email });
@@ -66,4 +68,27 @@ export const getAllNewsletterSubscriptionService = async (
       itemsPerPage: limit
     }
   };
+};
+
+export const sendPromoOfferService = async (email) => {
+  if (!email) throw new Error('Email is required');
+
+  // Find the GIVE10 promo code
+  const promo = await promoCodeModel.findOne({ code: 'GIVE10', isActive: true });
+  
+  if (!promo) {
+    throw new Error('Promo code GIVE10 not found or is inactive');
+  }
+
+  // Send the email
+  await sendEmail({
+    to: email,
+    subject: 'A GIFT FROM MUSE GALA',
+    html: promoCodeTemplate({ 
+      code: promo.code, 
+      expiresAt: promo.expiresAt 
+    })
+  });
+
+  return;
 };

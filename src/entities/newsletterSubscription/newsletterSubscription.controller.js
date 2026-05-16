@@ -1,5 +1,10 @@
 import { generateResponse } from "../../lib/responseFormate.js";
-import { createNewsletterSubscriptionService, getAllNewsletterSubscriptionService, unsubscribeNewsletterService } from "./newsletterSubscription.service.js";
+import { 
+    createNewsletterSubscriptionService, 
+    getAllNewsletterSubscriptionService, 
+    unsubscribeNewsletterService,
+    sendPromoOfferService 
+} from "./newsletterSubscription.service.js";
 
 export const createNewsletterSubscription = async (req, res, next) => {
     const { email } = req.body;
@@ -44,6 +49,20 @@ export const unsubscribeNewsletter = async (req, res, next) => {
         generateResponse(res, 200, true, 'You have been successfully unsubscribed from the newsletter', null);
     } catch (error) {
         if (error.message === 'Email not found in newsletter subscriptions') {
+            generateResponse(res, 404, false, error.message, null);
+        } else {
+            next(error);
+        }
+    }
+}
+
+export const sendPromoOffer = async (req, res, next) => {
+    const { email } = req.body;
+    try {
+        await sendPromoOfferService(email);
+        generateResponse(res, 200, true, 'Promo code sent successfully', null);
+    } catch (error) {
+        if (error.message.includes('not found')) {
             generateResponse(res, 404, false, error.message, null);
         } else {
             next(error);
