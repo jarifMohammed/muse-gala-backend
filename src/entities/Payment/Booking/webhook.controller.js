@@ -184,6 +184,28 @@ export const handleBookingPaymentEvents = async (event) => {
               )
             });
           }
+
+          // Notify Admin
+          try {
+            const adminEmail = process.env.ADMIN_EMAIL || 'admin@topocreates.com';
+            await sendEmail({
+              to: adminEmail,
+              subject: `[Admin Notification] New Booking Request - ID: ${bookingId}`,
+              html: bookingCreatedTemplate(
+                'Admin',
+                booking.masterdressId?.brand || 'N/A',
+                booking.masterdressId?.dressName || 'N/A',
+                booking.color || booking.masterdressId?.colors?.[0] || 'N/A',
+                booking.size || 'N/A',
+                booking.deliveryMethod || 'N/A',
+                booking.rentalDurationDays?.toString() || 'N/A',
+                booking.totalAmount?.toFixed(2) || '0.00'
+              )
+            });
+          } catch (adminEmailError) {
+            console.error('Error sending admin copy booking confirmation email in webhook:', adminEmailError);
+          }
+
           console.log(`📧 Booking confirmation emails sent for booking ${bookingId}`);
         } catch (emailError) {
           console.error('Error sending booking confirmation emails in webhook:', emailError);

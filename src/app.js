@@ -150,6 +150,8 @@ export const io = new Server(server, {
     origin: [
       'https://musegala.com.au',
       'https://www.musegala.com.au',
+      'https://lender.musegala.com.au',
+      'https://admin.musegala.com.au',
       'http://localhost:3000',
       'http://localhost:5173',
     ],

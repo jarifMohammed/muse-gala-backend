@@ -352,6 +352,29 @@ export const acceptOrRejectBookingService = async ({
           )
         });
       }
+
+      // Notify Admin
+      try {
+        const adminEmail = process.env.ADMIN_EMAIL || 'admin@topocreates.com';
+        await sendEmail({
+          to: adminEmail,
+          subject: `[Admin Notification] Booking Confirmed - ID: ${booking._id}`,
+          html: bookingConfirmedTemplate(
+            'Admin',
+            dress?.brandName || 'N/A',
+            dress?.dressName || 'Your Dress',
+            dress?.colour || 'N/A',
+            booking.size || 'N/A',
+            booking.deliveryMethod || 'Shipping',
+            startDate,
+            endDate,
+            finalAmount.toFixed(2),
+            booking._id
+          )
+        });
+      } catch (adminEmailError) {
+        console.error('Error sending admin booking confirmation email:', adminEmailError);
+      }
     } catch (emailError) {
       console.error('Error sending booking confirmation email:', emailError);
     }

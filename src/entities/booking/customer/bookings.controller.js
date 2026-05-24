@@ -132,8 +132,9 @@ export const cancelBookingController = async (req, res) => {
     // Send cancellation email using template
     try {
       const customer = await User.findById(cancelledBooking.customer);
+      const masterDress = cancelledBooking.masterdressId;
+
       if (customer?.email) {
-        const masterDress = cancelledBooking.masterdressId;
         await sendEmail({
           to: customer.email,
           subject: 'Your booking has been cancelled',
@@ -145,6 +146,24 @@ export const cancelBookingController = async (req, res) => {
             cancelledBooking.size || 'N/A'
           )
         });
+      }
+
+      // Notify Admin
+      try {
+        const adminEmail = process.env.ADMIN_EMAIL || 'admin@topocreates.com';
+        await sendEmail({
+          to: adminEmail,
+          subject: `[Admin Notification] Booking Cancelled - ID: ${cancelledBooking._id}`,
+          html: bookingCancelledTemplate(
+            'Admin',
+            masterDress?.brand || 'N/A',
+            masterDress?.dressName || cancelledBooking.dressName || 'Your Dress',
+            masterDress?.colors?.[0] || 'N/A',
+            cancelledBooking.size || 'N/A'
+          )
+        });
+      } catch (adminEmailError) {
+        console.error('Error sending admin copy cancellation email:', adminEmailError);
       }
     } catch (emailError) {
       console.error('Error sending cancellation email:', emailError);
