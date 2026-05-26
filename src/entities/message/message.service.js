@@ -23,9 +23,9 @@ const isUserInSocketRoom = (roomId, userId) => {
   return false;
 };
 
-const getChatUrl = () => {
+const getChatUrl = (roomId) => {
   const baseUrl = process.env.FRONTEND_URL || "https://musegala.com.au";
-  return `${baseUrl.replace(/\/$/, "")}/messages`;
+  return `${baseUrl.replace(/\/$/, "")}/account/chats?id=${roomId}`;
 };
 
 
@@ -275,7 +275,7 @@ export const sendMessageService = async (roomId, { sender, message, files }) => 
             dressName: dress?.dressName || booking.dressName || "Your Dress",
             bookingId: booking._id,
             messagePreview: message,
-            chatUrl: getChatUrl()
+            chatUrl: getChatUrl(chatRoom._id)
           })
         });
       }
