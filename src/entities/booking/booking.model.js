@@ -10,6 +10,10 @@ const LenderInfoSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
+  listingId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Listings'
+  },
   email: { type: String },
   price: { type: Number }, // optional if you want to store the lender's offer
   distance: { type: Number }, // from API

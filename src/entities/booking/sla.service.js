@@ -28,7 +28,7 @@ export const reallocateBookingService = async (bookingId, reason) => {
     if (booking.allocatedLender && booking.allocatedLender.lenderId) {
       booking.allocationHistory.push({
         lenderId: booking.allocatedLender.lenderId,
-        listingId: booking.allocatedLender.listingId,
+        listingId: booking.allocatedLender.listingId || booking.listing,
         allocatedAt: booking.allocatedLender.allocatedAt,
         status: reason // 'Timeout' or 'Rejected'
       });
@@ -71,17 +71,21 @@ export const reallocateBookingService = async (bookingId, reason) => {
     });
 
     const nextListing = nextListings[0];
+    const nextPrice = isShortRental ? nextListing.rentalPrice.fourDays : nextListing.rentalPrice.eightDays;
 
     // 4. Update booking with new lender
     booking.allocatedLender = {
       lenderId: nextListing.lenderId,
       listingId: nextListing._id,
       email: nextListing.lenderEmail || '',
-      price: isShortRental ? nextListing.rentalPrice.fourDays : nextListing.rentalPrice.eightDays,
+      price: nextPrice,
       allocationType: booking.deliveryMethod === 'Pickup' ? 'LocalPickup' : 'Shipping',
       allocatedAt: new Date()
     };
 
+    booking.lender = nextListing.lenderId;
+    booking.listing = nextListing._id;
+    booking.lenderPrice = nextPrice;
     booking.allocationAttempts += 1;
     
     // Recalculate SLA
