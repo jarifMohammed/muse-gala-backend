@@ -3,6 +3,30 @@ import { io } from "../../app.js";
 import { ChatRoom } from "./chatRoom.model.js";
 import { cloudinaryUpload } from "../../lib/cloudinaryUpload.js";
 import { Booking } from "../booking/booking.model.js";
+import { sendEmail } from "../../lib/resendEmial.js";
+import { lenderMessageNotificationTemplate } from "../../lib/emailTemplates/message.templates.js";
+import User from "../auth/auth.model.js";
+import MasterDress from "../admin/Lisitngs/ReviewandMain Site Listing/masterDressModel.js";
+
+const isUserInSocketRoom = (roomId, userId) => {
+  const room = io.sockets.adapter.rooms.get(`room-${roomId}`);
+  if (!room) return false;
+
+  for (const socketId of room) {
+    const socket = io.sockets.sockets.get(socketId);
+
+    if (socket?.data?.userId === userId.toString()) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
+const getChatUrl = () => {
+  const baseUrl = process.env.FRONTEND_URL || "https://musegala.com.au";
+  return `${baseUrl.replace(/\/$/, "")}/messages`;
+};
 
 
 export const createBookingChatRoomService = async (bookingId, requesterId) => {
@@ -228,6 +252,37 @@ export const sendMessageService = async (roomId, { sender, message, files }) => 
   await chatRoom.save();
 
   io.to(`room-${chatRoom._id}`).emit("message:new", newMessagePopulated);
+
+  const isLenderMessage = senderId === lenderId;
+  const isCustomerInRoom = isUserInSocketRoom(chatRoom._id, customerId);
+
+  if (isLenderMessage && !isCustomerInRoom) {
+    try {
+      const [customer, lender, dress] = await Promise.all([
+        User.findById(customerId),
+        User.findById(lenderId),
+        MasterDress.findById(booking.masterdressId),
+      ]);
+
+      if (customer?.email) {
+        await sendEmail({
+          to: customer.email,
+          subject: "You have a new message about your booking",
+          html: lenderMessageNotificationTemplate({
+            customerName: customer.firstName || customer.name || "Customer",
+            lenderName: lender?.firstName || lender?.name || "your lender",
+            brandName: dress?.brand || "N/A",
+            dressName: dress?.dressName || booking.dressName || "Your Dress",
+            bookingId: booking._id,
+            messagePreview: message,
+            chatUrl: getChatUrl()
+          })
+        });
+      }
+    } catch (emailError) {
+      console.error("Error sending chat notification email:", emailError);
+    }
+  }
 
   return newMessage;
 };

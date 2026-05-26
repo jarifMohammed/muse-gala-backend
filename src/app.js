@@ -164,14 +164,28 @@ export const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log("New client connected", socket.id);
 
+  const queryUserId = socket.handshake.query.userId?.toString();
+  if (queryUserId) {
+    socket.data.userId = queryUserId;
+    socket.join(`user-${queryUserId}`);
+    console.log(`User ${queryUserId} joined personal room`);
+  }
+
   socket.on("registerUser", (userId) => {
-    socket.join(`user-${userId}`);
-    console.log(`User ${userId} joined personal room`);
+    const id = userId.toString();
+    socket.data.userId = id;
+    socket.join(`user-${id}`);
+    console.log(`User ${id} joined personal room`);
   });
 
   socket.on("joinRoom", (room) => {
     socket.join(`room-${room}`);
     console.log(`Client joined chat room: ${room}`);
+  });
+
+  socket.on("leaveRoom", (room) => {
+    socket.leave(`room-${room}`);
+    console.log(`Client left chat room: ${room}`);
   });
 
   socket.on("disconnect", () => {
