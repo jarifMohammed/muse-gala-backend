@@ -21,7 +21,7 @@ export const createBookingChatRoomController = async (req, res) => {
       return generateResponse(res, 400, false, "bookingId is required");
     }
 
-    const data = await createBookingChatRoomService(bookingId, req.user.id);
+    const data = await createBookingChatRoomService(bookingId, req.user._id);
 
     return generateResponse(
       res,

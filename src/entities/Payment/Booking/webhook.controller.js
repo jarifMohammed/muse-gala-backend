@@ -55,33 +55,43 @@ export const handleBookingPaymentEvents = async (event) => {
           `Checkout session completed: Payment ${paymentId}, Booking ${bookingId}`
         );
 
-        // Create ChatRoom if not exists, include both customer and lender
-        let chatRoom = await ChatRoom.findOne({ bookingId });
-        if (!chatRoom) {
-          chatRoom = await ChatRoom.create({
-            bookingId,
-            participants: [booking.customer._id, booking.lender._id],
-            createdBy: booking.customer._id
-          });
-          console.log(
-            `ChatRoom created for booking ${bookingId} with participants [${booking.customer._id}, ${booking.lender._id}]`
+        const customerId = booking.customer?._id || booking.customer;
+        const lenderId =
+          booking.allocatedLender?.lenderId || booking.lender?._id || booking.lender;
+
+        if (!customerId || !lenderId) {
+          console.warn(
+            `Skipping ChatRoom creation for booking ${bookingId}: missing customer or lender`
           );
         } else {
-          // ensure both are in participants even if room already exists
-          await ChatRoom.findByIdAndUpdate(
-            chatRoom._id,
-            {
-              $addToSet: {
-                participants: {
-                  $each: [booking.customer._id, booking.lender._id]
+          // Create ChatRoom if not exists, include both customer and allocated lender
+          let chatRoom = await ChatRoom.findOne({ bookingId });
+          if (!chatRoom) {
+            chatRoom = await ChatRoom.create({
+              bookingId,
+              participants: [customerId, lenderId],
+              createdBy: customerId
+            });
+            console.log(
+              `ChatRoom created for booking ${bookingId} with participants [${customerId}, ${lenderId}]`
+            );
+          } else {
+            // ensure both are in participants even if room already exists
+            await ChatRoom.findByIdAndUpdate(
+              chatRoom._id,
+              {
+                $addToSet: {
+                  participants: {
+                    $each: [customerId, lenderId]
+                  }
                 }
-              }
-            },
-            { new: true }
-          );
-          console.log(
-            `ChatRoom already exists, ensured participants [${booking.customer._id}, ${booking.lender._id}]`
-          );
+              },
+              { new: true }
+            );
+            console.log(
+              `ChatRoom already exists, ensured participants [${customerId}, ${lenderId}]`
+            );
+          }
         }
 
         // Send email alerts to admins who opted in (Only for actual payments)
