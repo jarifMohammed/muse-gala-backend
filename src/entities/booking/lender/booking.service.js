@@ -314,6 +314,8 @@ export const acceptOrRejectBookingService = async ({
         'en-AU',
         { timeZone: 'Australia/Sydney', year: 'numeric', month: 'short', day: 'numeric' }
       );
+      const brandName = dress?.brand || 'N/A';
+      const colour = booking.color || dress?.colors?.[0] || 'N/A';
 
       if (customer?.email) {
         await sendEmail({
@@ -321,9 +323,9 @@ export const acceptOrRejectBookingService = async ({
           subject: 'Booking Confirmed!',
           html: bookingConfirmedTemplate(
             customer.firstName || customer.name || 'Customer',
-            dress?.brandName || 'N/A',
+            brandName,
             dress?.dressName || 'Your Dress',
-            dress?.colour || 'N/A',
+            colour,
             booking.size || 'N/A',
             booking.deliveryMethod || 'Shipping',
             startDate,
@@ -340,9 +342,9 @@ export const acceptOrRejectBookingService = async ({
           subject: 'Booking Accepted - Prepare for Shipment',
           html: bookingConfirmedTemplate(
             lender.firstName || lender.name || 'Lender',
-            dress?.brandName || 'N/A',
+            brandName,
             dress?.dressName || 'Your Dress',
-            dress?.colour || 'N/A',
+            colour,
             booking.size || 'N/A',
             booking.deliveryMethod || 'Shipping',
             startDate,
@@ -361,9 +363,9 @@ export const acceptOrRejectBookingService = async ({
           subject: `[Admin Notification] Booking Confirmed - ID: ${booking._id}`,
           html: bookingConfirmedTemplate(
             'Admin',
-            dress?.brandName || 'N/A',
+            brandName,
             dress?.dressName || 'Your Dress',
-            dress?.colour || 'N/A',
+            colour,
             booking.size || 'N/A',
             booking.deliveryMethod || 'Shipping',
             startDate,

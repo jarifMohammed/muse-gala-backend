@@ -57,7 +57,7 @@ export const createBookingService = async ({ userId, role, body }) => {
 
     // --- Base fees ---
     const insuranceFee = masterDress.insuranceFee || 0;
-    const shippingFee = 14.95;
+    const shippingFee = deliveryMethod === 'Shipping' ? 14.95 : 0;
 
     // --- Allocate lender ---
 
