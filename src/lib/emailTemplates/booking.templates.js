@@ -13,7 +13,7 @@ export const readyForPickupTemplate = (
 
     content: `
       <p>Hi ${userName},</p>
-      <p>Your dress is ready for pickup at the following location:</p>
+      <p>Pickup details are below:</p>
       <h3>Pickup Details</h3>
       ${createInfoBox({
       'Brand': brandName,

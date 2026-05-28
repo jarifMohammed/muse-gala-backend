@@ -49,6 +49,7 @@ const logoSVG = `
  * @param {string} options.content - Main content HTML
  * @param {string} options.buttonText - Optional CTA button text
  * @param {string} options.buttonUrl - Optional CTA button URL
+ * @param {string} options.buttonPosition - CTA position: 'top' or 'bottom' (default: 'bottom')
  * @param {boolean} options.showDivider - Show divider before footer (default: true)
  * @returns {string} Complete HTML email template
  */
@@ -58,8 +59,22 @@ export const baseEmailTemplate = ({
   content,
   buttonText = '',
   buttonUrl = '',
+  buttonPosition = 'bottom',
   showDivider = true
-}) => `
+}) => {
+  const buttonHTML = buttonText && buttonUrl
+    ? `
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin: 24px auto;">
+        <tr>
+          <td align="center" bgcolor="#000000" style="border-radius: 4px;">
+            <a href="${buttonUrl}" class="cta-button" style="display: inline-block; background-color: #000000; color: #ffffff !important; padding: 14px 40px; text-decoration: none; border-radius: 4px; font-size: 14px; font-weight: 600; letter-spacing: 0.5px; font-family: 'Avenir', Arial, sans-serif;">${buttonText}</a>
+          </td>
+        </tr>
+      </table>
+    `
+    : '';
+
+  return `
   <!DOCTYPE html>
   <html>
   <head>
@@ -256,17 +271,13 @@ export const baseEmailTemplate = ({
       
       ${subtitle ? `<div class="subtitle">${subtitle}</div>` : ''}
 
+      ${buttonPosition === 'top' ? buttonHTML : ''}
+
       <div class="content-section">
         ${content}
       </div>
 
-      ${
-        buttonText && buttonUrl
-          ? `
-        <a href="${buttonUrl}" class="cta-button">${buttonText}</a>
-      `
-          : ''
-      }
+      ${buttonPosition !== 'top' ? buttonHTML : ''}
 
       ${showDivider ? '<div class="divider"></div>' : ''}
 
@@ -287,6 +298,7 @@ export const baseEmailTemplate = ({
   </body>
   </html>
 `;
+};
 
 /**
  * Helper to create an info box with key-value pairs
