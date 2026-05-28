@@ -30,6 +30,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+app.set('trust proxy', 1);
 
 // Stripe webhook route FIRST — must be raw body
 app.post('/api/v1/webhook/main', express.raw({ type: 'application/json' }), stripeWebhookHandler);
