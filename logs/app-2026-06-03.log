@@ -1,0 +1,6 @@
+{"level":"info","message":"Middleware stack initialized","timestamp":"2026-06-03 13:00:08.279 +10:00"}
+{"level":"info","message":"MongoDB connected","timestamp":"2026-06-03 13:00:09.783 +10:00"}
+{"level":"info","message":"Server running on port 5004","timestamp":"2026-06-03 13:00:09.789 +10:00"}
+{"level":"info","message":"Middleware stack initialized","timestamp":"2026-06-03 13:08:19.756 +10:00"}
+{"level":"info","message":"MongoDB connected","timestamp":"2026-06-03 13:08:21.208 +10:00"}
+{"level":"info","message":"Server running on port 5004","timestamp":"2026-06-03 13:08:21.213 +10:00"}
