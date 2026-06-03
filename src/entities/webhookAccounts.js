@@ -27,11 +27,7 @@ export const connectedAccountWebhookHandler = async (req, res) => {
       await stripeAccountHandlers[type](data.object, connectedAccountId);
       console.log(`[Stripe] Handled connected account event: ${type}`);
     }
-    // Else, handle platform payment events
-    else if (!connectedAccountId && stripeWebhookHandlers[type]) {
-      await stripeWebhookHandlers[type](data.object);
-      console.log(`[Stripe] Handled platform event: ${type}`);
-    } else {
+    else {
       console.log(`[Stripe] No handler for event type: ${type}`);
     }
 
