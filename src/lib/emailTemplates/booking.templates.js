@@ -129,8 +129,7 @@ export const lenderNewBookingTemplate = (
   colour,
   dressSize,
   deliveryMethod,
-  rentalDays,
-  totalAmount
+  rentalDays
 ) =>
   baseEmailTemplate({
     title: 'You have a new booking request!',
@@ -146,7 +145,6 @@ export const lenderNewBookingTemplate = (
       'Size': dressSize,
       'Delivery method': deliveryMethod,
       'Rental duration': `${rentalDays} days`,
-      'Total': `$${totalAmount}`,
     })}
       <p>Please log in to your dashboard to review and accept the booking.</p>
       <p>— Muse Gala</p>
