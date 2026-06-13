@@ -435,6 +435,71 @@ export const updateBookingService = async ({
   // }
   // ADMIN can update any booking
 
+  // Recalculate fees if delivery, duration, or promo changes on checkout
+  if (
+    updateData.deliveryMethod !== undefined ||
+    updateData.rentalDurationDays !== undefined ||
+    updateData.promoCode !== undefined
+  ) {
+    const MasterDress = mongoose.model('MasterDress');
+    
+    let rentalFee = booking.rentalFee;
+    let shippingFee = updateData.deliveryMethod === 'Shipping' ? 14.95 : 0;
+    if (updateData.deliveryMethod === 'Pickup') shippingFee = 0;
+    else if (updateData.deliveryMethod === undefined) shippingFee = booking.shippingFee;
+    
+    let insuranceFee = booking.insuranceFee || 0;
+
+    if (updateData.rentalDurationDays && updateData.rentalDurationDays !== booking.rentalDurationDays) {
+      const masterDress = await MasterDress.findById(booking.masterdressId);
+      if (masterDress) {
+        rentalFee = masterDress.basePrice;
+        if (updateData.rentalDurationDays >= 8) {
+          let multiplier = 1.2;
+          if (masterDress.basePrice <= 150) multiplier = 1.7;
+          else if (masterDress.basePrice <= 300) multiplier = 1.55;
+          else if (masterDress.basePrice <= 500) multiplier = 1.4;
+          else if (masterDress.basePrice <= 800) multiplier = 1.3;
+          rentalFee = masterDress.basePrice * multiplier;
+        }
+      }
+    }
+
+    let totalAmount = rentalFee + insuranceFee + shippingFee;
+
+    // Apply promo code discount
+    let codeToApply = updateData.promoCode;
+
+    if (!codeToApply) {
+      const existingUsage = await promoCodeUsageModel.findOne({ bookingId: booking._id }).populate('promoCodeId');
+      if (existingUsage && existingUsage.promoCodeId) {
+        codeToApply = existingUsage.promoCodeId.code;
+      }
+    }
+
+    if (codeToApply) {
+      const appliedPromo = await promoCodeModel.findOne({
+        code: codeToApply,
+        isActive: true,
+      });
+
+      if (appliedPromo) {
+        let discountAmount = 0;
+        if (appliedPromo.discountType === 'PERCENTAGE') {
+          discountAmount = (totalAmount * appliedPromo.discount) / 100;
+        } else if (appliedPromo.discountType === 'FLAT') {
+          discountAmount = appliedPromo.discount;
+        }
+        discountAmount = Math.min(discountAmount, totalAmount);
+        totalAmount -= discountAmount;
+      }
+    }
+
+    updateData.rentalFee = rentalFee;
+    updateData.shippingFee = shippingFee;
+    updateData.totalAmount = totalAmount;
+  }
+
   // Update all fields (all roles can update their own bookings)
   Object.assign(booking, updateData);
 
