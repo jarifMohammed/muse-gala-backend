@@ -497,6 +497,8 @@ export const updateBookingService = async ({
       }
     }
 
+    let finalPromoDiscountAmount = 0;
+
     if (codeToApply) {
       const appliedPromo = await promoCodeModel.findOne({
         code: codeToApply,
@@ -504,14 +506,13 @@ export const updateBookingService = async ({
       });
 
       if (appliedPromo) {
-        let discountAmount = 0;
         if (appliedPromo.discountType === 'PERCENTAGE') {
-          discountAmount = (totalAmount * appliedPromo.discount) / 100;
+          finalPromoDiscountAmount = (totalAmount * appliedPromo.discount) / 100;
         } else if (appliedPromo.discountType === 'FLAT') {
-          discountAmount = appliedPromo.discount;
+          finalPromoDiscountAmount = appliedPromo.discount;
         }
-        discountAmount = Math.min(discountAmount, totalAmount);
-        totalAmount -= discountAmount;
+        finalPromoDiscountAmount = Math.min(finalPromoDiscountAmount, totalAmount);
+        totalAmount -= finalPromoDiscountAmount;
       }
     }
 
@@ -524,7 +525,7 @@ export const updateBookingService = async ({
     const User = mongoose.model('User');
     const user = await User.findById(booking.customer);
 
-    if (user && discountAmount === 0) {
+    if (user && finalPromoDiscountAmount === 0) {
       const userTotalSpent = Number(user.totalSpent ?? 0);
       if (userTotalSpent >= 600 && user.spent600DiscountUsed === false) {
         loyaltyDiscount = 30;
