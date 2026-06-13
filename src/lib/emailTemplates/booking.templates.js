@@ -92,6 +92,67 @@ export const bookingCreatedTemplate = (
     `,
   });
 
+export const adminNewBookingTemplate = (
+  brandName,
+  dressName,
+  colour,
+  dressSize,
+  deliveryMethod,
+  rentalDays,
+  totalAmount
+) =>
+  baseEmailTemplate({
+    title: 'New Booking Created',
+
+    content: `
+      <p>Hi Admin,</p>
+      <p>A new booking has been placed on the platform.</p>
+      <h3>Booking details</h3>
+      ${createInfoBox({
+      'Brand': brandName,
+      'Dress': dressName,
+      'Colour': colour,
+      'Size': dressSize,
+      'Delivery method': deliveryMethod,
+      'Rental duration': `${rentalDays} days`,
+      'Total': `$${totalAmount}`,
+    })}
+      <p>The lender has been notified and is reviewing availability.</p>
+      <p>— Muse Gala System</p>
+    `,
+  });
+
+export const lenderNewBookingTemplate = (
+  userName,
+  brandName,
+  dressName,
+  colour,
+  dressSize,
+  deliveryMethod,
+  rentalDays,
+  totalAmount
+) =>
+  baseEmailTemplate({
+    title: 'You have a new booking request!',
+
+    content: `
+      <p>Hi ${userName},</p>
+      <p>Great news! You have received a new booking request for your dress.</p>
+      <h3>Booking details</h3>
+      ${createInfoBox({
+      'Brand': brandName,
+      'Dress': dressName,
+      'Colour': colour,
+      'Size': dressSize,
+      'Delivery method': deliveryMethod,
+      'Rental duration': `${rentalDays} days`,
+      'Total': `$${totalAmount}`,
+    })}
+      <p>Please log in to your dashboard to review and accept the booking.</p>
+      <p>— Muse Gala</p>
+    `,
+  });
+
 export const bookingConfirmedTemplate = (
   userName,
   brandName,

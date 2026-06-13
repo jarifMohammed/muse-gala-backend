@@ -23,6 +23,8 @@ export {
 // Booking templates
 export {
   bookingCreatedTemplate,
+  adminNewBookingTemplate,
+  lenderNewBookingTemplate,
   bookingConfirmedTemplate,
   bookingRejectedTemplate,
   paymentFailedTemplate,

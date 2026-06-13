@@ -1,7 +1,12 @@
 import { generateResponse } from '../../../lib/responseFormate.js';
 import promoCodeModel from '../../admin/promoCode/promoCode.model.js';
 import { createBookingService, deleteBookingService, getAllBookingsService, getBookingByIdService, getLenderBookingStatsService, getMasterDressByNameService, getPayoutByBookingIdService, getUserBookingsService, updateBookingService } from '../customer/bookings.service.js';
-import { bookingCancelledTemplate } from '../../../lib/emailTemplates/booking.templates.js';
+import { 
+  bookingCancelledTemplate, 
+  bookingCreatedTemplate, 
+  adminNewBookingTemplate, 
+  lenderNewBookingTemplate 
+} from '../../../lib/emailTemplates/booking.templates.js';
 import { sendEmail } from '../../../lib/resendEmial.js';
 import User from '../../auth/auth.model.js';
 
@@ -17,6 +22,69 @@ export const createBookingController = async (req, res) => {
       body: req.body,
     });
 
+    // Send emails on first booking creation
+    try {
+      await booking.populate('masterdressId');
+      const masterDress = booking.masterdressId;
+      const brandName = masterDress?.brand || 'N/A';
+      const dressName = masterDress?.dressName || booking.dressName || 'Your Dress';
+      const colour = masterDress?.colors?.[0] || booking.color || 'N/A';
+      const size = booking.size || 'N/A';
+
+      // 1. Send Email to Customer
+      if (booking.customer?.email) {
+        await sendEmail({
+          to: booking.customer.email,
+          subject: 'Your booking has been received',
+          html: bookingCreatedTemplate(
+            booking.customer.firstName || booking.customer.name || 'Customer',
+            brandName,
+            dressName,
+            colour,
+            size,
+            booking.deliveryMethod || 'N/A',
+            booking.rentalDurationDays || 4,
+            booking.totalAmount || 0
+          )
+        });
+      }
+
+      // 2. Send Email to Allocated Lender
+      if (booking.allocatedLender?.email) {
+        await sendEmail({
+          to: booking.allocatedLender.email,
+          subject: 'You have a new booking request',
+          html: lenderNewBookingTemplate(
+            'Lender',
+            brandName,
+            dressName,
+            colour,
+            size,
+            booking.deliveryMethod || 'N/A',
+            booking.rentalDurationDays || 4,
+            booking.totalAmount || 0
+          )
+        });
+      }
+
+      // 3. Send Email to Admin
+      const adminEmail = process.env.ADMIN_EMAIL || 'admin@topocreates.com';
+      await sendEmail({
+        to: adminEmail,
+        subject: `New Booking Created - ID: ${booking._id}`,
+        html: adminNewBookingTemplate(
+          brandName,
+          dressName,
+          colour,
+          size,
+          booking.deliveryMethod || 'N/A',
+          booking.rentalDurationDays || 4,
+          booking.totalAmount || 0
+        )
+      });
+    } catch (emailError) {
+      console.error('Error sending booking creation emails:', emailError);
+    }
 
     generateResponse(res, 201, true, "Booking created successfully for the user", booking);
   } catch (err) {
