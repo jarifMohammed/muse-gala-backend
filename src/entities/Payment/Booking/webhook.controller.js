@@ -59,6 +59,40 @@ export const handleBookingPaymentEvents = async (event) => {
         const lenderId =
           booking.allocatedLender?.lenderId || booking.lender?._id || booking.lender;
 
+        // Mark loyalty discount as used if no promo code was applied
+        if (customerId) {
+          try {
+            const promoCodeUsageModel = (await import('../../booking/promoCodeUsage.model.js')).default;
+            const promoUsage = await promoCodeUsageModel.findOne({ bookingId: booking._id });
+            
+            if (!promoUsage) {
+              const userToUpdate = await User.findById(customerId);
+              if (userToUpdate) {
+                const userTotalSpent = Number(userToUpdate.totalSpent ?? 0);
+                let changed = false;
+                
+                if (userTotalSpent >= 600 && userToUpdate.spent600DiscountUsed === false) {
+                  userToUpdate.spent600DiscountUsed = true;
+                  changed = true;
+                } else if (userTotalSpent >= 300 && userToUpdate.spent300DiscountUsed === false) {
+                  userToUpdate.spent300DiscountUsed = true;
+                  changed = true;
+                } else if (userToUpdate.firstBookingDiscountUsed === false) {
+                  userToUpdate.firstBookingDiscountUsed = true;
+                  changed = true;
+                }
+                
+                if (changed) {
+                  await userToUpdate.save();
+                  console.log(`Marked loyalty discount as used for user ${customerId}`);
+                }
+              }
+            }
+          } catch (err) {
+            console.error('Error updating loyalty discount usage:', err);
+          }
+        }
+
         if (!customerId || !lenderId) {
           console.warn(
             `Skipping ChatRoom creation for booking ${bookingId}: missing customer or lender`

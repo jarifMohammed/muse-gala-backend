@@ -199,6 +199,26 @@ export const createBookingService = async ({ userId, role, body }) => {
       totalAmount -= discountAmount;
     }
 
+    // ---------------------------
+    // LOYALTY DISCOUNT VALIDATION
+    // ---------------------------
+    let loyaltyDiscount = 0;
+    const userTotalSpent = Number(user.totalSpent ?? 0);
+
+    // Only apply if no promo code was used, mirroring frontend rule
+    if (discountAmount === 0) {
+      if (userTotalSpent >= 600 && user.spent600DiscountUsed === false) {
+        loyaltyDiscount = 30;
+      } else if (userTotalSpent >= 300 && user.spent300DiscountUsed === false) {
+        loyaltyDiscount = 20;
+      } else if (user.firstBookingDiscountUsed === false) {
+        loyaltyDiscount = 10;
+      }
+
+      loyaltyDiscount = Math.min(loyaltyDiscount, totalAmount);
+      totalAmount -= loyaltyDiscount;
+    }
+
     // --- Prepare booking data ---
     const { slaExpiresAt, slaReminderAt } = calculateSlaTimestamps(rentalStartDate);
 
@@ -493,6 +513,29 @@ export const updateBookingService = async ({
         discountAmount = Math.min(discountAmount, totalAmount);
         totalAmount -= discountAmount;
       }
+    }
+
+    // ---------------------------
+    // LOYALTY DISCOUNT RECALCULATION
+    // ---------------------------
+    let loyaltyDiscount = 0;
+    
+    // Fetch the user to determine if they're eligible
+    const User = mongoose.model('User');
+    const user = await User.findById(booking.customer);
+
+    if (user && discountAmount === 0) {
+      const userTotalSpent = Number(user.totalSpent ?? 0);
+      if (userTotalSpent >= 600 && user.spent600DiscountUsed === false) {
+        loyaltyDiscount = 30;
+      } else if (userTotalSpent >= 300 && user.spent300DiscountUsed === false) {
+        loyaltyDiscount = 20;
+      } else if (user.firstBookingDiscountUsed === false) {
+        loyaltyDiscount = 10;
+      }
+
+      loyaltyDiscount = Math.min(loyaltyDiscount, totalAmount);
+      totalAmount -= loyaltyDiscount;
     }
 
     updateData.rentalFee = rentalFee;
