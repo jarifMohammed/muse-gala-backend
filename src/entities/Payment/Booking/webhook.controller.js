@@ -223,8 +223,7 @@ export const handleBookingPaymentEvents = async (event) => {
                 booking.color || booking.masterdressId?.colors?.[0] || 'N/A',
                 booking.size || 'N/A',
                 booking.deliveryMethod || 'N/A',
-                booking.rentalDurationDays?.toString() || 'N/A',
-                booking.totalAmount?.toFixed(2) || '0.00'
+                booking.rentalDurationDays?.toString() || 'N/A'
               )
             });
           }
