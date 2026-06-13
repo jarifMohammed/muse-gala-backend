@@ -5,7 +5,7 @@ import { Booking } from '../../booking/booking.model.js';
 import { ChatRoom } from '../../message/chatRoom.model.js';
 import Payment from './payment.model.js';
 import { refundProcessedTemplate } from '../../../lib/emailTemplates/dispute.templates.js';
-import { bookingCreatedTemplate } from '../../../lib/emailTemplates/booking.templates.js';
+import { bookingCreatedTemplate, adminNewBookingTemplate, lenderNewBookingTemplate } from '../../../lib/emailTemplates/booking.templates.js';
 
 /**
  * Handle Stripe webhook events for booking payments
@@ -182,7 +182,7 @@ export const handleBookingPaymentEvents = async (event) => {
             await sendEmail({
               to: booking.lender.email,
               subject: 'New Booking Request for Your Dress',
-              html: bookingCreatedTemplate(
+              html: lenderNewBookingTemplate(
                 booking.lender.firstName || booking.lender.name || 'Lender',
                 booking.masterdressId?.brand || 'N/A',
                 booking.masterdressId?.dressName || 'N/A',
@@ -201,8 +201,7 @@ export const handleBookingPaymentEvents = async (event) => {
             await sendEmail({
               to: adminEmail,
               subject: `[Admin Notification] New Booking Request - ID: ${bookingId}`,
-              html: bookingCreatedTemplate(
-                'Admin',
+              html: adminNewBookingTemplate(
                 booking.masterdressId?.brand || 'N/A',
                 booking.masterdressId?.dressName || 'N/A',
                 booking.color || booking.masterdressId?.colors?.[0] || 'N/A',
