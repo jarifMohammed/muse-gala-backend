@@ -24,10 +24,30 @@ export const startOverdueEscalationJob = () => {
             now.setHours(0, 0, 0, 0);
 
             // Find bookings that are past rentalEndDate and reminders are NOT stopped
+            // Exclude statuses where dress was never in customer's hands
+            // (never accepted, cancelled, or already resolved)
             const overdueBookings = await Booking.find({
                 rentalEndDate: { $lt: now },
                 returnRemindersStopped: false,
-                deliveryStatus: { $nin: ['ReceivedByLender', 'Completed', 'CancelledByCustomer', 'CancelledByLender', 'Dress Returned', 'NonReturned', 'IssueReported'] }
+                deliveryStatus: {
+                    $nin: [
+                        // Never accepted / unfulfillable
+                        'Pending',
+                        'Cannot Fullfill',
+                        'Rejected',
+                        'RejectedByLender',
+                        // Cancelled
+                        'CancelledByAdmin',
+                        'CancelledByCustomer',
+                        'CancelledByLender',
+                        // Already resolved
+                        'ReceivedByLender',
+                        'Completed',
+                        'Dress Returned',
+                        'NonReturned',
+                        'IssueReported'
+                    ]
+                }
             }).populate('customer', 'firstName name email')
                 .populate('masterdressId', 'brand dressName colors images');
 

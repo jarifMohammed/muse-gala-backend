@@ -26,13 +26,31 @@ export const startReturnReminderJob = () => {
             });
 
             // Find bookings ending in the next 2 days
+            // Exclude statuses that have no dress in customer's hands
+            // (never accepted, cancelled, or already completed)
             const bookings = await Booking.find({
                 rentalEndDate: {
                     $gte: dates[0],
                     $lte: new Date(dates[2].getTime() + 24 * 60 * 60 * 1000)
                 },
                 returnRemindersStopped: false,
-                deliveryStatus: { $nin: ['ReceivedByLender', 'Completed', 'CancelledByCustomer', 'CancelledByLender', 'Dress Returned'] }
+                deliveryStatus: {
+                    $nin: [
+                        // Never accepted / unfulfillable
+                        'Pending',
+                        'Cannot Fullfill',
+                        'Rejected',
+                        'RejectedByLender',
+                        // Cancelled
+                        'CancelledByAdmin',
+                        'CancelledByCustomer',
+                        'CancelledByLender',
+                        // Already done
+                        'ReceivedByLender',
+                        'Completed',
+                        'Dress Returned'
+                    ]
+                }
             }).populate('customer', 'firstName name email')
                 .populate('masterdressId', 'brand dressName colors images');
 
