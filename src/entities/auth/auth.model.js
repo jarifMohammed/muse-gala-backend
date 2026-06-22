@@ -123,6 +123,7 @@ const UserSchema = new mongoose.Schema(
     longitude: { type: Number, default: 0 },
     address: { type: String, default: '' },
     precision: { type: String, default: 'approximate', enum: ['exact', 'approximate', 'interpolated'] },
+    returnAddress: { type: String, trim: true, default: '' },
 
     // stripe customer setup save card info
     stripeCustomerId: { type: String, default: null },

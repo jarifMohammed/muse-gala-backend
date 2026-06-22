@@ -13,7 +13,8 @@ export const returnReminderTemplate = (
     bookingId,
     dueDate,
     returnLink,
-    reminderType = 'reminder-2-days'
+    reminderType = 'reminder-2-days',
+    returnAddress = ''
 ) => {
     let title = 'Your Return Is Coming Up';
     let subtitle = 'Your rental period is coming to an end.';
@@ -44,6 +45,7 @@ export const returnReminderTemplate = (
         'Colour': dressColour || 'N/A',
         'Booking ID': bookingId || 'N/A',
         'Return Due Date': dueDate,
+        ...(returnAddress ? { 'Return Address': returnAddress } : {})
     })}
     <p>${extraText}</p>
   `;
@@ -69,7 +71,8 @@ export const overdueReminderTemplate = (
     dressColour,
     bookingId,
     daysOverdue,
-    returnLink
+    returnLink,
+    returnAddress = ''
 ) => {
     let title = 'Return Follow-Up';
     let subtitle = `We noticed your rental hasn’t been confirmed as returned yet.`;
@@ -93,6 +96,7 @@ export const overdueReminderTemplate = (
             'Colour': dressColour || 'N/A',
             'Booking ID': bookingId || 'N/A',
             'Status': createStatusBadge(daysOverdue >= 5 ? 'Action Required' : 'Late Return', 'error'),
+            ...(returnAddress ? { 'Return Address': returnAddress } : {})
         })}
       <p>If already sent back, please add your tracking number below. If you need assistance, let us know.</p>
     `,
@@ -109,7 +113,8 @@ export const escalatedOverdueTemplate = (
     dressName,
     brandName,
     bookingId,
-    returnLink
+    returnLink,
+    returnAddress = ''
 ) => {
     return baseEmailTemplate({
         title: 'Important Return Update',
@@ -123,6 +128,7 @@ export const escalatedOverdueTemplate = (
             'Style': dressName,
             'Booking ID': bookingId || 'N/A',
             'Status': createStatusBadge('Escalated', 'error'),
+            ...(returnAddress ? { 'Return Address': returnAddress } : {})
         })}
       <p>Please confirm your return using the secure link below. As outlined in our terms, late fees may apply.</p>
     `,
@@ -139,7 +145,8 @@ export const highRiskReturnTemplate = (
     dressName,
     brandName,
     bookingId,
-    returnLink
+    returnLink,
+    returnAddress = ''
 ) => {
     return baseEmailTemplate({
         title: 'Urgent Return Notice',
@@ -153,6 +160,7 @@ export const highRiskReturnTemplate = (
             'Style': dressName,
             'Booking ID': bookingId || 'N/A',
             'Status': createStatusBadge('High Risk', 'error'),
+            ...(returnAddress ? { 'Return Address': returnAddress } : {})
         })}
       <p>Please confirm immediately using the secure link below. Replacement charges may apply if the garment is not returned.</p>
     `,
@@ -169,7 +177,8 @@ export const nonReturnedTemplate = (
     dressName,
     brandName,
     bookingId,
-    returnLink
+    returnLink,
+    returnAddress = ''
 ) => {
     return baseEmailTemplate({
         title: 'Outstanding Rental Return',
@@ -183,6 +192,7 @@ export const nonReturnedTemplate = (
             'Style': dressName,
             'Booking ID': bookingId || 'N/A',
             'Status': createStatusBadge('Non-Returned', 'error'),
+            ...(returnAddress ? { 'Return Address': returnAddress } : {})
         })}
       <p>Please confirm immediately using the secure link below. Further action will be taken in accordance with our terms if unresolved, including escalation to our dispute process and potential replacement charges.</p>
     `,

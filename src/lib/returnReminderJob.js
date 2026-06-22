@@ -52,7 +52,8 @@ export const startReturnReminderJob = () => {
                     ]
                 }
             }).populate('customer', 'firstName name email')
-                .populate('masterdressId', 'brand dressName colors images');
+              .populate('masterdressId', 'brand dressName colors images')
+              .populate('allocatedLender.lenderId', 'firstName name email returnAddress businessAddress location');
 
             console.log(`[Cron] Found ${bookings.length} potential bookings for return reminders.`);
 
@@ -75,6 +76,7 @@ export const startReturnReminderJob = () => {
                 const brandName = booking.masterdressId?.brand || 'N/A';
                 const dressSize = booking.size || 'N/A';
                 const dressColour = booking.masterdressId?.colors?.[0] || 'N/A';
+                const returnAddress = booking.allocatedLender?.lenderId?.returnAddress || booking.allocatedLender?.lenderId?.businessAddress || 'Please contact lender for return address';
 
                 const formattedDueDate = endDate.toLocaleDateString('en-AU', {
                     year: 'numeric',
@@ -100,7 +102,8 @@ export const startReturnReminderJob = () => {
                                 booking._id,
                                 formattedDueDate,
                                 returnUrl,
-                                reminderType
+                                reminderType,
+                                returnAddress
                             )
                         });
 

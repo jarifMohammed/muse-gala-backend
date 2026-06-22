@@ -87,13 +87,15 @@ export const handleReturnDueStatus = async (bookingId) => {
     // Re-fetch to get the updated token from DB
     const updatedBooking = await Booking.findById(bookingId)
         .populate('customer', 'firstName name email')
-        .populate('masterdressId', 'dressName brand colors images');
+        .populate('masterdressId', 'dressName brand colors images')
+        .populate('allocatedLender.lenderId', 'returnAddress businessAddress location');
 
     const customerName = updatedBooking.customer?.firstName || updatedBooking.customer?.name || 'Customer';
     const dressName = updatedBooking.masterdressId?.dressName || updatedBooking.dressName || 'Your Dress';
     const brandName = updatedBooking.masterdressId?.brand || 'N/A';
     const dressSize = updatedBooking.size || 'N/A';
     const dressColour = updatedBooking.masterdressId?.colors?.[0] || 'N/A';
+    const returnAddress = updatedBooking.allocatedLender?.lenderId?.returnAddress || updatedBooking.allocatedLender?.lenderId?.businessAddress || 'Please contact lender for return address';
 
     const dueDate = new Date(updatedBooking.rentalEndDate).toLocaleDateString('en-AU', {
         timeZone: 'Australia/Sydney',
@@ -130,7 +132,8 @@ export const handleReturnDueStatus = async (bookingId) => {
                     booking._id,
                     dueDate,
                     returnUrl,
-                    'initial'
+                    'initial',
+                    returnAddress
                 )
             });
             console.log(`[ReturnFlow] Email sent successfully for booking ${bookingId}`);
