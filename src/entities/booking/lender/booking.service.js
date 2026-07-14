@@ -224,8 +224,14 @@ export const acceptOrRejectBookingService = async ({
       // Send payment failed email for ALL failures
       try {
         const customer = await User.findById(booking.customer);
-        const MasterDress = mongoose.model('MasterDress');
-        const dress = await MasterDress.findById(booking.masterdressId);
+        let dressName = 'Your Dress';
+        try {
+          const MasterDressModel = mongoose.model('MasterDress');
+          const dress = await MasterDressModel.findById(booking.masterdressId);
+          if (dress?.dressName) dressName = dress.dressName;
+        } catch (_) {
+          // dress lookup failed, use fallback name
+        }
 
         if (customer?.email) {
           await sendEmail({
@@ -233,14 +239,17 @@ export const acceptOrRejectBookingService = async ({
             subject: 'Payment Failed - Please Update Your Payment Method',
             html: paymentFailedTemplate(
               customer.firstName || customer.name || 'Customer',
-              dress?.dressName || 'Your Dress',
+              dressName,
               booking.totalAmount.toFixed(2),
               stripeError
             )
           });
+          console.log(`✅ Payment failed email sent to ${customer.email}`);
+        } else {
+          console.warn('⚠️ Customer has no email, skipping payment failed email');
         }
       } catch (emailError) {
-        console.error('Error sending payment failed email:', emailError);
+        console.error('❌ Error sending payment failed email:', emailError);
       }
 
       if (
@@ -303,9 +312,20 @@ export const acceptOrRejectBookingService = async ({
     // Send confirmation email
     try {
       const customer = await User.findById(booking.customer);
-      const MasterDress = mongoose.model('MasterDress');
-      const dress = await MasterDress.findById(booking.masterdressId);
-      const lender = await User.findById(booking.allocatedLender.lenderId);
+      const lender = await User.findById(booking.allocatedLender?.lenderId);
+
+      let dressName = 'Your Dress';
+      let brandName = 'N/A';
+      let colour = booking.color || 'N/A';
+      try {
+        const MasterDressModel = mongoose.model('MasterDress');
+        const dress = await MasterDressModel.findById(booking.masterdressId);
+        if (dress?.dressName) dressName = dress.dressName;
+        if (dress?.brand) brandName = dress.brand;
+        if (!booking.color && dress?.colors?.[0]) colour = dress.colors[0];
+      } catch (_) {
+        // dress lookup failed — use fallback values
+      }
 
       const startDate = new Date(booking.rentalStartDate).toLocaleDateString(
         'en-AU',
@@ -315,8 +335,6 @@ export const acceptOrRejectBookingService = async ({
         'en-AU',
         { timeZone: 'Australia/Sydney', year: 'numeric', month: 'short', day: 'numeric' }
       );
-      const brandName = dress?.brand || 'N/A';
-      const colour = booking.color || dress?.colors?.[0] || 'N/A';
 
       if (customer?.email) {
         await sendEmail({
@@ -325,7 +343,7 @@ export const acceptOrRejectBookingService = async ({
           html: bookingConfirmedTemplate(
             customer.firstName || customer.name || 'Customer',
             brandName,
-            dress?.dressName || 'Your Dress',
+            dressName,
             colour,
             booking.size || 'N/A',
             booking.deliveryMethod || 'Shipping',
@@ -335,6 +353,7 @@ export const acceptOrRejectBookingService = async ({
             booking._id
           )
         });
+        console.log(`✅ Booking confirmed email sent to ${customer.email}`);
       }
 
       if (lender?.email) {
@@ -344,7 +363,7 @@ export const acceptOrRejectBookingService = async ({
           html: bookingConfirmedTemplate(
             lender.firstName || lender.name || 'Lender',
             brandName,
-            dress?.dressName || 'Your Dress',
+            dressName,
             colour,
             booking.size || 'N/A',
             booking.deliveryMethod || 'Shipping',
@@ -354,6 +373,7 @@ export const acceptOrRejectBookingService = async ({
             booking._id
           )
         });
+        console.log(`✅ Booking confirmed email sent to lender ${lender.email}`);
       }
 
       // Notify Admin
@@ -365,7 +385,7 @@ export const acceptOrRejectBookingService = async ({
           html: bookingConfirmedTemplate(
             'Admin',
             brandName,
-            dress?.dressName || 'Your Dress',
+            dressName,
             colour,
             booking.size || 'N/A',
             booking.deliveryMethod || 'Shipping',
@@ -376,7 +396,7 @@ export const acceptOrRejectBookingService = async ({
           )
         });
       } catch (adminEmailError) {
-        console.error('Error sending admin booking confirmation email:', adminEmailError);
+        console.error('❌ Error sending admin booking confirmation email:', adminEmailError);
       }
     } catch (emailError) {
       console.error('Error sending booking confirmation email:', emailError);
