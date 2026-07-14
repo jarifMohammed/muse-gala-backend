@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import Stripe from "stripe";
-import { sendEmail } from "../../lib/sendEmail.js";
+import sendEmail from "../../lib/sendEmail.js";
 import {
   paymentMethodUpdatedCustomerTemplate,
   paymentMethodUpdatedLenderTemplate,
