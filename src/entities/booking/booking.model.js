@@ -116,6 +116,7 @@ const BookingSchema = new Schema(
         'Delivered',
         'Rejected',
         'RejectedByLender',
+        'PaymentFailed',
         'PaymentRetryScheduled',
         'AcceptedByLender',
         'Rental Active',
