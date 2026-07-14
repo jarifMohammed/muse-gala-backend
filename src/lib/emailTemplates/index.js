@@ -28,6 +28,8 @@ export {
   bookingConfirmedTemplate,
   bookingRejectedTemplate,
   paymentFailedTemplate,
+  paymentMethodUpdatedCustomerTemplate,
+  paymentMethodUpdatedLenderTemplate,
   shipmentPreparingTemplate,
   labelReadyTemplate,
   shippedToCustomerTemplate,

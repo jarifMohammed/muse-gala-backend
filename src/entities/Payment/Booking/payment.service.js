@@ -118,6 +118,12 @@ export const createSetupIntentService = async (userId, bookingId = null) => {
       userId: user._id.toString(),
       ...(bookingId && { bookingId: bookingId.toString() })
     },
+    setup_intent_data: {
+      metadata: {
+        userId: user._id.toString(),
+        ...(bookingId && { bookingId: bookingId.toString() })
+      }
+    },
     success_url: successUrl,
     cancel_url: cancelUrl
   });

@@ -394,7 +394,6 @@ export const bookingRejectedTemplate = (
 export const paymentFailedTemplate = (userName, dressName, amount, error) =>
   baseEmailTemplate({
     title: 'PAYMENT FAILED',
-
     content: `
       <p>Hi ${userName},</p>
       <p>We were unable to process payment for your booking of <strong>${dressName}</strong>.</p>
@@ -402,9 +401,35 @@ export const paymentFailedTemplate = (userName, dressName, amount, error) =>
       'Amount': `$${amount}`,
       'Issue': error,
     })}
-      <p>Please update your payment method to keep your booking.</p>
+      <p>Please update your payment method from the "My Account" page to keep your booking.</p>
       <p>— Muse Gala</p>
     `,
+    buttonText: 'Update Payment Method',
+    buttonUrl: `${process.env.FRONTEND_URL || 'https://musegala.com.au'}/account`,
+  });
+
+export const paymentMethodUpdatedCustomerTemplate = (userName) =>
+  baseEmailTemplate({
+    title: 'PAYMENT METHOD UPDATED',
+    content: `
+      <p>Hi ${userName},</p>
+      <p>Your payment method has been updated successfully.</p>
+      <p>The lender has been notified to retry processing your booking.</p>
+      <p>— Muse Gala</p>
+    `,
+  });
+
+export const paymentMethodUpdatedLenderTemplate = (lenderName, customerName, bookingId) =>
+  baseEmailTemplate({
+    title: 'CUSTOMER UPDATED PAYMENT METHOD',
+    content: `
+      <p>Hi ${lenderName},</p>
+      <p>The customer (${customerName}) has successfully updated their payment method for Booking ID: ${bookingId}.</p>
+      <p>You can now log into your dashboard and click "Retry Payment" to process this booking.</p>
+      <p>— Muse Gala</p>
+    `,
+    buttonText: 'Retry Payment',
+    buttonUrl: `${process.env.LENDER_FRONTEND_URL || 'https://lender.musegala.com.au'}/bookings/${bookingId}`,
   });
 
 export const shipmentPreparingTemplate = (userName, dressName, estimatedShipDate) =>

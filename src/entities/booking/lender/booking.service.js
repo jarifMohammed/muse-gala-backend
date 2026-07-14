@@ -164,6 +164,7 @@ export const acceptOrRejectBookingService = async ({
     // ------------------------------
     // ACCEPT BOOKING
     // ------------------------------
+    if (booking.paymentStatus === 'Paid') throw new Error('Booking already paid');
     const user = await User.findById(booking.customer).session(session);
     if (!user) throw new Error('Customer not found');
 
@@ -220,6 +221,28 @@ export const acceptOrRejectBookingService = async ({
     if (paymentError) {
       const stripeError = paymentError.raw?.message || paymentError.message;
 
+      // Send payment failed email for ALL failures
+      try {
+        const customer = await User.findById(booking.customer);
+        const MasterDress = mongoose.model('MasterDress');
+        const dress = await MasterDress.findById(booking.masterdressId);
+
+        if (customer?.email) {
+          await sendEmail({
+            to: customer.email,
+            subject: 'Payment Failed - Please Update Your Payment Method',
+            html: paymentFailedTemplate(
+              customer.firstName || customer.name || 'Customer',
+              dress?.dressName || 'Your Dress',
+              booking.totalAmount.toFixed(2),
+              stripeError
+            )
+          });
+        }
+      } catch (emailError) {
+        console.error('Error sending payment failed email:', emailError);
+      }
+
       if (
         paymentError.code === 'authentication_required' ||
         paymentError.code === 'card_declined'
@@ -242,28 +265,6 @@ export const acceptOrRejectBookingService = async ({
       booking.paymentStatus = 'RetryPending';
       booking.paymentErrorMessage = stripeError;
       booking.deliveryStatus = 'PaymentRetryScheduled';
-
-      // Send payment failed email
-      try {
-        const customer = await User.findById(booking.customer);
-        const MasterDress = mongoose.model('MasterDress');
-        const dress = await MasterDress.findById(booking.masterdressId);
-
-        if (customer?.email) {
-          await sendEmail({
-            to: customer.email,
-            subject: 'Payment Failed - Please Update Your Payment Method',
-            html: paymentFailedTemplate(
-              customer.firstName || customer.name || 'Customer',
-              dress?.dressName || 'Your Dress',
-              booking.totalAmount.toFixed(2),
-              stripeError
-            )
-          });
-        }
-      } catch (emailError) {
-        console.error('Error sending payment failed email:', emailError);
-      }
 
       await booking.save({ session });
       await session.commitTransaction();
