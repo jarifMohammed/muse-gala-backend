@@ -75,8 +75,23 @@ export const getUpcomingBookingsForLenderController = async (req, res) => {
       action
     });
 
+    // Payment failed — return 402 so the frontend shows the correct error toast
+    if (
+      result.deliveryStatus === 'failed_user_action_required' ||
+      result.status === 'retry_scheduled'
+    ) {
+      return res.status(402).json({
+        success: false,
+        message: result.status === 'retry_scheduled'
+          ? 'Payment failed. A retry has been scheduled. The customer has been notified to update their payment method.'
+          : 'Payment failed. The customer has been notified to update their payment method.',
+        ...result
+      });
+    }
+
     return res.status(200).json({
       success: true,
+      message: action === 'accept' ? 'Booking accepted and payment processed successfully.' : 'Booking rejected.',
       ...result
     });
 
@@ -87,6 +102,7 @@ export const getUpcomingBookingsForLenderController = async (req, res) => {
     });
   }
 };
+
 
 
 // manual booking
