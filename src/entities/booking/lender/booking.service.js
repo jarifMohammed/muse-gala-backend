@@ -168,7 +168,11 @@ export const acceptOrRejectBookingService = async ({
     const user = await User.findById(booking.customer).session(session);
     if (!user) throw new Error('Customer not found');
 
+    console.log(`[ACCEPT] bookingId=${bookingId}, paymentStatus=${booking.paymentStatus}, customer=${booking.customer}`);
+    console.log(`[ACCEPT] stripeCustomerId=${user.stripeCustomerId ? 'SET' : 'MISSING'}, defaultPaymentMethodId=${user.defaultPaymentMethodId ? 'SET' : 'MISSING'}`);
+
     if (!user.stripeCustomerId || !user.defaultPaymentMethodId) {
+      console.error(`[ACCEPT] ❌ Blocked: Customer has no payment method saved in DB`);
       throw new Error('Customer has no payment method. Cannot accept booking.');
     }
 
@@ -203,6 +207,7 @@ export const acceptOrRejectBookingService = async ({
     let paymentError = null;
 
     try {
+      console.log(`[ACCEPT] Attempting Stripe charge for customer=${user.stripeCustomerId}, pm=${user.defaultPaymentMethodId}, amount=${Math.round(finalAmount * 100)}`);
       paymentIntent = await stripe.paymentIntents.create({
         amount: Math.round(finalAmount * 100),
         currency: 'aud',
@@ -211,7 +216,9 @@ export const acceptOrRejectBookingService = async ({
         off_session: true,
         confirm: true
       });
+      console.log(`[ACCEPT] ✅ Stripe charge succeeded, intentId=${paymentIntent.id}`);
     } catch (err) {
+      console.error(`[ACCEPT] ❌ Stripe charge failed: code=${err.code}, message=${err.message}`);
       paymentError = err;
     }
 
