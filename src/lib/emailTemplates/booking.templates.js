@@ -446,3 +446,15 @@ export const shipmentPreparingTemplate = (userName, dressName, estimatedShipDate
       <p>— Muse Gala</p>
     `,
   });
+
+export const paymentMethodUpdatedGeneralTemplate = (userName) =>
+  baseEmailTemplate({
+    title: 'PAYMENT METHOD UPDATED',
+    content: `
+      <p>Hi ${userName},</p>
+      <p>Your payment method has been updated successfully.</p>
+      <p>You can now use this payment method for your future bookings.</p>
+      <p>— Muse Gala</p>
+    `,
+  });
+

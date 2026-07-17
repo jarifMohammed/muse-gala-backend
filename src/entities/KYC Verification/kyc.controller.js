@@ -11,7 +11,9 @@ export const startOrResumeVerification = async (req, res) => {
     if (!user) return res.status(404).json({ error: 'User not found' });
     // console.log("User found:", user);
 
-    const { url, reused } = await createOrReuseVerificationSession(user);
+    const { returnUrl } = req.query;
+
+    const { url, reused } = await createOrReuseVerificationSession(user, returnUrl);
 
     return generateResponse(res, 200, true,{
       url,

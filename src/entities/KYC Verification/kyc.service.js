@@ -2,7 +2,7 @@
 import Stripe from 'stripe';
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-export const createOrReuseVerificationSession = async (user) => {
+export const createOrReuseVerificationSession = async (user, customReturnUrl = null) => {
   const now = new Date();
 
   // If user has a stored session that is not expired and status allows resuming
@@ -21,6 +21,18 @@ export const createOrReuseVerificationSession = async (user) => {
   }
 
   // Otherwise create a new verification session
+  const baseReturnUrl = user.role === 'LENDER'
+    ? process.env.LENDER_FRONTEND_URL
+    : process.env.FRONTEND_URL;
+
+  let returnUrl = user.role === 'LENDER'
+    ? `${baseReturnUrl}/account-settings?verification=completed`
+    : `${baseReturnUrl}/account?verification=completed`;
+
+  if (customReturnUrl) {
+    returnUrl = `${baseReturnUrl}${customReturnUrl}?verification=completed`;
+  }
+
   const session = await stripe.identity.verificationSessions.create({
     type: 'document',
     options: {
@@ -28,6 +40,7 @@ export const createOrReuseVerificationSession = async (user) => {
         allowed_types: ['passport', 'driving_license', 'id_card'],
       },
     },
+    return_url: returnUrl,
     metadata: {
       userId: user._id.toString(),
     },

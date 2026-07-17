@@ -104,7 +104,9 @@ export const createSetupIntentService = async (userId, bookingId = null) => {
   // 2. Create Stripe Checkout Session for SetupIntent
   const successUrl = user.role === 'LENDER' 
     ? `${process.env.LENDER_FRONTEND_URL}/account-settings`
-    : `${process.env.FRONTEND_URL}/booking-success`;
+    : bookingId 
+      ? `${process.env.FRONTEND_URL}/booking-success` 
+      : `${process.env.FRONTEND_URL}/payment-update-success`;
 
   const cancelUrl = user.role === 'LENDER'
     ? `${process.env.LENDER_FRONTEND_URL}/account-settings`

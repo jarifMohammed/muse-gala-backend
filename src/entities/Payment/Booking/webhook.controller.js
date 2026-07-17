@@ -5,7 +5,7 @@ import { Booking } from '../../booking/booking.model.js';
 import { ChatRoom } from '../../message/chatRoom.model.js';
 import Payment from './payment.model.js';
 import { refundProcessedTemplate } from '../../../lib/emailTemplates/dispute.templates.js';
-import { bookingCreatedTemplate, adminNewBookingTemplate, lenderNewBookingTemplate } from '../../../lib/emailTemplates/booking.templates.js';
+import { bookingCreatedTemplate, adminNewBookingTemplate, lenderNewBookingTemplate, paymentMethodUpdatedGeneralTemplate } from '../../../lib/emailTemplates/booking.templates.js';
 
 /**
  * Handle Stripe webhook events for booking payments
@@ -28,7 +28,27 @@ export const handleBookingPaymentEvents = async (event) => {
           }
         }
 
-        if (!bookingId) break;
+        if (!bookingId) {
+          if (session.mode === 'setup') {
+            const userId = session.metadata?.userId;
+            if (userId) {
+              try {
+                const user = await User.findById(userId);
+                if (user && user.email) {
+                  await sendEmail({
+                    to: user.email,
+                    subject: 'Payment Method Updated',
+                    html: paymentMethodUpdatedGeneralTemplate(user.firstName || user.name || 'User')
+                  });
+                  console.log(`📧 General payment update email sent to ${user.email}`);
+                }
+              } catch (emailErr) {
+                console.error('Error sending payment update email:', emailErr);
+              }
+            }
+          }
+          break;
+        }
 
         // Update Booking if it's a direct payment
         const updateData = {};

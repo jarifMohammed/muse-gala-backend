@@ -49,7 +49,10 @@ const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:5173',
   'http://localhost:3001',
-  'https://muse-gala-website-three.vercel.app'
+  'https://muse-gala-website-three.vercel.app',
+  'https://muse-gala-website.vercel.app',
+  'https://muse-gala-admin-dashboard.vercel.app',
+  'https://muse-gala-lender-dashboard.vercel.app'
 ];
 
 app.use(cors({
@@ -156,6 +159,9 @@ export const io = new Server(server, {
       'https://admin.musegala.com.au',
       'http://localhost:3000',
       'http://localhost:5173',
+      'https://muse-gala-website.vercel.app',
+      'https://muse-gala-admin-dashboard.vercel.app',
+      'https://muse-gala-lender-dashboard.vercel.app'
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     credentials: true,
